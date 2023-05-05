@@ -49,20 +49,27 @@ col_1 =[
     
 #images column
 col_2 = [
-        [sg.Image(data=get_img_data('perfil_vacio.png', first = True), key='-BOOST-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
+        [sg.Image(data=get_img_data('perfil_vacio.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
         [sg.Text('Seleccione su foto de perfil', font = ('latin modern sansquotation', 15))],
         ]
     
 layout = [[sg.Column(col_1), sg.Column(col_2)]]
-          
+
 window = sg.Window("UNLPImage", layout, margins=(150, 100))
+
 i=0
 while True:
     event, user = window.read()
     i= i+1
     print(i)
     print(event)
-    
+    if event == '-PIC-':
+        ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
+        try:
+            window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
+        except AttributeError:
+            continue
+
     if event == '-OTRO-' :
         window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
     if event == '-OK-':
@@ -80,19 +87,48 @@ while True:
             else:
                 with open('users.json', 'w') as u:
                     if user['-OTRO-']:
-                       newuser = [user['-NICK-'], {
+                       newuser = {user['-NICK-']: [{
                        "nombre": user['-NAME-'],
                        "edad": user['-AGE-'],
-                       "genero": user['-NEW-']}]
-                       datos.append(newuser)
-                       json.dump(datos, u)    
-                    else:
-                       newuser = [user['-NICK-'], {
-                       "nombre": user['-NAME-'],
-                       "edad": user['-AGE-'],
-                       "genero": user['-GEN-']}]
+                       "genero": user['-NEW-']} ]}
                        datos.append(newuser)
                        json.dump(datos, u)
+
+                       os.makedirs('prof_pictures', exist_ok = True)
+                       Image1 = Image.open(ruta_foto)
+                       # make a copy the image so that the
+                       # original image does not get affected
+                       Image1copy = Image1.copy()
+                       Image2 = Image.open(ruta_foto)
+                       Image2copy = Image2.copy()
+ 
+                       # paste image giving dimensions
+                       Image1copy.paste(Image2copy, (0, 0))
+ 
+                       # save the image
+                       Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
+
+
+                    else:
+                       newuser = {user['-NICK-']: [{
+                       "nombre": user['-NAME-'],
+                       "edad": user['-AGE-'],
+                       "genero": user['-GEN-']} ]}
+                       datos.append(newuser)
+                       json.dump(datos, u)
+                       os.makedirs('prof_pictures', exist_ok = True)
+                       Image1 = Image.open(ruta_foto)
+                       # make a copy the image so that the
+                       # original image does not get affected
+                       Image1copy = Image1.copy()
+                       Image2 = Image.open(ruta_foto)
+                       Image2copy = Image2.copy()
+ 
+                       # paste image giving dimensions
+                       Image1copy.paste(Image2copy, (0, 0))
+ 
+                       # save the image
+                       Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
                     break
     if event == '-CANCEL-':
         break
