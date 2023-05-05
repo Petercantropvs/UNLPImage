@@ -68,6 +68,10 @@ while True:
     if event == '-OK-':
         if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
             sg.popup_ok('Todos los campos son obligatorios', title='Error!')
+
+        #for i in len(range(datos)):
+        #    if datos[i][0] == user['-NICK-']:
+        #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
         else:
             try:
                 age=int(user['-AGE-'])
