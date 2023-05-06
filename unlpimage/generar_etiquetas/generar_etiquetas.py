@@ -5,8 +5,6 @@ import sys
 import os
 
 treedata = sg.TreeData()
-photo_path = sg.PopupGetFolder('Seleccione la carpeta de imágenes')
-# os.path.join('C:\\','Users','Usuario','Documents','Pedro','Origami')
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio):
@@ -22,34 +20,37 @@ def arbol(parent, directorio):
         else:                         # Acá el values hay que completarlo con los tags
             treedata.Insert(parent, ruta, archivo, values=[os.stat(ruta).st_size], icon=file_icon)
 
-def layout():
+def layout(photo_path):
     arbol('',photo_path)
-    frame_layout = [[sg.Image(size = (200,400), key = '-VISUALIZADOR-')],
-                    [sg.Text('Tags:')],[sg.Text('', key = '-OUTPUT-')]]
+    frame_layout = [[sg.Image(size = (400,300), key = '-VISUALIZADOR-')],
+                    [sg.Text('Tags:'), sg.Text('Tags', background_color=sg.theme_button_color()[1], key = '-OUTPUT-')]]
 
     layout_l = sg.Column([[sg.Tree(data = treedata, headings = ['Tags',], auto_size_columns=True,
                     expand_x = True, expand_y = True, enable_events = True, key = '-TREE-')],
                         [sg.Text('Tag')],
                         [sg.Input(size=(50,1), key = '-NEWTAG-'),sg.Button('Agregar')],
                         [sg.Text('Texto descriptivo')],
-                        [sg.Input(size=(50,1), key = '-ALGO-'),sg.Button('Agregar')]])
+                        [sg.Input(size=(50,1), key = '-ALGO-'),sg.Button('Agregar')]],
+                        expand_y = True, justification = 'left', pad = ((0,20),(0,0)))
 
-    layout_r = sg.Column([[sg.Push(), sg.Button('Volver', key = '-VOLVER-')],
-                        [sg.Frame('Seleccione una imagen para visualizar',
+    layout_r = sg.Column([[sg.Frame('Seleccione una imagen para visualizar',
                                     frame_layout, 
                                     background_color=sg.theme_button_color()[1], 
                                     size=(300,400),
                                     expand_x = True,
                                     expand_y = True,
-                                    key = '-FRAME-')]])   
+                                    key = '-FRAME-')]],
+                                    expand_x= True, expand_y= True)   
                        
-    layout = [[sg.Text('Seleccione la imagen que desee etiquetar:')],
+    layout = [[sg.Text('Seleccione la imagen que desee etiquetar:'), sg.Push(), sg.Button('Volver', key = '-VOLVER-')],
               [layout_l, layout_r], 
               [sg.Push(), sg.Button('Guardar')]]
     return layout
 
 def ventana_etiquetas():
-    window = sg.Window('Etiquetar imágenes', layout(), resizable=True, finalize=True)
+    photo_path = sg.PopupGetFolder('Seleccione la carpeta de imágenes')
+
+    window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
     while True:
         event, values = window.read()
         
@@ -58,7 +59,7 @@ def ventana_etiquetas():
         window['-OUTPUT-'].update(values['-NEWTAG-'])
         window['-FRAME-'].update(ruta_imagen_sel)
         if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
-            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel))
+            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
 
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
