@@ -39,7 +39,8 @@ def layout(photo_path):
                                     size=(300,400),
                                     expand_x = True,
                                     expand_y = True,
-                                    key = '-FRAME-')]],
+                                    key = '-FRAME-')]], 
+                                    background_color=None,
                                     expand_x= True, expand_y= True)   
                        
     layout = [[sg.Text('Seleccione la imagen que desee etiquetar:'), sg.Push(), sg.Button('Volver', key = '-VOLVER-')],
@@ -59,7 +60,7 @@ def ventana_etiquetas():
         window['-OUTPUT-'].update(values['-NEWTAG-'])
         window['-FRAME-'].update(ruta_imagen_sel)
         if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
-            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
+            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300), subsample = 2)
 
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
