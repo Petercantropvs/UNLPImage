@@ -17,7 +17,7 @@ def get_img_data(f, first=False):
         return bio.getvalue()
     return ImageTk.PhotoImage(img)
 try:
-    archivo = open('users.json', 'r')
+    archivo = open('nuevo_perfil/users.json', 'r')
     datos = json.load(archivo)
 except json.decoder.JSONDecodeError:
     datos = []
@@ -78,7 +78,7 @@ def ventana_nuevoperfil():
             if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
                 sg.popup_ok('Todos los campos son obligatorios', title='Error!')
     
-            #for i in len(range(datos)):
+            #for i in range(len(datos)):
             #    if datos[i][0] == user['-NICK-']:
             #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
             else:
@@ -89,10 +89,10 @@ def ventana_nuevoperfil():
                 else:
                     with open('users.json', 'w') as u:
                         if user['-OTRO-']:
-                           newuser = {user['-NICK-']: [{
+                           newuser = {user['-NICK-']: {
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
-                           "genero": user['-NEW-']} ]}
+                           "genero": user['-NEW-']} }
                            datos.append(newuser)
                            json.dump(datos, u)
     
@@ -108,14 +108,14 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save('nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
     
     
                         else:
-                           newuser = {user['-NICK-']: [{
+                           newuser = {user['-NICK-']: {
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
-                           "genero": user['-GEN-']} ]}
+                           "genero": user['-GEN-']} }
                            datos.append(newuser)
                            json.dump(datos, u)
                            os.makedirs('prof_pictures', exist_ok = True)
@@ -130,9 +130,9 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save('nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
                         break
-        if event == '-CANCEL-':
+        if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
             break
             
     window.close()
