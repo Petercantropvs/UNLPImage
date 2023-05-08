@@ -58,7 +58,7 @@ def layout(): #img 1 attributes list
 
 def ventana_nuevoperfil():
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
-    
+     
     i=0
     while True:
         event, user = window.read()
