@@ -1,8 +1,7 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-import sys
-import os
+import os, sys
 
 treedata = sg.TreeData()
 
@@ -60,7 +59,7 @@ def ventana_etiquetas():
         window['-OUTPUT-'].update(values['-NEWTAG-'])
         window['-FRAME-'].update(ruta_imagen_sel)
         if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
-            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300), subsample = 2)
+            window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
 
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
