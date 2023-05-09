@@ -1,7 +1,7 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-import os, sys
+import os #, csv, sys
 
 treedata = sg.TreeData()
 
@@ -22,14 +22,16 @@ def arbol(parent, directorio):
 def layout(photo_path):
     arbol('',photo_path)
     frame_layout = [[sg.Image(size = (400,300), key = '-VISUALIZADOR-')],
-                    [sg.Text('Tags:'), sg.Text('Tags', background_color=sg.theme_button_color()[1], key = '-OUTPUT-')]]
+                    [sg.Text('Tags:'), sg.Text('Tags', background_color=sg.theme_button_color()[1], key = '-OUTPUT-')],
+                    [sg.Text('Descripción:')],
+                    [sg.Text('', expand_y=True, background_color=sg.theme_button_color()[1], key = '-DESCRIPOUT-')]]
 
     layout_l = sg.Column([[sg.Tree(data = treedata, headings = ['Tags',], auto_size_columns=True,
                     expand_x = True, expand_y = True, enable_events = True, key = '-TREE-')],
                         [sg.Text('Tag')],
-                        [sg.Input(size=(50,1), key = '-NEWTAG-'),sg.Button('Agregar')],
+                        [sg.Input(size=(50,1), key = '-NEWTAG-'),sg.Button('Agregar', key='-B1-')],
                         [sg.Text('Texto descriptivo')],
-                        [sg.Input(size=(50,1), key = '-ALGO-'),sg.Button('Agregar')]],
+                        [sg.Multiline(size=(50,1), key = '-DESCRIP-'),sg.Button('Agregar', key = '-B2-')]],
                         expand_y = True, justification = 'left', pad = ((0,20),(0,0)))
 
     layout_r = sg.Column([[sg.Frame('Seleccione una imagen para visualizar',
@@ -47,17 +49,24 @@ def layout(photo_path):
               [sg.Push(), sg.Button('Guardar')]]
     return layout
 
-def ventana_etiquetas():
-    photo_path = sg.PopupGetFolder('Seleccione la carpeta de imágenes')
+def ventana_etiquetas(photo_path=None):
+    if not photo_path:
+        photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
 
     window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
     while True:
         event, values = window.read()
         
         ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
-        
-        window['-OUTPUT-'].update(values['-NEWTAG-'])
+
+        if event == '-B1-':
+            window['-OUTPUT-'].update(values['-NEWTAG-'])
+            window['-NEWTAG-'].update('')
+        elif event == '-B2-':
+            window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
+            window['-DESCRIP-'].update('')
         window['-FRAME-'].update(ruta_imagen_sel)
+
         if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
             window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
 
