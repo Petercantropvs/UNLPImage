@@ -1,8 +1,9 @@
 from configuracion import configuracion
 ## from creador_de_collage import collage, collage_con4fotos
-from creador_de_memes import memes
+#from creador_de_memes import memes
 from generar_etiquetas import generar_etiquetas
-## from nuevo_perfil import nuevoperfil
+from nuevo_perfil import nuevoperfil
+import seleccion_perfil
 import PySimpleGUI as sg
 
 print('Hola Peco!')
@@ -32,7 +33,7 @@ while True:
     print(event, values)
 
     if event == '-NPERF-':
-        ventana_error()
+        nuevoperfil.ventana_nuevoperfil().read()
     elif event == '-CONFIG-':
         configuracion.ventana_configuracion()
     elif event == '-COLLAGE-':
