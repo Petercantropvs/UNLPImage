@@ -1,8 +1,7 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-import sys
-import os
+import os, sys
 
 treedata = sg.TreeData()
 
@@ -39,7 +38,8 @@ def layout(photo_path):
                                     size=(300,400),
                                     expand_x = True,
                                     expand_y = True,
-                                    key = '-FRAME-')]],
+                                    key = '-FRAME-')]], 
+                                    background_color=None,
                                     expand_x= True, expand_y= True)   
                        
     layout = [[sg.Text('Seleccione la imagen que desee etiquetar:'), sg.Push(), sg.Button('Volver', key = '-VOLVER-')],
