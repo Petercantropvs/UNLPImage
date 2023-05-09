@@ -5,6 +5,13 @@ from PIL import Image, ImageTk
 import json
 
 
+try:
+    archivo = open('users.json', 'r')
+    datos = json.load(archivo)
+except json.decoder.JSONDecodeError:
+    datos = {}
+print(datos)
+archivo.close()
 def get_img_data(f, first=False):
     """Generate image data using PIL
     """
@@ -16,12 +23,6 @@ def get_img_data(f, first=False):
         del img
         return bio.getvalue()
     return ImageTk.PhotoImage(img)
-try:
-    archivo = open('users.json', 'r')
-    datos = json.load(archivo)
-except json.decoder.JSONDecodeError:
-    datos = []
-print(datos)
 
 
 #datos = json.load(u)
@@ -57,11 +58,15 @@ def layout(): #img 1 attributes list
     return layout
 
 def ventana_nuevoperfil():
+    ruta_foto = 'perfil_vacio.png'
+    
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
      
     i=0
     while True:
         event, user = window.read()
+        
+        usuarios = datos
         i= i+1
         print(i)
         print(event)
@@ -71,7 +76,7 @@ def ventana_nuevoperfil():
                 window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
             except AttributeError:
                 ruta_foto = 'perfil_vacio.png'
-    
+                
         if event == '-OTRO-' :
             window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
         if event == '-OK-':
@@ -81,7 +86,10 @@ def ventana_nuevoperfil():
             #for i in range(len(datos)):
             #    if datos[i][0] == user['-NICK-']:
             #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
+            if str(user['-NICK-']).lower() in str(usuarios).lower():
+                sg.popup_ok('El nick alias ya está utilizado', title='Error!')   
             else:
+
                 try:
                     age=int(user['-AGE-'])
                 except ValueError:
@@ -89,13 +97,13 @@ def ventana_nuevoperfil():
                 else:
                     with open('users.json', 'w') as u:
                         if user['-OTRO-']:
-                           newuser = {user['-NICK-']: {
+                           usuarios[user['-NICK-']] = {
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
-                           "genero": user['-NEW-']} }
-                           datos.append(newuser)
-                           json.dump(datos, u)
-    
+                           "genero": user['-NEW-']} 
+                           #datos= usuarios
+                           #json.dump(datos, u)
+                           json.dump(usuarios, u)
                            os.makedirs('prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
@@ -112,12 +120,13 @@ def ventana_nuevoperfil():
     
     
                         else:
-                           newuser = {user['-NICK-']: {
+                           usuarios[user['-NICK-']] = {
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
-                           "genero": user['-GEN-']} }
-                           datos.append(newuser)
-                           json.dump(datos, u)
+                           "genero": user['-GEN-']} 
+                           #datos.append(usuarios)
+                           #json.dump(datos, u)
+                           json.dump(usuarios, u)
                            os.makedirs('prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
