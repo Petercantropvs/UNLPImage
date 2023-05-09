@@ -4,6 +4,7 @@ from creador_de_memes import memes
 from generar_etiquetas import generar_etiquetas
 ## from nuevo_perfil import nuevoperfil
 import PySimpleGUI as sg
+import json
 
 print('Hola Peco!')
 
@@ -24,6 +25,12 @@ def ventana_error():
                        image = err, icon = err, 
                        keep_on_top = True)
 
+with open("archivo_config.json") as config:
+    datos = json.load(config)    
+    ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
+    ruta_collages = datos[1]["ruta"]
+    ruta_memes = datos[2]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de memes para guardar los memes ya hechos
+
 window = sg.Window('UNLPimage', layout())
 
 while True:
@@ -42,7 +49,8 @@ while True:
     elif event == '-MEME-':
         memes.ventana_meme()
     elif event == '-TAGS-':
-        generar_etiquetas.ventana_etiquetas()
+        generar_etiquetas.ventana_etiquetas(ruta_repositorio)
+        # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         break
             
