@@ -75,7 +75,7 @@ while True:
     elif event == '-HELP-':
        ayuda.ventana_ayuda() 
     elif event == '-MEME-':
-        memes.ventana_meme()
+        ventana_error()
     elif event == '-TAGS-':
         generar_etiquetas.ventana_etiquetas(ruta_repositorio)
         # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
