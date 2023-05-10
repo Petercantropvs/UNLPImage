@@ -11,7 +11,7 @@ datos = json.load(archivo)
 
 ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
 ruta_memes = datos[1]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de collage para guardar los collage ya hechos
-
+archivo.close()
 #Además deberá haber una carpeta con los templtes posibles a elegir --> todavía no está en el trabajo, solo emerge la ventana
 
 layout = [[sg.Text('Selecciona las imágenes que quieres agregar al collage',font = ('latin modern sansquotation', 10))],

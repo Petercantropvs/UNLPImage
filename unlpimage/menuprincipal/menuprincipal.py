@@ -1,8 +1,8 @@
 import PySimpleGUI as sg
 import configuracion
-import memes
-import collage
-import ayuda
+# import memes
+# import collage
+# import ayuda
 import json
 import generar_etiquetas
 import os
@@ -48,17 +48,18 @@ def ventana_menuprincipal():
             break
 
         if event_principal == '-CONFIGURACION-':
+            sg.Window.Hide(window_menuprincipal)
             configuracion.ventana_configuracion()
-
+            sg.Window.UnHide(window_menuprincipal)
         if event_principal == '-AYUDA-':
-            ayuda.ventana_ayuda()
+            # ayuda.ventana_ayuda()
             #ayuda.ventana_ayuda(window_size, window_margins, text_format)
 
         if event_principal == '-ETIQUETAR_IM-':
             generar_etiquetas.ventana_etiquetas()
        
         if event_principal == '-CREAR_MEME-':
-            memes.ventana_meme()
+            # memes.ventana_meme()
 
 #       if event_principal == '-CREAR_COLc-':
 #            memes.ventana_()
