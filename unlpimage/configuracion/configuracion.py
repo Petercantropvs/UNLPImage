@@ -21,10 +21,10 @@ def layout_configuracion():
 #Los directorios es elegir la carpeta a donde queremos los guarde.
 
 def ventana_configuracion():
+    accion = "Entró a ventana de configuracion"
     window = sg.Window('Configuración',layout_configuracion())
 
-    while True:
-         
+    while True: 
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == '-CERRAR-':
             window.close()
@@ -42,7 +42,7 @@ def ventana_configuracion():
             archivo.close()   
             window.close()
             break
-    
+    return accion
 
 
 #configuracion ruta_carpeta.json  #Creo el archivo json con esos datos

@@ -33,10 +33,9 @@ def get_img_data(f, first=False):
 def layout(): #img 1 attributes list
     image_elem1 = sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/perfil_vacio.png', first=True))
     col_1 =[
-            [sg.Text('Nuevo Perfil', font = ('latin modern sansquotation', 25))],
+            [sg.Text('Editar Perfil', font = ('latin modern sansquotation', 25))],
             [sg.Text('Nick o alias', font = ('latin modern sansquotation', 15))],
-            [sg.Text('(Elija con cuidado, no podrá ser cambiado posteriormente)', font = ('latin modern sansquotation', 8))],
-            [sg.Input('', key = '-NICK-', font = ('latin modern sansquotation', 15), size = (10,10), )],
+            [sg.Input(, key = '-NICK-', font = ('latin modern sansquotation', 15), size = (10,10), disabled = True )],
             [sg.Text('Nombre', font = ('latin modern sansquotation', 15))],
             [sg.Input('', key = '-NAME-' ,font = ('latin modern sansquotation', 15), size = (10,10) )],
             [sg.Text('Edad', font = ('latin modern sansquotation', 15))],
@@ -88,8 +87,7 @@ def ventana_nuevoperfil():
             #    if datos[i][0] == user['-NICK-']:
             #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
             if str(user['-NICK-']).lower() in str(usuarios).lower():
-                if user['-NICK-'] != '':
-                    sg.popup_ok('El nick o alias ya está utilizado', title='Error!')   
+                sg.popup_ok('El nick alias ya está utilizado', title='Error!')   
             else:
 
                 try:

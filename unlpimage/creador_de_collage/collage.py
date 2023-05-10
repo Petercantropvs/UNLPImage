@@ -29,12 +29,8 @@ def layout_collage():
     return layout
 
 def ventana_collage():
+    accion = "Entró a generar un collage"
     window = sg.Window('Crea tu collage', layout_collage())
-#event, values = window.read()
-#window.close()
-# file_types=(('Imágenes', '*.png;*.jpg'),))],
-#key= 'algop', mulpliple_files = True
-#(file_types=(("xlsx Files", "*.xlsx")
 
     while True:
         event, values = window.read()
@@ -46,8 +42,8 @@ def ventana_collage():
 
         if event == sg.WINDOW_CLOSED or event == 'Cancelar' or event == 'Generar':
             break
-     
     window.close()
+    return accion
 
 
     #if event == 'Generar':

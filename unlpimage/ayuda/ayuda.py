@@ -17,13 +17,15 @@ def layout_ayuda():
 #Los directorios es elegir la carpeta a donde queremos los guarde.
 
 def ventana_ayuda():
+    accion = "Entró a ventana de ayuda"
     window = sg.Window('Ayuda',layout_ayuda())
     while True:
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
             break
-    
     window.close()
+    return accion
+    
  
 if __name__ == "__main__":
        ventana_ayuda()
