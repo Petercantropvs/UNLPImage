@@ -6,7 +6,7 @@ import json
 
 
 try:
-    archivo = open('users.json', 'r')
+    archivo = open('users.json', 'x')
     datos = json.load(archivo)
 except json.decoder.JSONDecodeError:
     datos = {}

@@ -1,10 +1,12 @@
-import nuevoperfil
+#import nuevoperfil
 import io
 import os
 import json
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
-
+import sys
+sys.path.append(os.getcwd()+'/nuevo_perfil/')
+import nuevoperfil
 def get_img_data(f, first=False):
     """Generate image data using PIL
     """
@@ -18,7 +20,7 @@ def get_img_data(f, first=False):
     return ImageTk.PhotoImage(img)
 
 try:
-    archivo = open('users.json', 'r')
+    archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
     datos = json.load(archivo)
 except json.decoder.JSONDecodeError:
     datos = {}
@@ -38,12 +40,12 @@ def layout_inicio():
 	imagenes = []
 	if len(datos) <= 2:
 		for k in range(len(datos)):
-			imagenes.append(sg.Image(data=get_img_data('prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
 	else:	
 		for k in range(3):
-			imagenes.append(sg.Image(data=get_img_data('prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
 			print(k)
-	imagenes.append(sg.Image(data=get_img_data('mas.png', first=True), enable_events=True, key = '-CREAR-'))
+	imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/seleccion_perfil/mas.png', first=True), enable_events=True, key = '-CREAR-'))
 	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
 	[imagenes],
 	[sg.Text('Ver más >', font = ('latin modern sansquotation', 20), enable_events = True, key = '-MAS-')]
@@ -72,7 +74,7 @@ def ventana_eleccionperfil():
 		i = 3
 	while True:
 		event, a = window.read()
-		print(event)
+		#print(event)
 		#print(j)
 		if j > 2 and len(perfiles)>3:
 			j=0
@@ -84,7 +86,7 @@ def ventana_eleccionperfil():
 		if event == '-CREAR-':
 			try:
 				window.Hide()
-				nuevoperfil.ventana_nuevoperfil()
+				perfil =nuevoperfil.ventana_nuevoperfil() 
 				window.UnHide()
 				window.close()
 				break
@@ -95,7 +97,7 @@ def ventana_eleccionperfil():
 			#finally:
 			#	window.UnHide()
 		if event == '-MAS-':
-			window[j].update(data=get_img_data('prof_pictures/'+perfiles[i]+'.png', first = True))
+			window[j].update(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[i]+'.png', first = True))
 			cuadro[j] = perfiles[i]
 			i = i+1
 			j = j+1
@@ -103,12 +105,18 @@ def ventana_eleccionperfil():
 			window.close()
 			break
 		if event == 0:
-			print(cuadro[0])
+			perfil = cuadro[0]
+			window.close()
+			break
 		if event == 1:
-			print(cuadro[1])
+			perfil = cuadro[1]
+			window.close()
+			break
 		if event == 2:
-			print(cuadro[2])
-
+			perfil = cuadro[2]
+			window.close()
+			break
+	return perfil
 
 if __name__ == '__main__':
     ventana_eleccionperfil()
