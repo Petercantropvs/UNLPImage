@@ -1,14 +1,25 @@
 import PySimpleGUI as sg
+import sys
+sys.path.insert(1, '../configuracion')  # Ruta relativa de la carpeta que contiene el módulo
+#sys.path.insert(1, '/home/peco/Escritorio/trabajo final/unlpimage/configuracion')  # Ruta relativa de la carpeta que contiene el módulo
+
 import configuracion
-# import memes
-# import collage
-# import ayuda
+#sys.path.insert(1, '/home/peco/Escritorio/trabajo final/unlpimage/creador_de_memes')  # Ruta relativa de la carpeta que contiene el módulo
+#import memes
+#sys.path.insert(1, '/home/peco/Escritorio/trabajo final/unlpimage/creador_de_collage')  # Ruta relativa de la carpeta que contiene el módulo
+#import collage
+#sys.path.insert(1, '/home/peco/Escritorio/trabajo final/unlpimage/ayuda')  # Ruta relativa de la carpeta que contiene el módulo
+#import ayuda
+#sys.path.insert(1, '/home/peco/Escritorio/trabajo final/unlpimage/generar_etiquetas')  # Ruta relativa de la carpeta que contiene el módulo
+#import generar_etiquetas
+
 import json
-import generar_etiquetas
 import os
 
 #Defino los colores de las ventanas
 sg.theme('light green 3')
+
+
 
 #Defino las fuentes de lsa ventandas
 text_format1 = {'font' : ('latin modern sansquotation', 15)}
@@ -51,14 +62,15 @@ def ventana_menuprincipal():
             sg.Window.Hide(window_menuprincipal)
             configuracion.ventana_configuracion()
             sg.Window.UnHide(window_menuprincipal)
-        if event_principal == '-AYUDA-':
+
+        #if event_principal == '-AYUDA-':
             # ayuda.ventana_ayuda()
             #ayuda.ventana_ayuda(window_size, window_margins, text_format)
 
-        if event_principal == '-ETIQUETAR_IM-':
-            generar_etiquetas.ventana_etiquetas()
+        #if event_principal == '-ETIQUETAR_IM-':
+            #generar_etiquetas.ventana_etiquetas()
        
-        if event_principal == '-CREAR_MEME-':
+        #if event_principal == '-CREAR_MEME-':
             # memes.ventana_meme()
 
 #       if event_principal == '-CREAR_COLc-':

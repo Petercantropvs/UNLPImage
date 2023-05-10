@@ -29,7 +29,7 @@ def ventana_error():
 with open("archivo_config.json") as config:
     datos = json.load(config)    
     ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
-    ruta_collages = datos[1]["ruta"]
+    ruta_collages = datos[1]["ruta"]       #--> Ruta de lo q haya guardado como  direcotrio de collage para guardar los collage ya hechos
     ruta_memes = datos[2]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de memes para guardar los memes ya hechos
 
 window = sg.Window('UNLPimage', layout())
