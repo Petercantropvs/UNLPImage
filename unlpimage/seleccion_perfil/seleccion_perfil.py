@@ -22,11 +22,12 @@ def get_img_data(f, first=False):
 try:
     archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
     datos = json.load(archivo)
-except json.decoder.JSONDecodeError:
+    archivo.close()
+except FileNotFoundError:
     datos = {}
 
-archivo.close()
 
+#nombres = []
 perfiles = []
 
 #for k in range(len(datos)):
@@ -41,18 +42,20 @@ def layout_inicio():
 	if len(datos) <= 2:
 		for k in range(len(datos)):
 			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+			#nombres.append([sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0))])
 	else:	
 		for k in range(3):
 			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
-			print(k)
+			#nombres.append(sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0)))
 	imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/seleccion_perfil/mas.png', first=True), enable_events=True, key = '-CREAR-'))
 	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
 	[imagenes],
+	#[nombres],
 	[sg.Text('Ver más >', font = ('latin modern sansquotation', 20), enable_events = True, key = '-MAS-')]
 	]
 	return layout_inicio
 
-def ventana_eleccionperfil():
+def ventana_seleccionperfil():
 	window = sg.Window('UNLPImage', layout_inicio())
 	cuadro = []
 
@@ -74,11 +77,11 @@ def ventana_eleccionperfil():
 		i = 3
 	while True:
 		event, a = window.read()
-		#print(event)
-		#print(j)
+		print(event)
+		print(j)
 		if j > 2 and len(perfiles)>3:
 			j=0
-		if j >= 2 and len(perfiles)<3:
+		if j >= 2 and len(perfiles)<=3:
 			j=0
 		if i >= len(perfiles):
 			i=0
@@ -86,37 +89,54 @@ def ventana_eleccionperfil():
 		if event == '-CREAR-':
 			try:
 				window.Hide()
-				perfil =nuevoperfil.ventana_nuevoperfil() 
+
+				perfil = nuevoperfil.ventana_nuevoperfil() 
+				event_seleccion = event
+				
 				window.UnHide()
 				window.close()
 				break
 			except AttributeError:
-				print(event1)
+				print('Hola')
+				perfil = None
+				event_seleccion = event
+	
 				window.UnHide()
 				continue
-			#finally:
-			#	window.UnHide()
+			finally:
+				return perfil, event_seleccion
 		if event == '-MAS-':
-			window[j].update(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[i]+'.png', first = True))
-			cuadro[j] = perfiles[i]
-			i = i+1
-			j = j+1
-		if event == sg.WIN_CLOSED:
-			window.close()
+			if len(perfiles)>3:
+				window[j].update(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[i]+'.png', first = True))
+				cuadro[j] = perfiles[i]
+				i = i+1
+				j = j+1
+			else:
+				sg.popup_ok('No hay más perfiles para mostrar', title='UNLPImage')  
+		if event == sg.WIN_CLOSED :
+			perfil = None
+			event_seleccion = event
+			return perfil, event_seleccion
 			break
 		if event == 0:
 			perfil = cuadro[0]
+			event_seleccion = event
+			return perfil, event_seleccion
 			window.close()
 			break
 		if event == 1:
 			perfil = cuadro[1]
+			event_seleccion = event
+			return perfil, event_seleccion
 			window.close()
 			break
 		if event == 2:
 			perfil = cuadro[2]
+			event_seleccion = event
+			return perfil, event_seleccion
 			window.close()
 			break
-	return perfil
+	window.close()
 
 if __name__ == '__main__':
     ventana_eleccionperfil()
