@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import sys
 from src.windows import nuevoperfil
 from src.default.pathing import BASE_PATH
+from src.default.data import lectura
 
 def get_img_data(f, first=False):
     """Generate image data using PIL
@@ -19,14 +20,14 @@ def get_img_data(f, first=False):
         return bio.getvalue()
     return ImageTk.PhotoImage(img)
 
-try:
-    archivo = open(BASE_PATH+'/src/users-data/users.json', 'r')
-    datos = json.load(archivo)
-    archivo.close()
-except FileNotFoundError:
-    datos = {}
+#try:
+#    archivo = open(BASE_PATH+'/src/users-data/users.json', 'r')
+#    datos = json.load(archivo)
+#    archivo.close()
+#except FileNotFoundError:
+#    datos = {}
 
-
+datos = lectura()
 #nombres = []
 perfiles = []
 
@@ -40,8 +41,8 @@ def layout_inicio():
 
 	imagenes = []
 	if len(datos) <= 2:
-		for k in range(len(datos)):
-			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+		for i, imagen in enumerate(perfiles):
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+imagen+'.png', first=True), enable_events=True, k= i))#, key=perfiles[k]))
 			#nombres.append([sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0))])
 	else:	
 		for k in range(3):
@@ -50,7 +51,6 @@ def layout_inicio():
 	imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/default/mas.png', first=True), enable_events=True, key = '-CREAR-'))
 	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
 	[imagenes],
-	#[nombres],
 	[sg.Text('Ver más >', font = ('latin modern sansquotation', 20), enable_events = True, key = '-MAS-')]
 	]
 	return layout_inicio
