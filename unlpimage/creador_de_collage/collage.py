@@ -29,7 +29,7 @@ def layout_collage():
     return layout
 
 def ventana_collage():
-    accion = "Entró a generar un collage"
+    accion1 = "Entró a generar un collage."
     window = sg.Window('Crea tu collage', layout_collage())
 
     while True:
@@ -38,11 +38,13 @@ def ventana_collage():
             files = values['-SELECCIONAR-IMAGEN-'].split(';')
 
         if event == '-FINSELECCION-':
+            accion2 = "Hizo una selección de imagenes para un collage"
             window['-OUTPUT-'].update('Las imagenes seleccionadas son '  + values['-SELECCIONAR-IMAGEN-'])
 
         if event == sg.WINDOW_CLOSED or event == 'Cancelar' or event == 'Generar':
             break
     window.close()
+    accion = accion1 + " " + accion2
     return accion
 
 
