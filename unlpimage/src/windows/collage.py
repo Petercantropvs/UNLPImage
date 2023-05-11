@@ -34,7 +34,6 @@ def ventana_collage():
     y los templates en la carpeta de default (proximamente....). 
     Los collages creados por los usuarios se guardarán en Directorio de collages.
     """
-    accion1 = "Entró a generar un collage."
     window = sg.Window('Crea tu collage', layout_collage())
 
     while True:
@@ -43,13 +42,16 @@ def ventana_collage():
             files = values['-SELECCIONAR-IMAGEN-'].split(';')
 
         if event == '-FINSELECCION-':
-            accion2 = "Hizo una selección de imagenes para un collage"
             window['-OUTPUT-'].update('Las imagenes seleccionadas son '  + values['-SELECCIONAR-IMAGEN-'])
 
-        if event == sg.WINDOW_CLOSED or event == 'Cancelar' or event == 'Generar':
+        if event == 'Generar':
+            accion = "Creó un collage. "
+            break
+
+        if event == sg.WINDOW_CLOSED or event == 'Cancelar':
+            accion = "Entró a generar un collage, pero no lo generó. "
             break
     window.close()
-    accion = accion1 + " " + accion2
     return accion
 
 

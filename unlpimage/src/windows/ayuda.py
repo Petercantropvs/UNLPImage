@@ -4,10 +4,7 @@ text_format1 = {'font' : ('latin modern sansquotation', 15)}
 text_format2 = {'font' : ('latin modern sansquotation', 10)}
 
 def layout_ayuda():
-    layout =[[sg.Text('Esta aplicación permite que crees tus propios memes y collages a partir de iamgenes guardadas en tu PC',**text_format2)],
-            [sg.Text('y luego etiquetarlas para encontrarlas con mayor facilidad.',**text_format2)],
-            [sg.Text('',**text_format2)],
-            [sg.Submit('Sobre la aplicación', key = '-APP-', **text_format2)],
+    layout =[[sg.Submit('Sobre la aplicación', key = '-APP-', **text_format2)],
             [sg.Submit('Sobre perfiles', key = '-PERFIL-', **text_format2)],
             [sg.Submit('Sobre configuración', key = '-CONF-', **text_format2)],
             [sg.Submit('Sobre creación de collage/memes', key = '-CREAR-', **text_format2)],
@@ -23,8 +20,6 @@ def layout_app():
             [sg.Text('y luego etiquetarlas para encontrarlas con mayor facilidad.',**text_format2)],
             [sg.Button("Volver", key='-VOLVER-', **text_format2)]]                    
     return layout
-
-  ###   NOTAR QUE ACÀ DICE LO MISMO QUE AFUERA. SUPONGO Q ABRIA Q PONER ALGO DE COMO CORRER LA APLICACION EN REAIDAD.  
 
 ####################################################################
 def layout_perfil():
@@ -105,52 +100,50 @@ def ventana_ayuda():
             accion = "Entró a ventana de Ayuda --> Ayuda sobre la app"
             window_app = sg.Window('Ayuda: Sobre la aplicación',layout_app())
             while True:
-                event, values = window_app.read()
-                if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
+                event1, values1 = window_app.read()
+                if event1 == sg.WINDOW_CLOSED or event1 == '-VOLVER-':
                     break
-                window_app.close()
+            window_app.close()
 
         if event == '-PERFIL-':
             accion = "Entró a ventana de Ayuda --> Ayuda sobre perfiles"
             window_perfil = sg.Window('Ayuda: Sobre perfiles',layout_perfil())
             while True:
-                event, values = window_perfil.read()
-                if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
+                event2, values2 = window_perfil.read()
+                if event2 == sg.WINDOW_CLOSED or event2 == '-VOLVER-':
                     break
-                window_perfil.close()
+            window_perfil.close()
 
         if event == '-CONF-':
             accion = "Entró a ventana de Ayuda --> Ayuda sobre configuración"
             window_conf = sg.Window('Ayuda: Sobre configuración',layout_conf())
             while True:
-                event, values = window_conf.read()
-                if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
+                event3, values3 = window_conf.read()
+                if event3 == sg.WINDOW_CLOSED or event3 == '-VOLVER-':
                     break
-                window_conf.close()     
+            window_conf.close()     
 
         if event == '-CREAR-':
             accion = "Entró a ventana de Ayuda --> Ayuda sobre creación de memes y collage"
             window_crear = sg.Window('Ayuda: Sobre creación de memes/collages',layout_crear())
             while True:
-                event, values = window_crear.read()
-                if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
+                event4, values = window_crear.read()
+                if event4 == sg.WINDOW_CLOSED or event4 == '-VOLVER-':
                     break
-                window_crear.close()    
+            window_crear.close()    
 
 
         if event == '-TAG-':
             accion = "Entró a ventana de Ayuda --> Ayuda sobre etiquetado de imágenes"
             window_tag = sg.Window('Ayuda: Sobrobre etiquetado de imágenes',layout_tag())
             while True:
-                event, values = window_tag.read()
-                if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
+                event5, values5 = window_tag.read()
+                if event5 == sg.WINDOW_CLOSED or event5 == '-VOLVER-':
                     break
-                window_tag.close()    
+            window_tag.close()    
 
         if event == sg.WINDOW_CLOSED or event == '-VOLVER-':
             break
-
-
     window.close()
     return accion
     
