@@ -69,7 +69,6 @@ def ventana_editarperfil(perfil):
         event, user = window.read()
         
         usuarios = datos
-
         i= i+1
         print(i)
         print(event)

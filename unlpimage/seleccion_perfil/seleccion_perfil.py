@@ -77,8 +77,8 @@ def ventana_seleccionperfil():
 		i = 3
 	while True:
 		event, a = window.read()
-		print(event)
-		print(j)
+		#print(event)
+		#print(j)
 		if j > 2 and len(perfiles)>3:
 			j=0
 		if j >= 2 and len(perfiles)<=3:
