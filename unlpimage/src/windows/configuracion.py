@@ -42,7 +42,7 @@ def ventana_configuracion():
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collage}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
-            archivo = open(os.getcwd()+"/configuracion/archivo_config.json", "w")
+            archivo = open(BASE_PATH+"/src/users-data/archivo_config.json", "w")
             json.dump(config_datos, archivo)
             archivo.close()   
             window.close()
