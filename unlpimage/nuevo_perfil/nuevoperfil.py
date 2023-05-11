@@ -12,7 +12,7 @@ try:
 except FileNotFoundError:
     datos = {}
 print(os.getcwd())
-archivo.close()
+
 def get_img_data(f, first=False):
     """Generate image data using PIL
     """
