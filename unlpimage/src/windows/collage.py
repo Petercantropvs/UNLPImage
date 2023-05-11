@@ -6,6 +6,7 @@ from src.default.pathing import BASE_PATH
 
 
 #Necesito ir al repositorio de imágenes, que está en el archivo json de configuración
+
 archivo = open(BASE_PATH+"/src/users-data/archivo_config.json",'r')
 datos = json.load(archivo)
 

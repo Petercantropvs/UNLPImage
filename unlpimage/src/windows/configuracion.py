@@ -1,8 +1,10 @@
 import PySimpleGUI as sg
 import os  #Lo uso para crear directorios
 import json
+from src.default.pathing import BASE_PATH
 
-with open(os.getcwd()+"/configuracion/archivo_config.json", 'r') as config:
+
+with open(BASE_PATH+"/src/users-data/archivo_config.json", 'r') as config:
     datos = json.load(config)    
     ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
     ruta_collages = datos[1]["ruta"]
