@@ -1,4 +1,4 @@
-from src.windows import collage, configuracion, memes, editarperfil, nuevoperfil, ayuda, seleccion_perfil#, generar_etiquetas
+from src.windows import collage, configuracion, memes, editarperfil, nuevoperfil, ayuda, seleccion_perfil, generar_etiquetas
 from src.default.pathing import BASE_PATH
 import PySimpleGUI as sg
 import json
@@ -81,7 +81,8 @@ while True:
     elif event == '-MEME-':
         accion = memes.ventana_meme()
     elif event == '-TAGS-':
-         accion = memes.ventana_meme()
+         accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
+         generar_etiquetas.ventana_etiquetas(ruta_repositorio)
        # accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
         # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
     if event == sg.WIN_CLOSED or event == '-EXIT-':
