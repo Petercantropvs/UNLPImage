@@ -8,7 +8,8 @@ import json
 try:
     archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
     datos = json.load(archivo)
-except json.decoder.JSONDecodeError:
+    archivo.close()
+except FileNotFoundError:
     datos = {}
 print(os.getcwd())
 archivo.close()
@@ -119,6 +120,10 @@ def ventana_nuevoperfil():
      
                            # save the image
                            Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           perfil = user['-NICK-']
+                           window.close()
+                           return perfil
+                           
     
     
                         else:
@@ -142,8 +147,12 @@ def ventana_nuevoperfil():
      
                            # save the image
                            Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           perfil = user['-NICK-']
+                           window.close()
+                           return perfil
+                           
                         break
-                return user['-NICK-']
+                        
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
             break
             

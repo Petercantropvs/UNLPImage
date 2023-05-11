@@ -89,11 +89,12 @@ while True:
     elif event == '-HELP-':
         accion = ayuda.ventana_ayuda() 
     elif event == '-MEME-':
-        memes.ventana_meme()
+        ventana_error()
     elif event == '-TAGS-':
         generar_etiquetas.ventana_etiquetas(ruta_repositorio)
         # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
     if event == sg.WIN_CLOSED or event == '-EXIT-':
+        print(event)
         break
 
 def registrar_actividad(usuario, accion):
