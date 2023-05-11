@@ -2,7 +2,6 @@ import PySimpleGUI as sg
 import os  #Lo uso para crear directorios
 import json
 
-
 with open(os.getcwd()+"/configuracion/archivo_config.json", 'r') as config:
     datos = json.load(config)    
     ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
@@ -17,10 +16,14 @@ def layout_configuracion():
              [sg.Submit("Guardar", key='-GUARDAR-', font = ('latin modern sansquotation', 10)), sg.Submit('Cerrar', key='-CERRAR-', font=('latin modern sansquotation', 10))]]                    
     return layout
 
-#El repositorio de imágenes será la carpeta de donde elegiremos las imagenes para hacer los memes y collages.
-#Los directorios es elegir la carpeta a donde queremos los guarde.
 
 def ventana_configuracion():
+    """
+    Esta función permite el acceso a la configuración del almacenamiento y manejo de carpetas.
+    Los botones permiten elegir cuál será la carpeta de inicio de donde buscar las imágenes (Resositorio de Imágenes),
+    y las carpetas donde guardar los memes/collage generados por los usuarios (Directorio de memes/collage).
+    Originalmente, no hay ninguna carpeta guardada por default, pùdiendo de estar forma elegir cualquiera en su computadora.
+    """
     accion = "Entró a ventana de configuracion y no realizó cambios"
     window = sg.Window('Configuración',layout_configuracion())
 
@@ -37,9 +40,6 @@ def ventana_configuracion():
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collage}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
-           # print(f"{elemento} comienza con {ka}")
-
-            #print (config_datos)
             archivo = open(os.getcwd()+"/configuracion/archivo_config.json", "w")
             json.dump(config_datos, archivo)
             archivo.close()   
@@ -47,8 +47,6 @@ def ventana_configuracion():
             break
     return accion
 
-
-#configuracion ruta_carpeta.json  #Creo el archivo json con esos datos
 
 if __name__ == "__main__":
        ventana_configuracion()

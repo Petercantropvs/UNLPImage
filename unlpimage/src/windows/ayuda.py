@@ -91,8 +91,14 @@ def layout_crear():
 
 ####################################################################
 def ventana_ayuda():
-    #accion = "Entró a ventana de ayuda"
-    window = sg.Window('Ayuda',layout_ayuda())
+    """ 
+    Esta función abre una ventana de Ayuda para el usuario en la ejecución de la aplicación.
+    Según el botón que apriete, recibirá mayor información respecto a un tema específico: 
+    como ser Sobre la aplicación, Perfiles, Configuración, Generación de memes/collage y 
+    etiquetado de imágenes.
+    """
+   
+   window = sg.Window('Ayuda',layout_ayuda())
     while True:
         event, values = window.read()
         if event == '-APP-':
