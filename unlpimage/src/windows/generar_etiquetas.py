@@ -1,12 +1,16 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-import os #, csv, sys
+import os, csv, sys
+#from src.default.pathing import BASE_PATH
 
 treedata = sg.TreeData()
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio):
+    '''Esta función construye el objeto treedata que contiene la estructura del tree del directorio seleccionado en configuración
+    como repositorio de imágenes para que el Tree Element de PySimpleGUI pueda leerlo e interpretarlo.'''
+
     folder_icon = b'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAABnUlEQVQ4y8WSv2rUQRSFv7vZgJFFsQg2EkWb4AvEJ8hqKVilSmFn3iNvIAp21oIW9haihBRKiqwElMVsIJjNrprsOr/5dyzml3UhEQIWHhjmcpn7zblw4B9lJ8Xag9mlmQb3AJzX3tOX8Tngzg349q7t5xcfzpKGhOFHnjx+9qLTzW8wsmFTL2Gzk7Y2O/k9kCbtwUZbV+Zvo8Md3PALrjoiqsKSR9ljpAJpwOsNtlfXfRvoNU8Arr/NsVo0ry5z4dZN5hoGqEzYDChBOoKwS/vSq0XW3y5NAI/uN1cvLqzQur4MCpBGEEd1PQDfQ74HYR+LfeQOAOYAmgAmbly+dgfid5CHPIKqC74L8RDyGPIYy7+QQjFWa7ICsQ8SpB/IfcJSDVMAJUwJkYDMNOEPIBxA/gnuMyYPijXAI3lMse7FGnIKsIuqrxgRSeXOoYZUCI8pIKW/OHA7kD2YYcpAKgM5ABXk4qSsdJaDOMCsgTIYAlL5TQFTyUIZDmev0N/bnwqnylEBQS45UKnHx/lUlFvA3fo+jwR8ALb47/oNma38cuqiJ9AAAAAASUVORK5CYII='
     file_icon = b'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAABU0lEQVQ4y52TzStEURiHn/ecc6XG54JSdlMkNhYWsiILS0lsJaUsLW2Mv8CfIDtr2VtbY4GUEvmIZnKbZsY977Uwt2HcyW1+dTZvt6fn9557BGB+aaNQKBR2ifkbgWR+cX13ubO1svz++niVTA1ArDHDg91UahHFsMxbKWycYsjze4muTsP64vT43v7hSf/A0FgdjQPQWAmco68nB+T+SFSqNUQgcIbN1bn8Z3RwvL22MAvcu8TACFgrpMVZ4aUYcn77BMDkxGgemAGOHIBXxRjBWZMKoCPA2h6qEUSRR2MF6GxUUMUaIUgBCNTnAcm3H2G5YQfgvccYIXAtDH7FoKq/AaqKlbrBj2trFVXfBPAea4SOIIsBeN9kkCwxsNkAqRWy7+B7Z00G3xVc2wZeMSI4S7sVYkSk5Z/4PyBWROqvox3A28PN2cjUwinQC9QyckKALxj4kv2auK0xAAAAAElFTkSuQmCC'
 
@@ -20,6 +24,10 @@ def arbol(parent, directorio):
             treedata.Insert(parent, ruta, archivo, values=[os.stat(ruta).st_size], icon=file_icon)
 
 def layout(photo_path):
+    '''Función que corresponde al layout de ventana_etiquetas(). photo_path es la ruta del repositorio que deseamos visualizar
+    en el tree.
+    frame layout corresponde a la configuración de botones y pestañas dentro del marco que corresponde a la columna derecha.
+    layout_l y _r corresponden a las columnas izquierda y derecha respectivamente.'''
     arbol('',photo_path)
     frame_layout = [[sg.Image(size = (400,300), key = '-VISUALIZADOR-')],
                     [sg.Text('Tags:'), sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-')],
@@ -49,7 +57,9 @@ def layout(photo_path):
               [sg.Push(), sg.Button('Guardar')]]
     return layout
 
-def ventana_etiquetas(photo_path=None):
+BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0])) #ELIMINAR LUEGO
+def ventana_etiquetas(photo_path=None): #os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')):
+    ''' Añadir lo que hace'''
     if not photo_path:
         photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
 
