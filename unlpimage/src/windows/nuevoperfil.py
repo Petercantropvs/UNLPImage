@@ -56,6 +56,14 @@ def layout(): #img 1 attributes list
     return layout
 
 def ventana_nuevoperfil():
+    """ 
+    Esta función permite crear un nuevo perfil. El usuario puede seleccionar nicknme, nombre, edad, género y la foto de perfil.
+    La función no permite que se repitan los nicknames (los cuales además, no podrán ser modificados).
+    La función también permite elegir género fuera del binario e incluso no declararlo en caso de asi desearlo.
+    
+    Para trabajar con las imágenes, se importa el paquete pillow, y guardamos las rutas de imágenes y datos usando un modulo.
+    Este archivo de rutas es también una funcon, importada como "lectura".
+    """
     ruta_foto = BASE_PATH+'/src/default/perfil_vacio.png'
     
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))

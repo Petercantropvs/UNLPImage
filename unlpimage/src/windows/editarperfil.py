@@ -55,6 +55,11 @@ def layout(perfil):
 
 def ventana_editarperfil(perfil):
     print(perfil)
+    """ 
+    Esta función permite editar un perfil ya creado anteriormente, pudiendo cambiar nombre, edad, género y la foto de perfil.
+    Recordar que el nickname no podrá ser modificado.
+    Los datos se actualizarán en el archivo a partir de la función lectura (importada), y la imagen seleccionada cambiará de rutas.
+    """
     ruta_foto = BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png'
     
     window = sg.Window("UNLPImage", layout(perfil), margins=(150, 100))

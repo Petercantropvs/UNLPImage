@@ -56,6 +56,12 @@ def layout_inicio():
 	return layout_inicio
 
 def ventana_seleccionperfil():
+	""" 
+    La función de selección de perfil tiene varias cosas incorporadas: 
+    1) Muestra imágenes de perfiles ya creados, para poder seleccionar el propio; y a partir de eso continuar al Menú principal de la app.
+    2) El botón ver más muestra otros perfiles ya creados anterioremente.
+    3) Permite generar un nuevo perfil, al clickear la imágen con el signo "+". Este botón, llamará a la funcion nuevoperfil, dentro del progra nuevoperfil.py.
+    """
 	window = sg.Window('UNLPImage', layout_inicio())
 	cuadro = []
 
