@@ -2,6 +2,7 @@ from configuracion import configuracion
 from creador_de_collage import collage
 from creador_de_memes import memes
 from generar_etiquetas import generar_etiquetas
+from editar_perfil import editarperfil
 from nuevo_perfil import nuevoperfil
 from seleccion_perfil import seleccion_perfil
 import PySimpleGUI as sg
@@ -78,27 +79,25 @@ window = sg.Window('UNLPimage', layout(), margins=window_margins90, size=window_
 while True:
     event, values = window.read()
 
-    print(event, values)
+    #print(event, values)
 
     if event == '-CONFIG-':
         configuracion.ventana_configuracion()
-        accion = 'abrir configuracion'
-    if event == '-PIC-'
+    if event == '-PIC-':
         editarperfil.ventana_editarperfil(perfil)
     elif event == '-COLLAGE-':
         collage.ventana_collage()
-        accion = 'generar collage'
     elif event == '-HELP-':
         accion = ayuda.ventana_ayuda() 
     elif event == '-MEME-':
-        ventana_error()
+        memes.ventana_meme()
     elif event == '-TAGS-':
         generar_etiquetas.ventana_etiquetas(ruta_repositorio)
         # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
     if event == sg.WIN_CLOSED or event == '-EXIT-':
-        print(event)
         break
 window.close()
+
 def registrar_actividad(usuario, accion):
     hora_actual = datetime.now().strftime('%d-%m-%y %H:%M:%S')
 

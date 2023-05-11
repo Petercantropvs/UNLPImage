@@ -121,20 +121,23 @@ def ventana_seleccionperfil():
 		if event == 0:
 			perfil = cuadro[0]
 			event_seleccion = event
-			return perfil, event_seleccion
 			window.close()
+			return perfil, event_seleccion
+			
 			break
 		if event == 1:
 			perfil = cuadro[1]
 			event_seleccion = event
-			return perfil, event_seleccion
 			window.close()
+			return perfil, event_seleccion
+
 			break
 		if event == 2:
 			perfil = cuadro[2]
 			event_seleccion = event
-			return perfil, event_seleccion
 			window.close()
+			return perfil, event_seleccion
+
 			break
 	window.close()
 
