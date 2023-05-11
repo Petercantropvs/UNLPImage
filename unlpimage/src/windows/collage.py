@@ -1,5 +1,4 @@
 #Genedor de collage:
-#Vamos a usar la biblioteca Pillow --> Bilbioteca de manejo de imágenes
 import PySimpleGUI as sg
 import json
 import os
@@ -10,6 +9,7 @@ from src.default.pathing import BASE_PATH
 
 archivo = open(BASE_PATH+"/src/users-data/archivo_config.json",'r')
 datos = json.load(archivo)
+
 
 ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
 ruta_memes = datos[1]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de collage para guardar los collage ya hechos
@@ -28,6 +28,12 @@ def layout_collage():
     return layout
 
 def ventana_collage():
+    """
+    Esta función permite crear tus propios collages, eligiendo varias imágenes y cierto template de collage.
+    Las imagenes a seleccionar se encuentran en el Resositorio de Imágenes (elegido en la ventana de Configuración),
+    y los templates en la carpeta de default (proximamente....). 
+    Los collages creados por los usuarios se guardarán en Directorio de collages.
+    """
     accion1 = "Entró a generar un collage."
     window = sg.Window('Crea tu collage', layout_collage())
 
@@ -46,11 +52,6 @@ def ventana_collage():
     accion = accion1 + " " + accion2
     return accion
 
-
-    #if event == 'Generar':
-        # Split the string of file paths into a list
-     #   files = values['-FILES-'].split(';')
-      #  print('Selected files:', files)
 
 if __name__ == '__main__':
     ventana_collage()

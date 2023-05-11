@@ -23,6 +23,12 @@ def layout_memes():
 
 # Crear la ventana
 def ventana_meme():
+    """
+    Esta función permite crear sus propios memes, eligiendo una imagen y escribiendo un texto para pegarlo a la imagen.
+    Las imagenes a seleccionar se encuentran en el Resositorio de Imágenes (elegido en la ventana de Configuración),
+    y el texto puede ser cualquier cosa. 
+    Los memes creados por los usuarios se guardarán en Directorio de memes.
+    """
     accion1 = "Entró a generar un meme."
     window = sg.Window('Crea tu meme', layout_memes())
     while True:
