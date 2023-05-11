@@ -98,7 +98,7 @@ while True:
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         print(event)
         break
-
+window.close()
 def registrar_actividad(usuario, accion):
     hora_actual = datetime.now().strftime('%d-%m-%y %H:%M:%S')
 
