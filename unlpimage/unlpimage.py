@@ -83,12 +83,11 @@ while True:
     if event == '-CONFIG-':
         configuracion.ventana_configuracion()
         accion = 'abrir configuracion'
-    #if event == '-PIC-'
-    #    editar_perfil.ventana_editar()
+    if event == '-PIC-'
+        editarperfil.ventana_editarperfil(perfil)
     elif event == '-COLLAGE-':
-        accion = 'genrerar collage'
         collage.ventana_collage()
-        accion = 'generar colagge'
+        accion = 'generar collage'
     elif event == '-HELP-':
         accion = ayuda.ventana_ayuda() 
     elif event == '-MEME-':
