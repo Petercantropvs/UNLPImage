@@ -4,7 +4,7 @@ import os  #
 import json
 
 # Necesito que al apretar el botón me mande al repositorio de imágenes, que está en el archivo json de configuración
-archivo = open("archivo_config.json")
+archivo = open(os.getcwd()+"/configuracion/archivo_config.json", "r")
 datos = json.load(archivo)
 
 ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes

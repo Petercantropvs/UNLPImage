@@ -6,12 +6,13 @@ import json
 
 
 try:
-    archivo = open('users.json', 'r')
+    archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
     datos = json.load(archivo)
-except json.decoder.JSONDecodeError:
+    archivo.close()
+except FileNotFoundError:
     datos = {}
-print(datos)
-archivo.close()
+print(os.getcwd())
+
 def get_img_data(f, first=False):
     """Generate image data using PIL
     """
@@ -31,10 +32,11 @@ def get_img_data(f, first=False):
 #load images into elements
 
 def layout(): #img 1 attributes list
-    image_elem1 = sg.Image(data=get_img_data('perfil_vacio.png', first=True))
+    image_elem1 = sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/perfil_vacio.png', first=True))
     col_1 =[
             [sg.Text('Nuevo Perfil', font = ('latin modern sansquotation', 25))],
             [sg.Text('Nick o alias', font = ('latin modern sansquotation', 15))],
+            [sg.Text('(Elija con cuidado, no podrá ser cambiado posteriormente)', font = ('latin modern sansquotation', 8))],
             [sg.Input('', key = '-NICK-', font = ('latin modern sansquotation', 15), size = (10,10), )],
             [sg.Text('Nombre', font = ('latin modern sansquotation', 15))],
             [sg.Input('', key = '-NAME-' ,font = ('latin modern sansquotation', 15), size = (10,10) )],
@@ -50,7 +52,7 @@ def layout(): #img 1 attributes list
     
 #images column
     col_2 = [
-            [sg.Image(data=get_img_data('perfil_vacio.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
+            [sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/perfil_vacio.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
             [sg.Text('Seleccione su foto de perfil', font = ('latin modern sansquotation', 15))],
             ]
     
@@ -58,7 +60,7 @@ def layout(): #img 1 attributes list
     return layout
 
 def ventana_nuevoperfil():
-    ruta_foto = 'perfil_vacio.png'
+    ruta_foto = os.getcwd()+'/nuevo_perfil/perfil_vacio.png'
     
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
      
@@ -75,7 +77,7 @@ def ventana_nuevoperfil():
             try:
                 window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
             except AttributeError:
-                ruta_foto = 'perfil_vacio.png'
+                ruta_foto = os.getcwd()+'/nuevo_perfil/perfil_vacio.png'
                 
         if event == '-OTRO-' :
             window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
@@ -87,7 +89,8 @@ def ventana_nuevoperfil():
             #    if datos[i][0] == user['-NICK-']:
             #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
             if str(user['-NICK-']).lower() in str(usuarios).lower():
-                sg.popup_ok('El nick alias ya está utilizado', title='Error!')   
+                if user['-NICK-'] != '':
+                    sg.popup_ok('El nick o alias ya está utilizado', title='Error!')   
             else:
 
                 try:
@@ -95,7 +98,7 @@ def ventana_nuevoperfil():
                 except ValueError:
                     sg.popup_ok('Ingrese un número para la edad', title='Error!')   
                 else:
-                    with open('users.json', 'w') as u:
+                    with open(os.getcwd()+'/nuevo_perfil/users.json', 'w') as u:
                         if user['-OTRO-']:
                            usuarios[user['-NICK-']] = {
                            "nombre": user['-NAME-'],
@@ -104,7 +107,7 @@ def ventana_nuevoperfil():
                            #datos= usuarios
                            #json.dump(datos, u)
                            json.dump(usuarios, u)
-                           os.makedirs('prof_pictures', exist_ok = True)
+                           os.makedirs(os.getcwd()+'/nuevo_perfil/prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
                            # original image does not get affected
@@ -116,7 +119,11 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           perfil = user['-NICK-']
+                           window.close()
+                           return perfil
+                           
     
     
                         else:
@@ -127,7 +134,7 @@ def ventana_nuevoperfil():
                            #datos.append(usuarios)
                            #json.dump(datos, u)
                            json.dump(usuarios, u)
-                           os.makedirs('prof_pictures', exist_ok = True)
+                           os.makedirs(os.getcwd()+'/nuevo_perfil/prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
                            # original image does not get affected
@@ -139,8 +146,13 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save('prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           perfil = user['-NICK-']
+                           window.close()
+                           return perfil
+                           
                         break
+                        
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
             break
             
