@@ -21,7 +21,7 @@ def layout_configuracion():
 #Los directorios es elegir la carpeta a donde queremos los guarde.
 
 def ventana_configuracion():
-    accion = "Entró a ventana de configuracion"
+    accion = "Entró a ventana de configuracion y no realizó cambios"
     window = sg.Window('Configuración',layout_configuracion())
 
     while True: 
@@ -35,7 +35,10 @@ def ventana_configuracion():
             ruta_memes = values['-ruta-meme-']     
             
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collage}, {"nombre": "Memes", "ruta": ruta_memes}]
-        
+            accion = "Entró a ventana de configuracion y generó cambió las rutas"
+
+           # print(f"{elemento} comienza con {ka}")
+
             #print (config_datos)
             archivo = open(os.getcwd()+"/configuracion/archivo_config.json", "w")
             json.dump(config_datos, archivo)

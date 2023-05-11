@@ -22,19 +22,23 @@ def layout_memes():
 
 # Crear la ventana
 def ventana_meme():
+    accion1 = "Entró a generar un meme."
     window = sg.Window('Crea tu meme', layout_memes())
     while True:
         event, values = window.read()  
         if event == sg.WINDOW_CLOSED or event == 'Cancelar':
+            accion2 = "No generó un meme."
             break
 
         if event == 'Generar':
+            accion2 = "Generó un meme."
             window['-OUTPUT-'].update('El texto seleccionado es '  + values['-TEXTO-'])
 
 #Es claro que para la versión final aún queda generara la imagen y guardar su contenido en Directorio de memes/collgage según corresponda
 #archivo_generado = Save(file_types=(('PNG', '*.png'),), initial_folder=ruta_memes)
     window.close()
+    accion = accion1 + " " + accion2
+    return accion
 
-##########CHICOS PROBLEMQA: CUADNO APRETO GENERAR HASTA Q NO PONGO CANCELAR NO SE CIERRA LA VENTANA.
 if __name__ == "__main__":
        ventana_meme()
