@@ -2,9 +2,10 @@
 import PySimpleGUI as sg
 import os  #
 import json
+from src.default.pathing import BASE_PATH
 
 # Necesito que al apretar el botón me mande al repositorio de imágenes, que está en el archivo json de configuración
-archivo = open(os.getcwd()+"/configuracion/archivo_config.json", "r")
+archivo = open(BASE_PATH+"/src/users-data/archivo_config.json", "r")
 datos = json.load(archivo)
 
 ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes

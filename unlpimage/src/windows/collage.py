@@ -3,13 +3,12 @@
 import PySimpleGUI as sg
 import json
 import os
+from src.default.pathing import BASE_PATH
 
 
 #Necesito ir al repositorio de imágenes, que está en el archivo json de configuración
-#archivo = open("../configuracion/archivo_config.json", "r")
-#datos = json.load(archivo)
 
-archivo = open(os.getcwd()+'/configuracion/archivo_config.json', 'r')
+archivo = open(BASE_PATH+"/src/users-data/archivo_config.json",'r')
 datos = json.load(archivo)
 
 ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
