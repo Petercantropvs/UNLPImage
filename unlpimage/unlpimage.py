@@ -64,10 +64,13 @@ with open(os.getcwd()+"/configuracion/archivo_config.json", 'r') as config:
 
 
 #seleccion_perfil.ventana_eleccionperfil()
-perfil = None
-while perfil == None:
-    perfil = seleccion_perfil.ventana_eleccionperfil()
-print(perfil)
+while True:
+    perfil, event_seleccion = seleccion_perfil.ventana_seleccionperfil()
+    print(perfil)
+    if event_seleccion == sg.WIN_CLOSED:
+        quit()
+    if perfil != None:
+        break
 #window = sg.Window('UNLPimage', layout(), margins=(90, 75))
 window = sg.Window('UNLPimage', layout(), margins=window_margins90, size=window_size_grande)
 
