@@ -98,7 +98,7 @@ def ventana_ayuda():
     etiquetado de imágenes.
     """
    
-   window = sg.Window('Ayuda',layout_ayuda())
+    window = sg.Window('Ayuda',layout_ayuda())
     while True:
         event, values = window.read()
         if event == '-APP-':
