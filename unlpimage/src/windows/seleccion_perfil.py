@@ -1,12 +1,12 @@
-#import nuevoperfil
 import io
 import os
 import json
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import sys
-sys.path.append(os.getcwd()+'/nuevo_perfil/')
-import nuevoperfil
+from src.windows import nuevoperfil
+from src.default.pathing import BASE_PATH
+
 def get_img_data(f, first=False):
     """Generate image data using PIL
     """
@@ -20,7 +20,7 @@ def get_img_data(f, first=False):
     return ImageTk.PhotoImage(img)
 
 try:
-    archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
+    archivo = open(BASE_PATH+'/src/users-data/users.json', 'r')
     datos = json.load(archivo)
     archivo.close()
 except FileNotFoundError:
@@ -41,13 +41,13 @@ def layout_inicio():
 	imagenes = []
 	if len(datos) <= 2:
 		for k in range(len(datos)):
-			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
 			#nombres.append([sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0))])
 	else:	
 		for k in range(3):
-			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
 			#nombres.append(sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0)))
-	imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/seleccion_perfil/mas.png', first=True), enable_events=True, key = '-CREAR-'))
+	imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/default/mas.png', first=True), enable_events=True, key = '-CREAR-'))
 	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
 	[imagenes],
 	#[nombres],
@@ -107,7 +107,7 @@ def ventana_seleccionperfil():
 				return perfil, event_seleccion
 		if event == '-MAS-':
 			if len(perfiles)>3:
-				window[j].update(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[i]+'.png', first = True))
+				window[j].update(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[i]+'.png', first = True))
 				cuadro[j] = perfiles[i]
 				i = i+1
 				j = j+1

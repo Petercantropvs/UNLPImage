@@ -3,15 +3,9 @@ import os
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import json
+from src.default.pathing import BASE_PATH
+from src.default.data import lectura
 
-
-#archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
-try:
-    archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
-    datos = json.load(archivo)
-    archivo.close()
-except FileNotFoundError:
-    datos = {}
 
 def get_img_data(f, first=False):
     """Generate image data using PIL
@@ -31,7 +25,8 @@ def get_img_data(f, first=False):
     
 #load images into elements
 
-def layout(perfil): #img 1 attributes list
+def layout(perfil):
+    datos=lectura() #img 1 attributes list
     #image_elem1 = sg.Image(data=get_img_data(os.getcwd()+'/../nuevo_perfil/prof_pictures/perfil_vacio.png', first=True))
     col_1 =[
             [sg.Text('Editar Perfil', font = ('latin modern sansquotation', 25))],
@@ -51,7 +46,7 @@ def layout(perfil): #img 1 attributes list
     
 #images column
     col_2 = [
-            [sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfil+'.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
+            [sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
             [sg.Text('Seleccione su foto de perfil', font = ('latin modern sansquotation', 15))],
             ]
     
@@ -60,7 +55,7 @@ def layout(perfil): #img 1 attributes list
 
 def ventana_editarperfil(perfil):
     print(perfil)
-    ruta_foto = os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfil+'.png'
+    ruta_foto = BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png'
     
     window = sg.Window("UNLPImage", layout(perfil), margins=(150, 100))
      
@@ -68,7 +63,7 @@ def ventana_editarperfil(perfil):
     while True:
         event, user = window.read()
         
-        usuarios = datos
+        usuarios = lectura()
         i= i+1
         print(i)
         print(event)
@@ -77,7 +72,7 @@ def ventana_editarperfil(perfil):
             try:
                 window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
             except AttributeError:
-                ruta_foto = os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfil+'.png'
+                ruta_foto = BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png'
                 
         if event == '-OTRO-' :
             window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
@@ -92,7 +87,7 @@ def ventana_editarperfil(perfil):
                 except ValueError:
                     sg.popup_ok('Ingrese un número para la edad', title='Error!')   
                 else:
-                    with open(os.getcwd()+'/nuevo_perfil/users.json', 'w') as u:
+                    with open(BASE_PATH+'/src/users-data/users.json', 'w') as u:
                         if user['-OTRO-']:
 
                            usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
@@ -102,7 +97,7 @@ def ventana_editarperfil(perfil):
                            #datos= usuarios
                            #json.dump(datos, u)
                            json.dump(usuarios, u)
-                           os.makedirs(os.getcwd()+'/nuevo_perfil/prof_pictures/prof_pictures', exist_ok = True)
+                           os.makedirs( BASE_PATH+'/src/users-data/prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
                            # original image does not get affected
@@ -114,7 +109,7 @@ def ventana_editarperfil(perfil):
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save( BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
     
     
                         else:
@@ -125,7 +120,7 @@ def ventana_editarperfil(perfil):
                            #datos.append(usuarios)
                            #json.dump(datos, u)
                            json.dump(usuarios, u)
-                           os.makedirs(os.getcwd()+'/../nuevo_perfil/prof_pictures', exist_ok = True)
+                           os.makedirs( BASE_PATH+'/src/users-data/prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
                            # make a copy the image so that the
                            # original image does not get affected
@@ -137,7 +132,7 @@ def ventana_editarperfil(perfil):
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # save the image
-                           Image1copy.save(os.getcwd()+'/nuevo_perfil/prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save( BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
                         break
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
             break
