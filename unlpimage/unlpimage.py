@@ -71,6 +71,11 @@ while True:
 
     if event == '-CONFIG-':
         accion = configuracion.ventana_configuracion()
+        with open(BASE_PATH+"/src/users-data/archivo_config.json", 'r') as config:
+            datos = json.load(config)    
+            ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
+            ruta_collages = datos[1]["ruta"]
+            ruta_memes = datos[2]["ruta"]
     if event == '-PIC-' or event == '-EDIT-':
         accion = editarperfil.ventana_editarperfil(perfil)
         window['-PIC-'].update(data=nuevoperfil.get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png', first = True))
@@ -81,10 +86,11 @@ while True:
     elif event == '-MEME-':
         accion = memes.ventana_meme()
     elif event == '-TAGS-':
-         accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
-         generar_etiquetas.ventana_etiquetas(ruta_repositorio)
-       # accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
-        # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
+        try:
+            accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
+        except NameError:
+            print('entré al nameerror')
+            generar_etiquetas.ventana_etiquetas()
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         break
 
@@ -99,8 +105,4 @@ def registrar_actividad(usuario, accion):
         # Escribir la fila de datos en el archivo CSV
         escritor_csv.writerow([usuario, accion, hora_actual])
 
-
-
 registrar_actividad(perfil, accion)
-
-window.close()

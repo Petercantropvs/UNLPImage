@@ -2,7 +2,7 @@
 
 import PySimpleGUI as sg
 import os, csv, sys
-#from src.default.pathing import BASE_PATH
+from src.default.pathing import BASE_PATH
 
 treedata = sg.TreeData()
 
@@ -37,9 +37,9 @@ def layout(photo_path):
     layout_l = sg.Column([[sg.Tree(data = treedata, headings = ['Tags',], auto_size_columns=True,
                     expand_x = True, expand_y = True, enable_events = True, key = '-TREE-')],
                         [sg.Text('Tag')],
-                        [sg.Input(size=(50,1), key = '-NEWTAG-', disabled=True),sg.Button('Agregar', key='-B1-')],
+                        [sg.Input('', size=(50,1), key = '-NEWTAG-', disabled=True, enable_events=True),sg.Button('Agregar', key='-B1-', disabled=True)],
                         [sg.Text('Texto descriptivo')],
-                        [sg.Multiline(size=(50,1), key = '-DESCRIP-', disabled=True, no_scrollbar=True),sg.Button('Agregar', key = '-B2-')]],
+                        [sg.Multiline('', size=(50,1), key = '-DESCRIP-', disabled=True, enable_events=True, no_scrollbar=True),sg.Button('Agregar', key = '-B2-', disabled=True)]],
                         expand_y = True, justification = 'left', pad = ((0,20),(0,0)))
 
     layout_r = sg.Column([[sg.Frame('Seleccione una imagen para visualizar',
@@ -54,39 +54,69 @@ def layout(photo_path):
                        
     layout = [[sg.Text('Seleccione la imagen que desee etiquetar:'), sg.Push(), sg.Button('Volver', key = '-VOLVER-')],
               [layout_l, layout_r], 
-              [sg.Push(), sg.Button('Guardar')]]
+              [sg.Push(), sg.Button('Guardar', disabled=True)]]
     return layout
 
-BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0])) #ELIMINAR LUEGO
+# BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0])) #ELIMINAR LUEGO
 def ventana_etiquetas(photo_path=None): #os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')):
     ''' Añadir lo que hace'''
     if not photo_path:
-        photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
-
+        photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
+        # photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
+    
     window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
+
     while True:
         event, values = window.read()
         print(event, values)
-        ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
+        Selecciona_imagen = False
+        Agrega_tag = False
+        Agrega_descrip = False
 
         match event:
             case '-TREE-':
+                ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
+                # Tengo que modificar la siguiente linea para que tome solamente los archivos que efectivamente son imágenes:
                 if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
                     window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
+                    window['-FRAME-'].update(ruta_imagen_sel)
+                    
+                    window['-NEWTAG-'].update(disabled=False)
+                    window['-DESCRIP-'].update(disabled=False)
+                    if window['-NEWTAG-'] != '':
+                        window['-B1-'].update(disabled=False)
+                    if window['-DESCRIP-'] != '':
+                        window['-B2-'].update(disabled=False)
+                    Selecciona_imagen = True
+
+                else:
+                    window['-NEWTAG-'].update(disabled=True)
+                    window['-DESCRIP-'].update(disabled=True)
+                    window['-FRAME-'].update('Seleccione una imagen para visualizar')
+                    window['-B1-'].update(disabled=True)
+                    window['-B2-'].update(disabled=True)
             case '-B1-':
                 window['-OUTPUT-'].update(values['-NEWTAG-'])
-                window['-NEWTAG-'].update('')
+                window['-NEWTAG-'].update('', do_not_clear=False)
+                window['Guardar'].update(disabled=False)
+                accion, Agrega_tag = 'Agregó un tag', True
             case '-B2-':
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
-                window['-DESCRIP-'].update('')
-        
-        window['-FRAME-'].update(ruta_imagen_sel)
+                window['-DESCRIP-'].update('', do_not_clear=False)
+                window['Guardar'].update(disabled=False)
+                accion, Agrega_descrip = 'Agregó una descripción', True
+            case '-GUARDAR-':
+                if Selecciona_imagen and (Agrega_tag or Agrega_descrip):
+                    accion = 'Guardó modificaciones en las imágenes del directorio'
+
 
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
+            accion = 'Abrió la ventana de etiquetas'
             break
-            
+
     window.close()
+    return accion
 
 if __name__ == '__main__':
     ventana_etiquetas()
