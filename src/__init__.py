@@ -12,7 +12,7 @@ def function_registo(usuario, accion):
 
     actividades_anteriores = []         #Para que no sobrescriba lo que ya está guardado en el archivo
     try:
-        with open(BASE_PATH+"/src/log/users_logs.csv", 'r') as archivo_csv:
+        with open(BASE_PATH+"/src/log/'users_logs.csv'", 'r') as archivo_csv:
             lector_csv = csv.reader(archivo_csv)
             actividades_anteriores = list(lector_csv)
     except FileNotFoundError:
@@ -23,6 +23,6 @@ def function_registo(usuario, accion):
 
 
     # Escribir todas las actividades en el archivo CSV
-    with open(BASE_PATH+"/src/log/users_logs.csv", 'w', newline='') as archivo_csv:
+    with open(BASE_PATH+"/src/log/'users_logs.csv'", 'w', newline='') as archivo_csv:
         escritor_csv = csv.writer(archivo_csv)
         escritor_csv.writerows(actividades_anteriores)
