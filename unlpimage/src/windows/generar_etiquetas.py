@@ -1,7 +1,8 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-import os, csv, sys
+from PIL import Image, ImageTk, ExifTags
+import os, csv
 
 treedata = sg.TreeData()
 
@@ -79,7 +80,7 @@ def ventana_etiquetas(BASE_PATH=None, photo_path=None):
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 # Tengo que modificar la siguiente linea para que tome solamente los archivos que efectivamente son imágenes:
                 if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
-                    window['-VISUALIZADOR-'].update(os.path.join(photo_path, ruta_imagen_sel), size = (400,300))
+                    window['-VISUALIZADOR-'].update(ImageTk.PhotoImage(file = os.path.join(photo_path, ruta_imagen_sel)), size = (400,300))
                     window['-FRAME-'].update(ruta_imagen_sel)
                     
                     window['-NEWTAG-'].update(disabled=False)
@@ -120,6 +121,24 @@ def ventana_etiquetas(BASE_PATH=None, photo_path=None):
 
     window.close()
     return accion
+
+def tagger():
+    actividades_anteriores = []
+    try:
+        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
+            lector_csv = csv.reader(archivo_csv)
+            actividades_anteriores = list(lector_csv)
+    except FileNotFoundError:
+        pass
+
+    nueva_actividad = [path, descrip, res, size, mimetype, tags, last_edit, last_edit_t]
+    actividades_anteriores.append(nueva_actividad)
+
+
+    # Escribir todas las actividades en el archivo CSV
+    with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'w', newline='') as archivo_csv:
+        escritor_csv = csv.writer(archivo_csv)
+        escritor_csv.writerows(actividades_anteriores)
 
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
