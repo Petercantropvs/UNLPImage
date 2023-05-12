@@ -29,22 +29,20 @@ def ventana_meme():
     y el texto puede ser cualquier cosa. 
     Los memes creados por los usuarios se guardarán en Directorio de memes.
     """
-    accion1 = "Entró a generar un meme."
     window = sg.Window('Crea tu meme', layout_memes())
     while True:
         event, values = window.read()  
         if event == sg.WINDOW_CLOSED or event == 'Cancelar':
-            accion2 = "No generó un meme."
+            accion = "Entró a generar un meme y no lo generó."
             break
 
         if event == 'Generar':
-            accion2 = "Generó un meme."
+            accion = "Generó un meme."
             window['-OUTPUT-'].update('El texto seleccionado es '  + values['-TEXTO-'])
 
 #Es claro que para la versión final aún queda generara la imagen y guardar su contenido en Directorio de memes/collgage según corresponda
 #archivo_generado = Save(file_types=(('PNG', '*.png'),), initial_folder=ruta_memes)
     window.close()
-    accion = accion1 + " " + accion2
     return accion
 
 if __name__ == "__main__":
