@@ -93,11 +93,11 @@ while True:
         function_registo(perfil, accion)
 
     elif event == '-TAGS-':
-        accion = memes.ventana_meme()
-       # accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
-        function_registo(perfil, accion)
-        # generar_etiquetas.ventana_etiquetas(r'C:\Users\Usuario\Documents\Pedro\Facultad\Seminario Python\Prácticas\Trabajo Final')
-
+        try:
+            accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
+        except NameError:
+            print('entré al nameerror')
+            generar_etiquetas.ventana_etiquetas()
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         break
 
