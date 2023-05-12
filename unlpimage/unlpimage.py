@@ -92,11 +92,11 @@ while True:
         function_registo(perfil, accion)
 
     elif event == '-TAGS-':
-        try:
-            accion = generar_etiquetas.ventana_etiquetas(BASE_PATH, ruta_repositorio)
-        except NameError:
-            print('entré al nameerror')
-            generar_etiquetas.ventana_etiquetas()
+        # try:
+        accion = generar_etiquetas.ventana_etiquetas(ruta_repositorio)
+        # except NameError:
+        #     print('entré al nameerror')
+        #     generar_etiquetas.ventana_etiquetas()
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         break
 

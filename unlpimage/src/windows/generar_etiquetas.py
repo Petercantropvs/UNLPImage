@@ -1,10 +1,36 @@
 # Etiquetas
 
 import PySimpleGUI as sg
-from PIL import Image, ImageTk, ExifTags
-import os, csv
+from PIL import Image, ImageTk, UnidentifiedImageError
+import os, io, csv, mimetypes
+from src.default.pathing import BASE_PATH
 
 treedata = sg.TreeData()
+img_default = os.path.join(BASE_PATH,'src','default','FileNotFoundErr.png')
+
+def get_img_data(f, first=False):
+    """Generate los datos de la imagen para poder visualizarlo en la ventana.
+    Guarda algunos metadatos de la misma en metadata."""
+    img = Image.open(f)
+    size = os.path.getsize(f)*(9.537e-7)
+    if size < 1.0:
+        size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
+    else:
+        size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
+
+    metadata = {'path': os.path.abspath(f), 
+                'resolution': img.size, 
+                'size' : size,
+                'mimetype' : mimetypes.guess_type(f)[0]}
+    
+    img = img.resize((400,300), Image.ANTIALIAS) #las deforma
+    # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
+    if first:                     # tkinter is inactive the first time
+        bio = io.BytesIO()
+        img.save(bio, format="PNG")
+        del img
+        return bio.getvalue()
+    return ImageTk.PhotoImage(img), metadata
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio):
@@ -28,8 +54,9 @@ def layout(photo_path):
     en el tree.
     frame layout corresponde a la configuración de botones y pestañas dentro del marco que corresponde a la columna derecha.
     layout_l y _r corresponden a las columnas izquierda y derecha respectivamente.'''
+
     arbol('',photo_path)
-    frame_layout = [[sg.Image(size = (400,300), key = '-VISUALIZADOR-')],
+    frame_layout = [[sg.Image(data = get_img_data(img_default, first=True), size = (400,300), key = '-VISUALIZADOR-')],
                     [sg.Text('Tags:'), sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-')],
                     [sg.Text('Descripción:')],
                     [sg.Text(expand_y=True, background_color=sg.theme_button_color()[1], key = '-DESCRIPOUT-')]]
@@ -59,18 +86,16 @@ def layout(photo_path):
               [sg.Push(), sg.Button('Guardar', disabled=True)]]
     return layout
 
-# BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0])) #ELIMINAR LUEGO
-def ventana_etiquetas(BASE_PATH=None, photo_path=None):
+def ventana_etiquetas(photo_path=None):
     ''' Añadir lo que hace'''
     if not photo_path:
         photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
-        # photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
     
     window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
 
     while True:
         event, values = window.read()
-        print(event, values)
+        # print(event, values)
         Selecciona_imagen = False
         Agrega_tag = False
         Agrega_descrip = False
@@ -78,9 +103,15 @@ def ventana_etiquetas(BASE_PATH=None, photo_path=None):
         match event:
             case '-TREE-':
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
+                ruta_completa = os.path.join(photo_path, ruta_imagen_sel)
                 # Tengo que modificar la siguiente linea para que tome solamente los archivos que efectivamente son imágenes:
-                if not os.path.isdir(os.path.join(photo_path, ruta_imagen_sel)):
-                    window['-VISUALIZADOR-'].update(ImageTk.PhotoImage(file = os.path.join(photo_path, ruta_imagen_sel)), size = (400,300))
+                if not os.path.isdir(ruta_completa):
+                    try:
+                        window['-VISUALIZADOR-'].update(data = get_img_data(ruta_completa, first=True), size = (400,300))
+                    except UnidentifiedImageError:
+                        window['-VISUALIZADOR-'].update(data = get_img_data(img_default, first=True), size = (400,300))
+                    
+                        
                     window['-FRAME-'].update(ruta_imagen_sel)
                     
                     window['-NEWTAG-'].update(disabled=False)
@@ -122,25 +153,25 @@ def ventana_etiquetas(BASE_PATH=None, photo_path=None):
     window.close()
     return accion
 
-def tagger():
-    actividades_anteriores = []
-    try:
-        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
-            lector_csv = csv.reader(archivo_csv)
-            actividades_anteriores = list(lector_csv)
-    except FileNotFoundError:
-        pass
+# def tagger():
+#     actividades_anteriores = []
+#     try:
+#         with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
+#             lector_csv = csv.reader(archivo_csv)
+#             actividades_anteriores = list(lector_csv)
+#     except FileNotFoundError:
+#         pass
 
-    nueva_actividad = [path, descrip, res, size, mimetype, tags, last_edit, last_edit_t]
-    actividades_anteriores.append(nueva_actividad)
+#     nueva_actividad = [path, descrip, res, size, mimetype, tags, last_edit, last_edit_t]
+#     actividades_anteriores.append(nueva_actividad)
 
 
-    # Escribir todas las actividades en el archivo CSV
-    with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'w', newline='') as archivo_csv:
-        escritor_csv = csv.writer(archivo_csv)
-        escritor_csv.writerows(actividades_anteriores)
+#     # Escribir todas las actividades en el archivo CSV
+#     with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'w', newline='') as archivo_csv:
+#         escritor_csv = csv.writer(archivo_csv)
+#         escritor_csv.writerows(actividades_anteriores)
 
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
-    # BASE_PATH = 
+    BASE_PATH = os.path.join('C:','Users','Usuario','Documents','Pedro','Facultad','Seminario Python','Prácticas','Trabajo Final','unlpimage')
     ventana_etiquetas(photo_path=photo_path)
