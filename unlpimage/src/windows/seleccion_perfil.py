@@ -63,6 +63,8 @@ def ventana_seleccionperfil():
     3) Permite generar un nuevo perfil, al clickear la imágen con el signo "+". Este botón, llamará a la funcion nuevoperfil, dentro del progra nuevoperfil.py.
     """
 	window = sg.Window('UNLPImage', layout_inicio())
+	accion = 'Inició sesión.'
+
 	cuadro = []
 
 	if len(perfiles) > 2:

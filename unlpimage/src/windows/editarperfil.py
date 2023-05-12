@@ -61,7 +61,7 @@ def ventana_editarperfil(perfil):
     Los datos se actualizarán en el archivo a partir de la función lectura (importada), y la imagen seleccionada cambiará de rutas.
     """
     ruta_foto = BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png'
-    
+    accion = "El usuario editó su perfil."
     window = sg.Window("UNLPImage", layout(perfil), margins=(150, 100))
      
     i=0
@@ -140,6 +140,7 @@ def ventana_editarperfil(perfil):
                            Image1copy.save( BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
                         break
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
+            accion = "El usuario entro a editar perfil pero no lo edite."
             break
             
     window.close()

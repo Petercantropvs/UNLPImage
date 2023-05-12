@@ -65,7 +65,7 @@ def ventana_nuevoperfil():
     Este archivo de rutas es también una funcon, importada como "lectura".
     """
     ruta_foto = BASE_PATH+'/src/default/perfil_vacio.png'
-    
+    accion = 'Creo nuevo perfil.'
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
      
     i=0
