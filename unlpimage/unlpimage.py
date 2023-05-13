@@ -36,7 +36,8 @@ def layout():
 
 
 while True:
-    perfil, event_seleccion = seleccion_perfil.ventana_seleccionperfil()
+    perfil, event_seleccion, accion = seleccion_perfil.ventana_seleccionperfil()
+    function_registo(perfil, accion)
     if event_seleccion == sg.WIN_CLOSED:
         quit()
     if perfil != None:
@@ -74,6 +75,8 @@ while True:
         #     print('entré al nameerror')
         #     generar_etiquetas.ventana_etiquetas()
     if event == sg.WIN_CLOSED or event == '-EXIT-':
+        accion = 'Cerró sesión'
+        function_registo(perfil, accion)
         break
 
 window.close()
