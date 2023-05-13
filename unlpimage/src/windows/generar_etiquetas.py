@@ -7,30 +7,7 @@ from src.default.pathing import BASE_PATH
 
 treedata = sg.TreeData()
 img_default = os.path.join(BASE_PATH,'src','default','FileNotFoundErr.png')
-
-def get_img_data(f, first=False):
-    """Generate los datos de la imagen para poder visualizarlo en la ventana.
-    Guarda algunos metadatos de la misma en metadata."""
-    img = Image.open(f)
-    size = os.path.getsize(f)*(9.537e-7)
-    if size < 1.0:
-        size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
-    else:
-        size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
-
-    metadata = {'path': os.path.abspath(f), 
-                'resolution': img.size, 
-                'size' : size,
-                'mimetype' : mimetypes.guess_type(f)[0]}
-    
-    img = img.resize((400,300), Image.ANTIALIAS) #las deforma
-    # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
-    if first:                     # tkinter is inactive the first time
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
-        del img
-        return bio.getvalue()
-    return ImageTk.PhotoImage(img), metadata
+ETIQUETAS = [sg.Text('Tags:'), sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-')]
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio):
@@ -49,15 +26,22 @@ def arbol(parent, directorio):
         else:                         # Acá el values hay que completarlo con los tags
             treedata.Insert(parent, ruta, archivo, values=[os.stat(ruta).st_size], icon=file_icon)
 
-def layout(photo_path):
+def layout(photo_path, metadata=None):
     '''Función que corresponde al layout de ventana_etiquetas(). photo_path es la ruta del repositorio que deseamos visualizar
     en el tree.
     frame layout corresponde a la configuración de botones y pestañas dentro del marco que corresponde a la columna derecha.
     layout_l y _r corresponden a las columnas izquierda y derecha respectivamente.'''
 
     arbol('',photo_path)
-    frame_layout = [[sg.Image(data = get_img_data(img_default, first=True), size = (400,300), key = '-VISUALIZADOR-')],
-                    [sg.Text('Tags:'), sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-')],
+    img_def, metadata = get_img_data(img_default, first=True)
+
+    frame_layout = [[sg.Image(data = img_def, size = (400,300), key = '-VISUALIZADOR-')],
+                    [sg.Column([[sg.VerticalSeparator(), sg.Text(metadata['mimetype'], k='-META1-'), 
+                                sg.VerticalSeparator(), sg.Text(metadata['size'], k='-META2-'), 
+                                sg.VerticalSeparator(), sg.Text(str(metadata['resolution'][0])+'X'+str(metadata['resolution'][1]), k='-META3-'), 
+                                sg.VerticalSeparator()]],
+                                key='-META-',expand_x=True, element_justification='center', visible=False)],
+                    ETIQUETAS,
                     [sg.Text('Descripción:')],
                     [sg.Text(expand_y=True, background_color=sg.theme_button_color()[1], key = '-DESCRIPOUT-')]]
 
@@ -95,8 +79,6 @@ def ventana_etiquetas(photo_path=None):
 
     while True:
         event, values = window.read()
-        # print(event, values)
-        Selecciona_imagen = False
         Agrega_tag = False
         Agrega_descrip = False
 
@@ -104,20 +86,23 @@ def ventana_etiquetas(photo_path=None):
             case '-TREE-':
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 ruta_completa = os.path.join(photo_path, ruta_imagen_sel)
-                # Tengo que modificar la siguiente linea para que tome solamente los archivos que efectivamente son imágenes:
-                if not os.path.isdir(ruta_completa):
+                if not os.path.isdir(ruta_completa): #Se actualiza la imagen cuando no se selecciona un directorio
                     try:
-                        window['-VISUALIZADOR-'].update(data = get_img_data(ruta_completa, first=True), size = (400,300))
+                        img, metadata = get_img_data(ruta_completa, first=True)
+                        window['-VISUALIZADOR-'].update(data = img, size = (400,300))
                     except UnidentifiedImageError:
+                        _, metadata = get_img_data(ruta_completa, first=True)
                         window['-VISUALIZADOR-'].update(data = get_img_data(img_default, first=True), size = (400,300))
                     
-                        
                     window['-FRAME-'].update(ruta_imagen_sel)
-                    
+
+                    window['-META-'].update(visible=True)
+                    window['-META1-'].update(metadata['mimetype'])
+                    window['-META2-'].update(metadata['size'])
+                    window['-META3-'].update(str(metadata['resolution'][0])+'X'+str(metadata['resolution'][1]))
+
                     window['-NEWTAG-'].update(disabled=False)
                     window['-DESCRIP-'].update(disabled=False)                                              
-                    Selecciona_imagen = True
-
                 else:
                     window['-NEWTAG-'].update(disabled=True)
                     window['-DESCRIP-'].update(disabled=True)
@@ -130,6 +115,8 @@ def ventana_etiquetas(photo_path=None):
                 window['-B2-'].update(disabled=False)
             case '-B1-':
                 window['-OUTPUT-'].update(values['-NEWTAG-'])
+                window['-OUTPUT-'].bind('bind_string', key_modifier=None)
+                ETIQUETAS.append(sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-'))
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
@@ -141,8 +128,11 @@ def ventana_etiquetas(photo_path=None):
                 window['Guardar'].update(disabled=False)
                 accion, Agrega_descrip = 'Agregó una descripción', True
             case '-GUARDAR-':
-                if Selecciona_imagen and (Agrega_tag or Agrega_descrip):
-                    accion = 'Guardó modificaciones en las imágenes del directorio'
+                    # tagger(metadata)
+                    accion = 'Guardó información en las imágenes del directorio'
+                    window['-B1-'].update(disabled=True)
+                    window['-B2-'].update(disabled=True)
+                    window['Guardar'].update(disabled=True)
 
 
         print(event, values)
@@ -153,7 +143,32 @@ def ventana_etiquetas(photo_path=None):
     window.close()
     return accion
 
-# def tagger():
+def get_img_data(f, first=False):
+    """Genera los datos de la imagen para poder visualizarlo en la ventana.
+    Guarda algunos metadatos de la misma en metadata."""
+    img = Image.open(f)
+    size = os.path.getsize(f)*(9.537e-7)
+    if size < 1.0:
+        size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
+    else:
+        size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
+
+    metadata = {'path': os.path.abspath(f), 
+                'resolution': img.size, 
+                'size' : size,
+                'mimetype' : mimetypes.guess_type(f)[0]}
+    
+    img = img.resize((400,300), Image.ANTIALIAS) #las deforma
+    # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
+    if first:                     # tkinter is inactive the first time
+        bio = io.BytesIO()
+        img.save(bio, format="PNG")
+        del img
+        return bio.getvalue(), metadata
+    return ImageTk.PhotoImage(img), metadata
+
+# def tagger(metadata):
+#     '''Es la función encargada de leer y escribir el archivo tags.csv.'''
 #     actividades_anteriores = []
 #     try:
 #         with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
