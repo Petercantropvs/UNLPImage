@@ -77,7 +77,3 @@ while True:
         break
 
 window.close()
-
-
-
-window.close()
