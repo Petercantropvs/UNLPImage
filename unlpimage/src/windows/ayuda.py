@@ -114,7 +114,7 @@ def ventana_ayuda():
     como ser Sobre la aplicación, Perfiles, Configuración, Generación de memes/collage y 
     etiquetado de imágenes.
     """
-   
+    accion = "Entró a ventana de Ayuda"
     window = sg.Window('Ayuda',layout_ayuda())
     while True:
         event, values = window.read()

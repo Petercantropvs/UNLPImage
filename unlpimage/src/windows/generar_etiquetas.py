@@ -145,8 +145,9 @@ def ventana_etiquetas():
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
             accion = 'Abrió la ventana de etiquetas'
-            break
-
+            window.close()
+            
+        break
     window.close()
     return accion
 

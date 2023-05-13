@@ -78,10 +78,8 @@ def ventana_seleccionperfil():
 		if event == '-CREAR-':
 			try:
 				window.Hide()
-
 				perfil, accion = nuevoperfil.ventana_nuevoperfil() 
 				event_seleccion = event
-				
 				window.UnHide()
 				window.close()
 				break
@@ -89,7 +87,7 @@ def ventana_seleccionperfil():
 				print('Hola')
 				perfil = None
 				event_seleccion = event
-	
+				accion = None
 				window.UnHide()
 				continue
 			finally:
@@ -105,6 +103,7 @@ def ventana_seleccionperfil():
 		if event == sg.WIN_CLOSED :
 			perfil = None
 			event_seleccion = event
+			accion = None
 			return perfil, event_seleccion, accion
 			break
 		if event == 0:

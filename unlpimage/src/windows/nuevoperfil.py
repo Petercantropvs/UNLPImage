@@ -136,6 +136,10 @@ def ventana_nuevoperfil():
                         break
                         
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
+            accion = None
+            perfil = None
+            window.close()
+            return perfil, accion
             break
             
     window.close()

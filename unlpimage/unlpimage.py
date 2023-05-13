@@ -37,7 +37,9 @@ def layout():
 
 while True:
     perfil, event_seleccion, accion = seleccion_perfil.ventana_seleccionperfil()
-    function_registo(perfil, accion)
+    print(accion)
+    if accion != None:
+        function_registo(perfil, accion)
     if event_seleccion == sg.WIN_CLOSED:
         quit()
     if perfil != None:
