@@ -5,7 +5,7 @@ import os, mimetypes, io
 
 def read_users():
 	try:
-		archivo = open(BASE_PATH+'/src/users-data/users.json', 'r')
+		archivo = open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'r')
 		datos = json.load(archivo)
 		archivo.close()
 	except FileNotFoundError:
@@ -13,7 +13,8 @@ def read_users():
 	return datos
 
 def read_config():
-	with open(BASE_PATH+"/src/users-data/archivo_config.json", 'r') as config:
+	with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'r') as config:
+
 		datos = json.load(config)    
 		ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo que el usuario haya guardado como repositorio de imagenes
 		ruta_collages = datos[1]["ruta"]

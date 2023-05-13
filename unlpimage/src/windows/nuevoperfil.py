@@ -30,7 +30,7 @@ def layout():
     
 #images column
     col_2 = [
-            [sg.Image(data=get_img_data(BASE_PATH+'/src/default/perfil_vacio.png', first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
+            [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','perfil_vacio.png'), first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
             [sg.Text('Seleccione su foto de perfil', font = ('latin modern sansquotation', 15))],
             ]
     
@@ -46,7 +46,7 @@ def ventana_nuevoperfil():
     Para trabajar con las imágenes, se importa el paquete pillow, y guardamos las rutas de imágenes y datos usando un modulo.
     Este archivo de rutas es también una funcon, importada como "lectura".
     """
-    ruta_foto = BASE_PATH+'/src/default/perfil_vacio.png'
+    ruta_foto = os.path.join(BASE_PATH,'src','default','perfil_vacio.png')
     accion = 'Creo nuevo perfil.'
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
      
@@ -60,7 +60,7 @@ def ventana_nuevoperfil():
             try:
                 window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
             except AttributeError:
-                ruta_foto = BASE_PATH+'/src/default/perfil_vacio.png'
+                ruta_foto = os.path.join(BASE_PATH,'src','default','perfil_vacio.png')
                 
         if event == '-OTRO-' :
             window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
@@ -78,7 +78,7 @@ def ventana_nuevoperfil():
                 except ValueError:
                     sg.popup_ok('Ingrese un número para la edad', title='Error!')   
                 else:
-                    with open(BASE_PATH+'/src/users-data/users.json', 'w') as u:
+                    with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
                         if user['-OTRO-']:
                            usuarios[user['-NICK-']] = {
                            "nombre": user['-NAME-'],
@@ -86,7 +86,7 @@ def ventana_nuevoperfil():
                            "genero": user['-NEW-']} 
     
                            json.dump(usuarios, u)
-                           os.makedirs(BASE_PATH+'/src/users-data/prof_pictures/', exist_ok = True)
+                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
                            Image1 = Image.open(ruta_foto)
 
                            # hago una copia de la imagen así
@@ -99,7 +99,7 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # guardo la imagen
-                           Image1copy.save(BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
                            perfil = user['-NICK-']
                            window.close()
                            u.close()
@@ -114,7 +114,7 @@ def ventana_nuevoperfil():
                            "genero": user['-GEN-']} 
 
                            json.dump(usuarios, u)
-                           os.makedirs(BASE_PATH+'/src/users-data/prof_pictures', exist_ok = True)
+                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
                            Image1 = Image.open(ruta_foto)
 
                            #hago una copia de la imagen así
@@ -127,7 +127,7 @@ def ventana_nuevoperfil():
                            Image1copy.paste(Image2copy, (0, 0))
      
                            # guardo la imagen
-                           Image1copy.save(BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
+                           Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
                            perfil = user['-NICK-']
                            window.close()
                            u.close()
