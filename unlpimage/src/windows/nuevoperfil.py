@@ -103,7 +103,7 @@ def ventana_nuevoperfil():
                            perfil = user['-NICK-']
                            window.close()
                            u.close()
-                           return perfil
+                           return perfil, accion
                            
     
     
@@ -131,7 +131,7 @@ def ventana_nuevoperfil():
                            perfil = user['-NICK-']
                            window.close()
                            u.close()
-                           return perfil
+                           return perfil, accion
                            
                         break
                         

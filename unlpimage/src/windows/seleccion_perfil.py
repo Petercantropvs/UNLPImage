@@ -24,13 +24,13 @@ def layout_inicio():
 	
 	if len(datos) <= 2:
 		for i, imagen in enumerate(perfiles):
-			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+imagen+'.png', first=True), enable_events=True, k= i))
+			imagenes.append(sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',imagen+'.png'), first=True), enable_events=True, k= i))
 
 	else:	
 		for k in range(3):
-			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))
+			imagenes.append(sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfiles[k]+'.png'), first=True), enable_events=True, k= k))
 			
-	imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/default/mas.png', first=True), enable_events=True, key = '-CREAR-'))
+	imagenes.append(sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','mas.png'), first=True), enable_events=True, key = '-CREAR-'))
 	layout_inicio = [[sg.Text('UNLPImage', **text_format25, pad = (0,0,50,0))], 
 	[imagenes],
 	[sg.Text('Ver más >', **text_format20, enable_events = True, key = '-MAS-')]
@@ -67,8 +67,7 @@ def ventana_seleccionperfil():
 		i = 3
 	while True:
 		event, a = window.read()
-		#print(event)
-		#print(j)
+
 		if j > 2 and len(perfiles)>3:
 			j=0
 		if j >= 2 and len(perfiles)<=3:
@@ -80,7 +79,7 @@ def ventana_seleccionperfil():
 			try:
 				window.Hide()
 
-				perfil = nuevoperfil.ventana_nuevoperfil() 
+				perfil, accion = nuevoperfil.ventana_nuevoperfil() 
 				event_seleccion = event
 				
 				window.UnHide()
@@ -94,10 +93,10 @@ def ventana_seleccionperfil():
 				window.UnHide()
 				continue
 			finally:
-				return perfil, event_seleccion
+				return perfil, event_seleccion, accion
 		if event == '-MAS-':
 			if len(perfiles)>3:
-				window[j].update(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[i]+'.png', first = True))
+				window[j].update(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfiles[i]+'.png'), first = True))
 				cuadro[j] = perfiles[i]
 				i = i+1
 				j = j+1
@@ -106,27 +105,27 @@ def ventana_seleccionperfil():
 		if event == sg.WIN_CLOSED :
 			perfil = None
 			event_seleccion = event
-			return perfil, event_seleccion
+			return perfil, event_seleccion, accion
 			break
 		if event == 0:
 			perfil = cuadro[0]
 			event_seleccion = event
 			window.close()
-			return perfil, event_seleccion
+			return perfil, event_seleccion, accion
 			
 			break
 		if event == 1:
 			perfil = cuadro[1]
 			event_seleccion = event
 			window.close()
-			return perfil, event_seleccion
+			return perfil, event_seleccion, accion
 
 			break
 		if event == 2:
 			perfil = cuadro[2]
 			event_seleccion = event
 			window.close()
-			return perfil, event_seleccion
+			return perfil, event_seleccion, accion
 
 			break
 	window.close()

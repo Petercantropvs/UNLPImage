@@ -7,12 +7,14 @@ BASE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 #################################################################################
 def function_registo(usuario, accion):
+
+    os.makedirs(os.path.join(BASE_PATH,'src','log'), exist_ok = True)
     hora_actual = datetime.now().strftime('%d-%m-%y %H:%M:%S')
 
 
     actividades_anteriores = []         #Para que no sobrescriba lo que ya está guardado en el archivo
     try:
-        with open(BASE_PATH+"/src/log/users_logs.csv", 'r') as archivo_csv:
+        with open(os.path.join(BASE_PATH,'src','log','users_logs.csv'), 'r') as archivo_csv:
             lector_csv = csv.reader(archivo_csv)
             actividades_anteriores = list(lector_csv)
     except FileNotFoundError:
@@ -23,6 +25,6 @@ def function_registo(usuario, accion):
 
 
     # Escribir todas las actividades en el archivo CSV
-    with open(BASE_PATH+"/src/log/users_logs.csv", 'w', newline='') as archivo_csv:
+    with open(os.path.join(BASE_PATH,'src','log','users_logs.csv'), 'w', newline='') as archivo_csv:
         escritor_csv = csv.writer(archivo_csv)
         escritor_csv.writerows(actividades_anteriores)
