@@ -1,21 +1,18 @@
 import PySimpleGUI as sg
-import os  #Lo uso para crear directorios
+import os  
 import json
 from src.default.pathing import BASE_PATH
+from src.default.setup import *
+from src.default.data import read_config
 
-
-with open(BASE_PATH+"/src/users-data/archivo_config.json", 'r') as config:
-    datos = json.load(config)    
-    ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
-    ruta_collages = datos[1]["ruta"]
-    ruta_memes = datos[2]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de memes para guardar los memes ya hechos
 
 def layout_configuracion():
-    layout = [[sg.Text('Elegí la carpeta donde querés guardar tus memes/collage',font = ('latin modern sansquotation', 15))],
-             [sg.Text('Repositorio de imagenes:',font = ('latin modern sansquotation', 10)), sg.Text(ruta_repositorio,font = ('latin modern sansquotation', 8)), sg.FolderBrowse("Seleccionar", font = ('latin modern sansquotation', 10), key='-ruta-repositorio-')],
-             [sg.Text('Directorio de collage:', font = ('latin modern sansquotation', 10)), sg.Text(ruta_collages,font = ('latin modern sansquotation', 8)), sg.FolderBrowse("Seleccionar", font = ('latin modern sansquotation', 10), key='-ruta-collage-')],
-             [sg.Text('Directorio de memes:', font = ('latin modern sansquotation', 10)), sg.Text(ruta_memes,font = ('latin modern sansquotation', 8)), sg.FolderBrowse("Seleccionar", font = ('latin modern sansquotation', 10), key='-ruta-meme-')],
-             [sg.Submit("Guardar", key='-GUARDAR-', font = ('latin modern sansquotation', 10)), sg.Submit('Cerrar', key='-CERRAR-', font=('latin modern sansquotation', 10))]]                    
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
+    layout = [[sg.Text('Elegí la carpeta donde querés guardar tus memes/collage',**text_format15)],
+             [sg.Text('Repositorio de imagenes:',**text_format10), sg.Text(ruta_repositorio,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-repositorio-')],
+             [sg.Text('Directorio de collage:', **text_format10), sg.Text(ruta_collages,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-collage-')],
+             [sg.Text('Directorio de memes:', **text_format10), sg.Text(ruta_memes,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-meme-')],
+             [sg.Submit("Guardar", key='-GUARDAR-', **text_format10), sg.Submit('Cerrar', key='-CERRAR-', **text_format10)]]                    
     return layout
 
 
@@ -26,6 +23,7 @@ def ventana_configuracion():
     y las carpetas donde guardar los memes/collage generados por los usuarios (Directorio de memes/collage).
     Originalmente, no hay ninguna carpeta guardada por default, pùdiendo de estar forma elegir cualquiera en su computadora.
     """
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
     accion = "Entró a ventana de configuracion y no realizó cambios"
     window = sg.Window('Configuración',layout_configuracion())
 

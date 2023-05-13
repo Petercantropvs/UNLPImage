@@ -4,45 +4,27 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import json
 from src.default.pathing import BASE_PATH
-from src.default.data import lectura
+from src.default.data import read_users
+from src.default.data import get_img_data_profiles as get_img_data
+from src.default.setup import *
 
 
-print(os.getcwd())
+def layout(): 
 
-def get_img_data(f, first=False):
-    """Generate image data using PIL
-    """
-    img = Image.open(f)
-    img = img.resize((200,200), Image.ANTIALIAS)
-    if first:                     # tkinter is inactive the first time
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
-        del img
-        return bio.getvalue()
-    return ImageTk.PhotoImage(img)
-
-
-#datos = json.load(u)
-#print(datos)
-    
-#load images into elements
-
-def layout(): #img 1 attributes list
-    image_elem1 = sg.Image(data=get_img_data(BASE_PATH+'/src/default/perfil_vacio.png', first=True))
     col_1 =[
-            [sg.Text('Nuevo Perfil', font = ('latin modern sansquotation', 25))],
-            [sg.Text('Nick o alias', font = ('latin modern sansquotation', 15))],
+            [sg.Text('Nuevo Perfil', **text_format25)],
+            [sg.Text('Nick o alias', **text_format15)],
             [sg.Text('(Elija con cuidado, no podrá ser cambiado posteriormente)', font = ('latin modern sansquotation', 8))],
-            [sg.Input('', key = '-NICK-', font = ('latin modern sansquotation', 15), size = (10,10), )],
+            [sg.Input('', key = '-NICK-', **text_format15, size = (10,10), )],
             [sg.Text('Nombre', font = ('latin modern sansquotation', 15))],
-            [sg.Input('', key = '-NAME-' ,font = ('latin modern sansquotation', 15), size = (10,10) )],
+            [sg.Input('', key = '-NAME-' ,**text_format15, size = (10,10) )],
             [sg.Text('Edad', font = ('latin modern sansquotation', 15))],
-            [sg.Input('', key = '-AGE-' ,font = ('latin modern sansquotation', 15), size = (10,10))],
-            [sg.Text('Género autopercibido', font = ('latin modern sansquotation', 15))],
+            [sg.Input('', key = '-AGE-' ,**text_format15, size = (10,10))],
+            [sg.Text('Género autopercibido', **text_format15)],
             [sg.OptionMenu(values = (' ','Masculino', 'Femenino', 'No Binarix', 'Trans', 'Prefiero no decirlo'), key = '-GEN-')],
-            [sg.Checkbox('Otro', key = '-OTRO-', enable_events=True, font = ('latin modern sansquotation', 15), size = (10,10))],
-            [sg.Input('', key = '-NEW-',font = ('latin modern sansquotation', 10), size = (18,15), disabled = True)],
-            [sg.Ok(font = ('latin modern sansquotation', 15), key = '-OK-'), (sg.Cancel('Cancelar', font = ('latin modern sansquotation', 15), key = '-CANCEL-' )) ]
+            [sg.Checkbox('Otro', key = '-OTRO-', enable_events=True, **text_format15, size = (10,10))],
+            [sg.Input('', key = '-NEW-',**text_format10, size = (18,15), disabled = True)],
+            [sg.Ok(font = ('latin modern sansquotation', 15), key = '-OK-'), (sg.Cancel('Cancelar', **text_format15, key = '-CANCEL-' )) ]
             ]
     
     
@@ -68,14 +50,11 @@ def ventana_nuevoperfil():
     accion = 'Creo nuevo perfil.'
     window = sg.Window("UNLPImage", layout(), margins=(150, 100))
      
-    i=0
     while True:
         event, user = window.read()
         
-        usuarios = lectura()
-        i= i+1
-        print(i)
-        print(event)
+        usuarios = read_users()
+   
         if event == '-PIC-':
             ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
             try:
@@ -89,9 +68,6 @@ def ventana_nuevoperfil():
             if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
                 sg.popup_ok('Todos los campos son obligatorios', title='Error!')
     
-            #for i in range(len(datos)):
-            #    if datos[i][0] == user['-NICK-']:
-            #        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
             if str(user['-NICK-']).lower() in str(usuarios).lower():
                 if user['-NICK-'] != '':
                     sg.popup_ok('El nick o alias ya está utilizado', title='Error!')   
@@ -108,21 +84,21 @@ def ventana_nuevoperfil():
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
                            "genero": user['-NEW-']} 
-                           #datos= usuarios
-                           #json.dump(datos, u)
+    
                            json.dump(usuarios, u)
                            os.makedirs(BASE_PATH+'/src/users-data/prof_pictures/', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
-                           # make a copy the image so that the
-                           # original image does not get affected
+
+                           # hago una copia de la imagen así
+                           # la original no se ve afectada
                            Image1copy = Image1.copy()
                            Image2 = Image.open(ruta_foto)
                            Image2copy = Image2.copy()
      
-                           # paste image giving dimensions
+                           # pego la imagen dando dimensiones
                            Image1copy.paste(Image2copy, (0, 0))
      
-                           # save the image
+                           # guardo la imagen
                            Image1copy.save(BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
                            perfil = user['-NICK-']
                            window.close()
@@ -136,21 +112,21 @@ def ventana_nuevoperfil():
                            "nombre": user['-NAME-'],
                            "edad": user['-AGE-'],
                            "genero": user['-GEN-']} 
-                           #datos.append(usuarios)
-                           #json.dump(datos, u)
+
                            json.dump(usuarios, u)
                            os.makedirs(BASE_PATH+'/src/users-data/prof_pictures', exist_ok = True)
                            Image1 = Image.open(ruta_foto)
-                           # make a copy the image so that the
-                           # original image does not get affected
+
+                           #hago una copia de la imagen así
+                           # la original no se ve afectada
                            Image1copy = Image1.copy()
                            Image2 = Image.open(ruta_foto)
                            Image2copy = Image2.copy()
      
-                           # paste image giving dimensions
+                           # pego la imagen dando dimensiones
                            Image1copy.paste(Image2copy, (0, 0))
      
-                           # save the image
+                           # guardo la imagen
                            Image1copy.save(BASE_PATH+'/src/users-data/prof_pictures/'+ user['-NICK-']+ '.png')
                            perfil = user['-NICK-']
                            window.close()

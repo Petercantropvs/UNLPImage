@@ -3,16 +3,12 @@ import PySimpleGUI as sg
 import os  #
 import json
 from src.default.pathing import BASE_PATH
+from src.default.data import read_config
 
-# Necesito que al apretar el botón me mande al repositorio de imágenes, que está en el archivo json de configuración
-archivo = open(BASE_PATH+"/src/users-data/archivo_config.json", "r")
-datos = json.load(archivo)
-
-ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
-ruta_memes = datos[2]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de memes para guardar los memes ya hechos
 
 
 def layout_memes():
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
     layout = [[sg.Text("Selecciona una imagen:",font = ('latin modern sansquotation', 10))],
              [sg.Input(key='-IMAGEN-'), sg.FileBrowse("Buscar",font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio)],
              [sg.Text("Escribe un texto:", font = ('latin modern sansquotation', 10))],
@@ -40,8 +36,6 @@ def ventana_meme():
             accion = "Generó un meme."
             window['-OUTPUT-'].update('El texto seleccionado es '  + values['-TEXTO-'])
 
-#Es claro que para la versión final aún queda generara la imagen y guardar su contenido en Directorio de memes/collgage según corresponda
-#archivo_generado = Save(file_types=(('PNG', '*.png'),), initial_folder=ruta_memes)
     window.close()
     return accion
 

@@ -3,20 +3,11 @@ import PySimpleGUI as sg
 import json
 import os
 from src.default.pathing import BASE_PATH
+from src.default.data import read_config
 
-
-#Necesito ir al repositorio de imágenes, que está en el archivo json de configuración
-
-archivo = open(BASE_PATH+"/src/users-data/archivo_config.json",'r')
-datos = json.load(archivo)
-
-
-ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
-ruta_memes = datos[1]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de collage para guardar los collage ya hechos
-archivo.close()
-#Además deberá haber una carpeta con los templtes posibles a elegir --> todavía no está en el trabajo, solo emerge la ventana
 
 def layout_collage():
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
     layout = [[sg.Text('Selecciona las imágenes que quieres agregar al collage',font = ('latin modern sansquotation', 10))],
              [sg.Input(), sg.FilesBrowse("Seleccionar imagen", key='-SELECCIONAR-IMAGEN-',font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio, file_types=(("ALL Files", "*.*"),)), sg.Button('Finalizar',key='-FINSELECCION-',font = ('latin modern sansquotation', 10)) ],
              [sg.Text('Selecciona el template para el nuevo collage',font = ('latin modern sansquotation', 10))],

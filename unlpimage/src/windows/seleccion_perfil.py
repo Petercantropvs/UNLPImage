@@ -6,33 +6,14 @@ from PIL import Image, ImageTk
 import sys
 from src.windows import nuevoperfil
 from src.default.pathing import BASE_PATH
-from src.default.data import lectura
+from src.default.data import read_users
+from src.default.data import get_img_data_profiles as get_img_data
+from src.default.setup import *
 
-def get_img_data(f, first=False):
-    """Generate image data using PIL
-    """
-    img = Image.open(f)
-    img = img.resize((100,100), Image.ANTIALIAS)
-    if first:                     # tkinter is inactive the first time
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
-        del img
-        return bio.getvalue()
-    return ImageTk.PhotoImage(img)
 
-#try:
-#    archivo = open(BASE_PATH+'/src/users-data/users.json', 'r')
-#    datos = json.load(archivo)
-#    archivo.close()
-#except FileNotFoundError:
-#    datos = {}
 
-datos = lectura()
-#nombres = []
+datos = read_users()
 perfiles = []
-
-#for k in range(len(datos)):
-#    perfiles.append(next(iter(datos[k])))
 
 perfiles = list(datos.keys())
 
@@ -40,18 +21,19 @@ perfiles = list(datos.keys())
 def layout_inicio():
 
 	imagenes = []
+	
 	if len(datos) <= 2:
 		for i, imagen in enumerate(perfiles):
-			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+imagen+'.png', first=True), enable_events=True, k= i))#, key=perfiles[k]))
-			#nombres.append([sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0))])
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+imagen+'.png', first=True), enable_events=True, k= i))
+
 	else:	
 		for k in range(3):
-			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
-			#nombres.append(sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0)))
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))
+			
 	imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/default/mas.png', first=True), enable_events=True, key = '-CREAR-'))
-	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
+	layout_inicio = [[sg.Text('UNLPImage', **text_format25, pad = (0,0,50,0))], 
 	[imagenes],
-	[sg.Text('Ver más >', font = ('latin modern sansquotation', 20), enable_events = True, key = '-MAS-')]
+	[sg.Text('Ver más >', **text_format20, enable_events = True, key = '-MAS-')]
 	]
 	return layout_inicio
 

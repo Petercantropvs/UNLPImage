@@ -2,8 +2,10 @@
 
 import PySimpleGUI as sg
 from PIL import Image, ImageTk, UnidentifiedImageError
-import os, io, csv, mimetypes
+import os, io, csv
 from src.default.pathing import BASE_PATH
+from src.default.data import get_img_data_tags as get_img_data
+from src.default.data import read_config
 
 treedata = sg.TreeData()
 img_default = os.path.join(BASE_PATH,'src','default','FileNotFoundErr.png')
@@ -70,8 +72,13 @@ def layout(photo_path, metadata=None):
               [sg.Push(), sg.Button('Guardar', disabled=True)]]
     return layout
 
-def ventana_etiquetas(photo_path=None):
-    ''' Añadir lo que hace'''
+def ventana_etiquetas():
+    ''' La ventana de creación de etiquetas permite a partir de una ventana con dos pantallas: una a la izquierda mostrando el arbol de archivos del repositorio de imagenes elegido
+    y otra a la derecha visualizando la imagen que se haya seleccionado en la pantalla de la izquierda. En esta ventana se crean las etiquetas que facilitarán la búsqueda de imagenes
+    posteriormente.'''
+
+    photo_path = read_config()[0]
+    print(photo_path)
     if not photo_path:
         photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
     
@@ -143,29 +150,7 @@ def ventana_etiquetas(photo_path=None):
     window.close()
     return accion
 
-def get_img_data(f, first=False):
-    """Genera los datos de la imagen para poder visualizarlo en la ventana.
-    Guarda algunos metadatos de la misma en metadata."""
-    img = Image.open(f)
-    size = os.path.getsize(f)*(9.537e-7)
-    if size < 1.0:
-        size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
-    else:
-        size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
 
-    metadata = {'path': os.path.abspath(f), 
-                'resolution': img.size, 
-                'size' : size,
-                'mimetype' : mimetypes.guess_type(f)[0]}
-    
-    img = img.resize((400,300), Image.ANTIALIAS) #las deforma
-    # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
-    if first:                     # tkinter is inactive the first time
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
-        del img
-        return bio.getvalue(), metadata
-    return ImageTk.PhotoImage(img), metadata
 
 # def tagger(metadata):
 #     '''Es la función encargada de leer y escribir el archivo tags.csv.'''
