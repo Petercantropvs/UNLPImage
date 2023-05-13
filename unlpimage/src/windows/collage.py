@@ -1,23 +1,13 @@
 #Genedor de collage:
-#Vamos a usar la biblioteca Pillow --> Bilbioteca de manejo de imágenes
 import PySimpleGUI as sg
 import json
 import os
+from src.default.pathing import BASE_PATH
+from src.default.data import read_config
 
-
-#Necesito ir al repositorio de imágenes, que está en el archivo json de configuración
-#archivo = open("../configuracion/archivo_config.json", "r")
-#datos = json.load(archivo)
-
-archivo = open(os.getcwd()+'/configuracion/archivo_config.json', 'r')
-datos = json.load(archivo)
-
-ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo q haya guardado como repositorio de imagenes
-ruta_memes = datos[1]["ruta"]          #--> Ruta de lo q haya guardado como  direcotrio de collage para guardar los collage ya hechos
-archivo.close()
-#Además deberá haber una carpeta con los templtes posibles a elegir --> todavía no está en el trabajo, solo emerge la ventana
 
 def layout_collage():
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
     layout = [[sg.Text('Selecciona las imágenes que quieres agregar al collage',font = ('latin modern sansquotation', 10))],
              [sg.Input(), sg.FilesBrowse("Seleccionar imagen", key='-SELECCIONAR-IMAGEN-',font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio, file_types=(("ALL Files", "*.*"),)), sg.Button('Finalizar',key='-FINSELECCION-',font = ('latin modern sansquotation', 10)) ],
              [sg.Text('Selecciona el template para el nuevo collage',font = ('latin modern sansquotation', 10))],
@@ -29,7 +19,12 @@ def layout_collage():
     return layout
 
 def ventana_collage():
-    accion1 = "Entró a generar un collage."
+    """
+    Esta función permite crear tus propios collages, eligiendo varias imágenes y cierto template de collage.
+    Las imagenes a seleccionar se encuentran en el Resositorio de Imágenes (elegido en la ventana de Configuración),
+    y los templates en la carpeta de default (proximamente....). 
+    Los collages creados por los usuarios se guardarán en Directorio de collages.
+    """
     window = sg.Window('Crea tu collage', layout_collage())
 
     while True:
@@ -38,20 +33,18 @@ def ventana_collage():
             files = values['-SELECCIONAR-IMAGEN-'].split(';')
 
         if event == '-FINSELECCION-':
-            accion2 = "Hizo una selección de imagenes para un collage"
             window['-OUTPUT-'].update('Las imagenes seleccionadas son '  + values['-SELECCIONAR-IMAGEN-'])
 
-        if event == sg.WINDOW_CLOSED or event == 'Cancelar' or event == 'Generar':
+        if event == 'Generar':
+            accion = "Creó un collage. "
+            break
+
+        if event == sg.WINDOW_CLOSED or event == 'Cancelar':
+            accion = "Entró a generar un collage, pero no lo generó. "
             break
     window.close()
-    accion = accion1 + " " + accion2
     return accion
 
-
-    #if event == 'Generar':
-        # Split the string of file paths into a list
-     #   files = values['-FILES-'].split(';')
-      #  print('Selected files:', files)
 
 if __name__ == '__main__':
     ventana_collage()

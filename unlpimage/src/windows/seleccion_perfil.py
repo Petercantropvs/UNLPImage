@@ -1,37 +1,19 @@
-#import nuevoperfil
 import io
 import os
 import json
 import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import sys
-sys.path.append(os.getcwd()+'/nuevo_perfil/')
-import nuevoperfil
-def get_img_data(f, first=False):
-    """Generate image data using PIL
-    """
-    img = Image.open(f)
-    img = img.resize((100,100), Image.ANTIALIAS)
-    if first:                     # tkinter is inactive the first time
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
-        del img
-        return bio.getvalue()
-    return ImageTk.PhotoImage(img)
-
-try:
-    archivo = open(os.getcwd()+'/nuevo_perfil/users.json', 'r')
-    datos = json.load(archivo)
-    archivo.close()
-except FileNotFoundError:
-    datos = {}
+from src.windows import nuevoperfil
+from src.default.pathing import BASE_PATH
+from src.default.data import read_users
+from src.default.data import get_img_data_profiles as get_img_data
+from src.default.setup import *
 
 
-#nombres = []
+
+datos = read_users()
 perfiles = []
-
-#for k in range(len(datos)):
-#    perfiles.append(next(iter(datos[k])))
 
 perfiles = list(datos.keys())
 
@@ -39,24 +21,32 @@ perfiles = list(datos.keys())
 def layout_inicio():
 
 	imagenes = []
+	
 	if len(datos) <= 2:
-		for k in range(len(datos)):
-			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
-			#nombres.append([sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0))])
+		for i, imagen in enumerate(perfiles):
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+imagen+'.png', first=True), enable_events=True, k= i))
+
 	else:	
 		for k in range(3):
-			imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))#, key=perfiles[k]))
-			#nombres.append(sg.Text(perfiles[k], font = ('latin modern sansquotation', 10), pad = (0,0,50,0)))
-	imagenes.append(sg.Image(data=get_img_data(os.getcwd()+'/seleccion_perfil/mas.png', first=True), enable_events=True, key = '-CREAR-'))
-	layout_inicio = [[sg.Text('UNLPImage', font = ('latin modern sansquotation', 25), pad = (0,0,50,0))], 
+			imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[k]+'.png', first=True), enable_events=True, k= k))
+			
+	imagenes.append(sg.Image(data=get_img_data(BASE_PATH+'/src/default/mas.png', first=True), enable_events=True, key = '-CREAR-'))
+	layout_inicio = [[sg.Text('UNLPImage', **text_format25, pad = (0,0,50,0))], 
 	[imagenes],
-	#[nombres],
-	[sg.Text('Ver más >', font = ('latin modern sansquotation', 20), enable_events = True, key = '-MAS-')]
+	[sg.Text('Ver más >', **text_format20, enable_events = True, key = '-MAS-')]
 	]
 	return layout_inicio
 
 def ventana_seleccionperfil():
+	""" 
+    La función de selección de perfil tiene varias cosas incorporadas: 
+    1) Muestra imágenes de perfiles ya creados, para poder seleccionar el propio; y a partir de eso continuar al Menú principal de la app.
+    2) El botón ver más muestra otros perfiles ya creados anterioremente.
+    3) Permite generar un nuevo perfil, al clickear la imágen con el signo "+". Este botón, llamará a la funcion nuevoperfil, dentro del progra nuevoperfil.py.
+    """
 	window = sg.Window('UNLPImage', layout_inicio())
+	accion = 'Inició sesión.'
+
 	cuadro = []
 
 	if len(perfiles) > 2:
@@ -107,7 +97,7 @@ def ventana_seleccionperfil():
 				return perfil, event_seleccion
 		if event == '-MAS-':
 			if len(perfiles)>3:
-				window[j].update(data=get_img_data(os.getcwd()+'/nuevo_perfil/prof_pictures/'+perfiles[i]+'.png', first = True))
+				window[j].update(data=get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfiles[i]+'.png', first = True))
 				cuadro[j] = perfiles[i]
 				i = i+1
 				j = j+1
