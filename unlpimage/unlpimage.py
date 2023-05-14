@@ -72,7 +72,7 @@ while True:
 
     elif event == '-TAGS-':
         # try:
-        accion = generar_etiquetas.ventana_etiquetas()
+        accion = generar_etiquetas.ventana_etiquetas(perfil)
         # except NameError:
         #     print('entré al nameerror')
         #     generar_etiquetas.ventana_etiquetas()

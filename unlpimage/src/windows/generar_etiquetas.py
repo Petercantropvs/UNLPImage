@@ -6,6 +6,7 @@ import os, io, csv
 from src.default.pathing import BASE_PATH
 from src.default.data import get_img_data_tags as get_img_data
 from src.default.data import read_config
+from src import function_registo
 
 treedata = sg.TreeData()
 img_default = os.path.join(BASE_PATH,'src','default','FileNotFoundErr.png')
@@ -72,11 +73,11 @@ def layout(photo_path, metadata=None):
               [sg.Push(), sg.Button('Guardar', disabled=True)]]
     return layout
 
-def ventana_etiquetas():
+def ventana_etiquetas(perfil):
     ''' La ventana de creación de etiquetas permite a partir de una ventana con dos pantallas: una a la izquierda mostrando el arbol de archivos del repositorio de imagenes elegido
     y otra a la derecha visualizando la imagen que se haya seleccionado en la pantalla de la izquierda. En esta ventana se crean las etiquetas que facilitarán la búsqueda de imagenes
     posteriormente.'''
-
+    accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
     photo_path = read_config()[0]
     print(photo_path)
     if not photo_path:
@@ -88,7 +89,6 @@ def ventana_etiquetas():
         event, values = window.read()
         Agrega_tag = False
         Agrega_descrip = False
-
         match event:
             case '-TREE-':
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
@@ -134,24 +134,29 @@ def ventana_etiquetas():
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
                 accion, Agrega_descrip = 'Agregó una descripción', True
-            case '-GUARDAR-':
+            case 'Guardar':
                     # tagger(metadata)
                     accion = 'Guardó información en las imágenes del directorio'
+                    function_registo(perfil, accion)
                     window['-B1-'].update(disabled=True)
                     window['-B2-'].update(disabled=True)
                     window['Guardar'].update(disabled=True)
-
-
+                    
+        
         print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
-            accion = 'Abrió la ventana de etiquetas'
             window.close()
-            
-        break
+            function_registo(perfil, accion)
+            return accion
+            break
+       
     window.close()
-    return accion
+    
+   
 
-
+    
+    
+    
 
 # def tagger(metadata):
 #     '''Es la función encargada de leer y escribir el archivo tags.csv.'''
