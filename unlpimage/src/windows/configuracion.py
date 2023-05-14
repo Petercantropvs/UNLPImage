@@ -27,12 +27,15 @@ def ventana_configuracion():
     accion = "Entró a ventana de configuracion y no realizó cambios"
     window = sg.Window('Configuración',layout_configuracion())
 
+
     while True: 
         event, values = window.read()
+        
         if event == sg.WINDOW_CLOSED or event == '-CERRAR-':
             window.close()
             break
         if event == '-GUARDAR-':
+
             ruta_repositorio = values['-ruta-repositorio-']
             ruta_collage = values['-ruta-collage-']
             ruta_memes = values['-ruta-meme-']     
@@ -40,7 +43,8 @@ def ventana_configuracion():
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collage}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
-            archivo = open(BASE_PATH+"/src/users-data/archivo_config.json", "w")
+            archivo = open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), "w")
+
             json.dump(config_datos, archivo)
             archivo.close()   
             window.close()

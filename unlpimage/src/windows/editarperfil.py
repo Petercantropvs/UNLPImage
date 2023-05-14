@@ -99,6 +99,7 @@ def ventana_editarperfil(perfil):
      
                            # guardo la imagen
                            Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                           window.close()
                            return accion
     
     
@@ -123,6 +124,7 @@ def ventana_editarperfil(perfil):
      
                            # guardo la imagen
                            Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                           window.close()
                            return accion
                         break
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
