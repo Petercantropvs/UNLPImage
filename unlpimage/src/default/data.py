@@ -1,6 +1,6 @@
 import json
-from src.default.pathing import BASE_PATH
-from PIL import Image, ImageTk
+from src.default.pathing import BASE_PATH, img_default
+from PIL import Image, ImageTk, UnidentifiedImageError
 import os, mimetypes, io
 
 def read_users():
@@ -13,13 +13,22 @@ def read_users():
 	return datos
 
 def read_config():
-	with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'r') as config:
+    try:
+        with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'r') as config:
 
-		datos = json.load(config)    
-		ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo que el usuario haya guardado como repositorio de imagenes
-		ruta_collages = datos[1]["ruta"]
-		ruta_memes = datos[2]["ruta"]          #--> Ruta de lo que el usuario haya guardado como direcotrio de memes para guardar los memes ya hechos
-	return ruta_repositorio, ruta_collages, ruta_memes
+            datos = json.load(config)    
+            ruta_repositorio = datos[0]["ruta"]    #--> Ruta de lo que el usuario haya guardado como repositorio de imagenes
+            ruta_collages = datos[1]["ruta"]
+            ruta_memes = datos[2]["ruta"]          #--> Ruta de lo que el usuario haya guardado como direcotrio de memes para guardar los memes ya hechos
+    except FileNotFoundError:
+         ruta_repositorio, ruta_collages, ruta_memes = '', '', ''
+         with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'w') as config:
+              config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, 
+                              {"nombre": "Collage", "ruta": ruta_collages}, 
+                              {"nombre": "Memes", "ruta": ruta_memes}]
+              json.dump(config_datos, config)
+         
+    return ruta_repositorio, ruta_collages, ruta_memes
 
 
 def get_img_data_tags(f, first=False):
