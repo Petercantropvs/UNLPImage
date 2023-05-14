@@ -9,7 +9,7 @@ from src.default.data import read_config
 from src import function_registo
 
 treedata = sg.TreeData()
-metadata={}
+metadata = {}
 # ETIQUETAS = [sg.Text('Tags:'), sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-')]
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio):
@@ -33,17 +33,19 @@ def layout(photo_path):
     en el tree.
     frame layout corresponde a la configuración de botones y pestañas dentro del marco que corresponde a la columna derecha.
     layout_l y _r corresponden a las columnas izquierda y derecha respectivamente.'''
-
+    
     arbol('',photo_path)
-    img_def, metadata[img_def] = get_img_data(img_default, first=True)
-
+    img_def, metadata = get_img_data(img_default, first=True)
+    #print(metadata)
+    metadata = dict(metadata, img_default)
+   # print(metadata[os.path.abspath(img_default)])
     frame_layout = [[sg.Image(data = img_def, size = (400,300), key = '-VISUALIZADOR-')],
-                    [sg.Column([[sg.VerticalSeparator(), sg.Text(metadata[img_def]['mimetype'], k='-META1-'), 
-                                sg.VerticalSeparator(), sg.Text(metadata[img_def]['size'], k='-META2-'), 
-                                sg.VerticalSeparator(), sg.Text(str(metadata[img_def]['resolution'][0])+'x'+str(metadata[img_def]['resolution'][1]), k='-META3-'), 
+                    [sg.Column([[sg.VerticalSeparator(), sg.Text(metadata[os.path.abspath(img_default)]['mimetype'], k='-META1-'), 
+                                sg.VerticalSeparator(), sg.Text(metadata[os.path.abspath(img_default)]['size'], k='-META2-'), 
+                                sg.VerticalSeparator(), sg.Text(str(metadata[os.path.abspath(img_default)]['resolution'][0])+'x'+str(metadata[os.path.abspath(img_default)]['resolution'][1]), k='-META3-'), 
                                 sg.VerticalSeparator()]],
                                 key='-META-',expand_x=True, element_justification='center', visible=False)],
-                    [sg.Text('Tags:'), sg.Text(' ,'.join(metadata[img_def]['tags']), background_color=sg.theme_button_color()[1], key = '-OUTPUT-')], #ETIQUETAS,
+                    [sg.Text('Tags:'), sg.Text(' ,'.join(metadata[os.path.abspath(img_default)]['tags']), background_color=sg.theme_button_color()[1], key = '-OUTPUT-')], #ETIQUETAS,
                     [sg.Text('Descripción:')], 
                     [sg.Text(expand_y=True, background_color=sg.theme_button_color()[1], key = '-DESCRIPOUT-')]]
 
@@ -78,13 +80,14 @@ def ventana_etiquetas(perfil):
     posteriormente.'''
     accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
     photo_path = read_config()[0]
+
+   
     if not photo_path:
         photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
         if not os.path.exists(os.path.abspath(photo_path)):
             os.makedirs(os.path.abspath(photo_path))
     
     window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
-
     while True:
         event, values = window.read()
         Agrega_tag = False
@@ -93,24 +96,26 @@ def ventana_etiquetas(perfil):
             case '-TREE-':
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 ruta_completa = os.path.join(photo_path, ruta_imagen_sel)
-                metadata = tagger(metadata) # Esto me sobreescribe lo que tenga?
+                
                 if not os.path.isdir(ruta_completa): #Se actualiza la imagen cuando no se selecciona un directorio
                     try:
-                        img, metadata[img] = get_img_data(ruta_completa, first=True)
+                        print(ruta_completa)
+                        img, metadata = get_img_data(ruta_completa, first=True)
+                        metadata = dict(metadata, ruta_completa)
                         window['-VISUALIZADOR-'].update(data = img, size = (400,300))
                     except UnidentifiedImageError:
-                        img, metadata[img] = get_img_data(ruta_completa, first=True)
+                        img, metadata = get_img_data(ruta_completa, first=True)
                         window['-VISUALIZADOR-'].update(data = get_img_data(img_default, first=True), size = (400,300))
                     
                     window['-FRAME-'].update(ruta_imagen_sel)
 
                     window['-META-'].update(visible=True)
-                    window['-META1-'].update(metadata[img]['mimetype'])
-                    window['-META2-'].update(metadata[img]['size'])
-                    window['-META3-'].update(str(metadata[img]['resolution'][0])+'X'+str(metadata[img]['resolution'][1]))
-
-                    window['-OUTPUT-'].update(' ,'.join(metadata[img]['tags']))  ###
-                    window['-DESCRIPOUT-'].update(metadata[img]['descrip'])      ###
+                    window['-META1-'].update(metadata[os.path.abspath(ruta_completa)]['mimetype'])
+                    window['-META2-'].update(metadata[os.path.abspath(ruta_completa)]['size'])
+                    window['-META3-'].update(str(metadata[os.path.abspath(ruta_completa)]['resolution'][0])+'X'+str(metadata[os.path.abspath(ruta_completa)]['resolution'][1]))
+                   # print(metadata[os.path.abspath(ruta_completa)]['tags'])
+                    window['-OUTPUT-'].update(metadata[os.path.abspath(ruta_completa)]['tags'])  ###
+                    window['-DESCRIPOUT-'].update(metadata[os.path.abspath(ruta_completa)]['descrip'])      ###
 
                     window['-NEWTAG-'].update(disabled=False)
                     window['-DESCRIP-'].update(disabled=False)                                              
@@ -125,23 +130,26 @@ def ventana_etiquetas(perfil):
             case '-DESCRIP-':
                 window['-B2-'].update(disabled=False)
             case '-B1-':
-                window['-OUTPUT-'].update(metadata[img]['tags'])    ###
+                window['-OUTPUT-'].update(metadata[os.path.abspath(ruta_completa)]['tags'])    ###
                 # window['-OUTPUT-'].bind('bind_string', key_modifier=None) <-- Esto no va mas
                 # ETIQUETAS.append(sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-'))
-                ## metadata[img]['tags'].append(window['-NEWTAG-']) # Necesito que reconozca a metadata[img]['tags'] como una lista :(
+               # print(metadata[os.path.abspath(ruta_completa)]['tags'])
+                metadata[os.path.abspath(ruta_completa)]['tags'].append(values['-NEWTAG-']) # Necesito que reconozca a metadata[img]['tags'] como una lista :(
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
                 accion, Agrega_tag = 'Agregó un tag', True
             case '-B2-':
-                metadata[img]['descrip'] = values['-DESCRIP-']
+                metadata[os.path.abspath(ruta_completa)]['descrip'] = values['-DESCRIP-']
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
                 window['-DESCRIP-'].update('')
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
                 accion, Agrega_descrip = 'Agregó una descripción', True
             case 'Guardar':
-                    # tagger(metadata, guardar=True)
+                    tagger(metadata,ruta_completa, guardar=True)
+                    dict(metadata,ruta_completa)
+                    #print(metadata)
                     accion = 'Guardó información en las imágenes del directorio'
                     function_registo(perfil, accion)
                     window['-B1-'].update(disabled=True)
@@ -149,7 +157,7 @@ def ventana_etiquetas(perfil):
                     window['Guardar'].update(disabled=True)
                     
         
-        print(event, values)
+      #  print(event, values)
         if event == sg.WIN_CLOSED or event == '-VOLVER-':
             window.close()
             function_registo(perfil, accion)
@@ -164,33 +172,24 @@ def ventana_etiquetas(perfil):
     
     
 
-def tagger(metadata, guardar=False):
+def tagger(metadata, path,  guardar=False):
     '''Es la función encargada de leer y escribir el archivo tags.csv.'''
     actividades_anteriores = []
-    try:
-        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
-            lector_csv = csv.reader(archivo_csv)
-            actividades_anteriores = list(lector_csv)
-            for img_data in actividades_anteriores:
-                metadata[img_data[0]]['path'] = img_data[0]
-                metadata[img_data[0]]['descrip'] = img_data[1]
-                metadata[img_data[0]]['resolution'] = img_data[2]
-                metadata[img_data[0]]['size'] = img_data[3]
-                metadata[img_data[0]]['mimetype'] = img_data[4]
-                metadata[img_data[0]]['tags'] = img_data[5]
-                metadata[img_data[0]]['last_edit'] = img_data[6] # Usuario que editó
-                metadata[img_data[0]]['last_edit_time'] = img_data[7] # ACÁ HAY QUE AGREGAR EL MÓDULO ESE QUE SE IMPORTA EN EL INIT
-    except FileNotFoundError:
-        pass
+    #try:
+    #    with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
+    #        lector_csv = csv.reader(archivo_csv)
+    #        actividades_anteriores = list(lector_csv)
+    #except FileNotFoundError:
+    #    actividades_anteriores = []
 
     # A esto le falta que pueda reconocer a metadata como un dicc de diccionarios, cuyas claves son los path de cada imagen
-    nueva_actividad = [metadata[img]['path'], metadata[img]['descrip'], metadata[img]['resolution'], metadata[img]['size'], 
-                       metadata[img]['mimetype'], metadata[img]['tags'], metadata[img]['last_edit'], metadata[img]['last_edit_time']]
+    nueva_actividad = [metadata[os.path.abspath(path)]['path'], metadata[os.path.abspath(path)]['descrip'], metadata[os.path.abspath(path)]['resolution'], metadata[os.path.abspath(path)]['size'], 
+                       metadata[os.path.abspath(path)]['mimetype'], (', '.join(metadata[os.path.abspath(path)]['tags'])), metadata[os.path.abspath(path)]['last_edit'], metadata[os.path.abspath(path)]['last_edit_time']]
     actividades_anteriores.append(nueva_actividad)
 
     if guardar:
         # Escribir todas las actividades en el archivo CSV
-        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'w', newline='') as archivo_csv:
+        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'a', newline='') as archivo_csv:
             escritor_csv = csv.writer(archivo_csv)
             escritor_csv.writerows(actividades_anteriores)
     return metadata
@@ -198,3 +197,45 @@ def tagger(metadata, guardar=False):
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
     ventana_etiquetas(photo_path=photo_path)
+
+
+def dict(metadata, path):
+    try:
+         with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
+                lector_csv = csv.reader(archivo_csv)
+                actividades_anteriores = list(lector_csv)
+                for img_data in actividades_anteriores:
+                    metadata[img_data[0]]['path'] = img_data[0]
+                    metadata[img_data[0]]['descrip'] = img_data[1]
+                    metadata[img_data[0]]['resolution'] = img_data[2]
+                    metadata[img_data[0]]['size'] = img_data[3]
+                    metadata[img_data[0]]['mimetype'] = img_data[4]
+                    metadata[img_data[0]]['tags'] = [img_data[5]]
+                    metadata[img_data[0]]['last_edit'] = img_data[6] # Usuario que editó
+                    metadata[img_data[0]]['last_edit_time'] = img_data[7] # ACÁ HAY QUE AGREGAR EL MÓDULO ESE QUE SE IMPORTA EN EL INIT
+                    #print(metadata)
+                return metadata
+    except (KeyError, FileNotFoundError):
+        print('error')
+        metadata[os.path.abspath(path)]['descrip'] = 'default'
+        metadata[os.path.abspath(path)]['tags'] = []
+        metadata[os.path.abspath(path)]['last_edit'] = 'None' # Usuario que editó
+        metadata[os.path.abspath(path)]['last_edit_time'] = 'None' # ACÁ HAY QUE AGREGAR EL MÓDULO ESE QUE SE IMPORTA EN EL
+        return metadata
+    #else:
+    #    try:
+    #        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
+    #            lector_csv = csv.reader(archivo_csv)
+    #            actividades_anteriores = list(lector_csv)
+    #            for img_data in actividades_anteriores:
+    #                metadata[img_data[0]]['path'] = img_data[0]
+    #                metadata[img_data[0]]['descrip'] = img_data[1]
+    #                metadata[img_data[0]]['resolution'] = img_data[2]
+    #                metadata[img_data[0]]['size'] = img_data[3]
+    #                metadata[img_data[0]]['mimetype'] = img_data[4]
+    #                metadata[img_data[0]]['tags'] = img_data[5]
+    #                metadata[img_data[0]]['last_edit'] = img_data[6] # Usuario que editó
+    #                metadata[img_data[0]]['last_edit_time'] = img_data[7] # ACÁ HAY QUE AGREGAR EL MÓDULO ESE QUE SE IMPORTA EN EL INIT
+    #        return metadata
+    #except FileNotFoundError:
+    #    pass

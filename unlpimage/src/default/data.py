@@ -44,12 +44,13 @@ def get_img_data_tags(f, first=False):
             size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
         else:
             size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
-
-        metadata = {'path': os.path.abspath(f), 
-                    'resolution': img.size, 
-                    'size' : size,
-                    'mimetype' : mimetypes.guess_type(f)[0]}
-
+        metadata = {}
+        metadata[os.path.abspath(f)] = {}
+        metadata[os.path.abspath(f)]['path'] =  os.path.abspath(f)
+        metadata[os.path.abspath(f)]['resolution'] = img.size 
+        metadata[os.path.abspath(f)]['size'] = size
+        metadata[os.path.abspath(f)]['mimetype'] =mimetypes.guess_type(f)[0]
+        print (metadata)
         img = img.resize((400,300), Image.ANTIALIAS) #las deforma
         # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
         if first:                     # tkinter is inactive the first time
