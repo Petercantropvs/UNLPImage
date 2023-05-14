@@ -44,7 +44,7 @@ def layout(photo_path):
                                 sg.VerticalSeparator()]],
                                 key='-META-',expand_x=True, element_justification='center', visible=False)],
                     [sg.Text('Tags:'), sg.Text(' ,'.join(metadata[img_def]['tags']), background_color=sg.theme_button_color()[1], key = '-OUTPUT-')], #ETIQUETAS,
-                    [sg.Text('Descripción:')],
+                    [sg.Text('Descripción:')], 
                     [sg.Text(expand_y=True, background_color=sg.theme_button_color()[1], key = '-DESCRIPOUT-')]]
 
     layout_l = sg.Column([[sg.Tree(data = treedata, headings = ['Tags',], auto_size_columns=True,
@@ -93,6 +93,7 @@ def ventana_etiquetas(perfil):
             case '-TREE-':
                 ruta_imagen_sel = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 ruta_completa = os.path.join(photo_path, ruta_imagen_sel)
+                metadata = tagger(metadata) # Esto me sobreescribe lo que tenga?
                 if not os.path.isdir(ruta_completa): #Se actualiza la imagen cuando no se selecciona un directorio
                     try:
                         img, metadata[img] = get_img_data(ruta_completa, first=True)
@@ -108,8 +109,8 @@ def ventana_etiquetas(perfil):
                     window['-META2-'].update(metadata[img]['size'])
                     window['-META3-'].update(str(metadata[img]['resolution'][0])+'X'+str(metadata[img]['resolution'][1]))
 
-                    # window['-OUTPUT-'].update(' ,'.join(metadata[img]['tags']))
-                    # window['-DESCRIPOUT-'].update(metadata[img]['descrip'])
+                    window['-OUTPUT-'].update(' ,'.join(metadata[img]['tags']))  ###
+                    window['-DESCRIPOUT-'].update(metadata[img]['descrip'])      ###
 
                     window['-NEWTAG-'].update(disabled=False)
                     window['-DESCRIP-'].update(disabled=False)                                              
@@ -124,10 +125,10 @@ def ventana_etiquetas(perfil):
             case '-DESCRIP-':
                 window['-B2-'].update(disabled=False)
             case '-B1-':
-                # window['-OUTPUT-'].update(values['-NEWTAG-'])
-                # window['-OUTPUT-'].bind('bind_string', key_modifier=None)
+                window['-OUTPUT-'].update(metadata[img]['tags'])    ###
+                # window['-OUTPUT-'].bind('bind_string', key_modifier=None) <-- Esto no va mas
                 # ETIQUETAS.append(sg.Text(background_color=sg.theme_button_color()[1], key = '-OUTPUT-'))
-                ##metadata[img]['tags'].append(window['-NEWTAG-']) # Necesito que reconozca a metadata[img]['tags'] como una lista :(
+                ## metadata[img]['tags'].append(window['-NEWTAG-']) # Necesito que reconozca a metadata[img]['tags'] como una lista :(
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
@@ -170,7 +171,15 @@ def tagger(metadata, guardar=False):
         with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'r') as archivo_csv:
             lector_csv = csv.reader(archivo_csv)
             actividades_anteriores = list(lector_csv)
-            img = actividades_anteriores[0]
+            for img_data in actividades_anteriores:
+                metadata[img_data[0]]['path'] = img_data[0]
+                metadata[img_data[0]]['descrip'] = img_data[1]
+                metadata[img_data[0]]['resolution'] = img_data[2]
+                metadata[img_data[0]]['size'] = img_data[3]
+                metadata[img_data[0]]['mimetype'] = img_data[4]
+                metadata[img_data[0]]['tags'] = img_data[5]
+                metadata[img_data[0]]['last_edit'] = img_data[6] # Usuario que editó
+                metadata[img_data[0]]['last_edit_time'] = img_data[7] # ACÁ HAY QUE AGREGAR EL MÓDULO ESE QUE SE IMPORTA EN EL INIT
     except FileNotFoundError:
         pass
 
@@ -184,6 +193,7 @@ def tagger(metadata, guardar=False):
         with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'w', newline='') as archivo_csv:
             escritor_csv = csv.writer(archivo_csv)
             escritor_csv.writerows(actividades_anteriores)
+    return metadata
 
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
