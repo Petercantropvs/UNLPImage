@@ -36,11 +36,14 @@ def ventana_configuracion():
             break
         if event == '-GUARDAR-':
 
-            ruta_repositorio = values['-ruta-repositorio-']
-            ruta_collage = values['-ruta-collage-']
-            ruta_memes = values['-ruta-meme-']     
+            if values['-ruta-repositorio-'] != '':
+                ruta_repositorio = values['-ruta-repositorio-']
+            if values['-ruta-collage-'] != '':
+                ruta_collages = values['-ruta-collage-']
+            if values['-ruta-meme-'] != ' ':
+                ruta_memes = values['-ruta-meme-']     
             
-            config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collage}, {"nombre": "Memes", "ruta": ruta_memes}]
+            config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collages}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
             archivo = open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), "w")
