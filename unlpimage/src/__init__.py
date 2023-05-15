@@ -7,7 +7,7 @@ BASE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 #################################################################################
 def function_registo(usuario, accion):
-
+    '''Registra en un csv todas las acciones que hace un usuario.'''
     os.makedirs(os.path.join(BASE_PATH,'src','log'), exist_ok = True)
     hora_actual = datetime.now().strftime('%d-%m-%y %H:%M:%S')
 
