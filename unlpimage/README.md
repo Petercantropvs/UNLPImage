@@ -1,4 +1,5 @@
-UNLPImage 
+UNLPImage
+Licencia GPL
 5-2023
 
 Este software es un manipulador de imágenes.
@@ -16,4 +17,5 @@ https://github.com/PySimpleGUI/PySimpleGUI
 Pillow v 9.5.0
 https://python-pillow.org
 
-
+Desarrollado por:
+Celi, Marcos; Curín Daniela; Villegas Pedro.
