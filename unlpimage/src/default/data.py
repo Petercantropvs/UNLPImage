@@ -4,15 +4,17 @@ from PIL import Image, ImageTk, UnidentifiedImageError
 import os, mimetypes, io
 
 def read_users():
-	try:
-		archivo = open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'r')
-		datos = json.load(archivo)
-		archivo.close()
-	except FileNotFoundError:
-		datos = {}
-	return datos
+    '''Lee la información de los usuarios registrados presente en el archivo users.json'''
+    try:
+       archivo = open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'r')
+       datos = json.load(archivo)
+       archivo.close()
+    except FileNotFoundError:
+       datos = {}
+    return datos
 
 def read_config():
+    '''Lee las rutas a los repositorios elegidas por los usuarios'''
     try:
         with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'r') as config:
 
@@ -50,7 +52,7 @@ def get_img_data_tags(f, first=False):
         metadata[os.path.abspath(f)]['resolution'] = img.size 
         metadata[os.path.abspath(f)]['size'] = size
         metadata[os.path.abspath(f)]['mimetype'] =mimetypes.guess_type(f)[0]
-        print (metadata)
+        # print (metadata)
         img = img.resize((400,300), Image.ANTIALIAS) #las deforma
         # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
         if first:                     # tkinter is inactive the first time
@@ -61,7 +63,7 @@ def get_img_data_tags(f, first=False):
     return ImageTk.PhotoImage(img), metadata
 
 def get_img_data_profiles(f, first=False):
-    """Generate image data using PIL
+    """Genera los datos de la imagen usando PIL
     """
     img = Image.open(f)
     img = img.resize((200,200), Image.ANTIALIAS)
