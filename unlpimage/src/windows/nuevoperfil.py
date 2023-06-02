@@ -13,17 +13,17 @@ def layout():
 
     col_1 =[
             [sg.Text('Nuevo Perfil', **text_format25)],
-            [sg.Text('Nick o alias', **text_format15)],
+            [sg.Text('Nick o alias:', **text_format15)],
             [sg.Text('(Elija con cuidado, no podrá ser cambiado posteriormente)', font = ('latin modern sansquotation', 8))],
-            [sg.Input('', key = '-NICK-', **text_format15, size = (10,10), )],
-            [sg.Text('Nombre', font = ('latin modern sansquotation', 15))],
-            [sg.Input('', key = '-NAME-' ,**text_format15, size = (10,10) )],
-            [sg.Text('Edad', font = ('latin modern sansquotation', 15))],
-            [sg.Input('', key = '-AGE-' ,**text_format15, size = (10,10))],
-            [sg.Text('Género autopercibido', **text_format15)],
+            [sg.Input('', key = '-NICK-', **text_format15, size = (20,10), )],
+            [sg.Text('Nombre:', font = ('latin modern sansquotation', 15))],
+            [sg.Input('', key = '-NAME-' ,**text_format15, size = (20,10) )],
+            [sg.Text('Edad:', font = ('latin modern sansquotation', 15))],
+            [sg.Input('', key = '-AGE-' ,**text_format15, size = (20,10))],
+            [sg.Text('Género autopercibido:', **text_format15)],
             [sg.OptionMenu(values = (' ','Masculino', 'Femenino', 'No Binarix', 'Trans', 'Prefiero no decirlo'), key = '-GEN-')],
-            [sg.Checkbox('Otro', key = '-OTRO-', enable_events=True, **text_format15, size = (10,10))],
-            [sg.Input('', key = '-NEW-',**text_format10, size = (18,15), disabled = True)],
+            [sg.Checkbox('Otro', key = '-OTRO-', enable_events=True, **text_format15, size = (20,10))],
+            [sg.Input('', key = '-NEW-',**text_format10, size = (31,15), disabled = True)],
             [sg.Ok(font = ('latin modern sansquotation', 15), key = '-OK-'), (sg.Cancel('Cancelar', **text_format15, key = '-CANCEL-' )) ]
             ]
     
@@ -31,7 +31,7 @@ def layout():
 #images column
     col_2 = [
             [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','perfil_vacio.png'), first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
-            [sg.Text('Seleccione su foto de perfil', font = ('latin modern sansquotation', 15))],
+            [sg.Text('Seleccione su foto de perfil ⤴', font = ('latin modern sansquotation', 15), expand_x=True, justification='center')],
             ]
     
     layout = [[sg.Column(col_1), sg.Column(col_2)]]

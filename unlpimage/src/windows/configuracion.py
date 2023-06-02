@@ -8,11 +8,11 @@ from src.default.data import read_config
 
 def layout_configuracion():
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
-    layout = [[sg.Text('Elegí la carpeta donde querés guardar tus memes/collage',**text_format15)],
-             [sg.Text('Repositorio de imagenes:',**text_format10), sg.Text(ruta_repositorio,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-repositorio-')],
-             [sg.Text('Directorio de collage:', **text_format10), sg.Text(ruta_collages,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-collage-')],
-             [sg.Text('Directorio de memes:', **text_format10), sg.Text(ruta_memes,**text_format8), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-meme-')],
-             [sg.Submit("Guardar", key='-GUARDAR-', **text_format10), sg.Submit('Cerrar', key='-CERRAR-', **text_format10)]]                    
+    layout = [[sg.Text('Elegí las carpetas donde querés guardar tus imágenes:\n',**text_format15)],
+             [sg.Text('Repositorio de imagenes:',**text_format10), sg.Text(ruta_repositorio,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-repositorio-')],
+             [sg.Text('Directorio de collage:', **text_format10), sg.Text(ruta_collages,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-collage-')],
+             [sg.Text('Directorio de memes:', **text_format10), sg.Text(ruta_memes,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-meme-')],
+             [ sg.Push(), sg.Submit('Cerrar', key='-CERRAR-', **text_format10), sg.Submit("Guardar", key='-GUARDAR-', **text_format10), sg.Push()]]                    
     return layout
 
 

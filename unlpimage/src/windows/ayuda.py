@@ -3,14 +3,13 @@ from src.default.setup import *
 
 
 def layout_ayuda():
-    layout =[[sg.Submit('Sobre la aplicación', key = '-APP-', **text_format10)],
-            [sg.Submit('Sobre perfiles', key = '-PERFIL-', **text_format10)],
-            [sg.Submit('Sobre configuración', key = '-CONF-', **text_format10)],
-            [sg.Submit('Sobre creación de collage/memes', key = '-CREAR-', **text_format10)],
-            [sg.Submit('Sobre etiquetado', key = '-TAG-', **text_format10)],
-            [sg.Text('',**text_format10)],
-            [sg.Text('¡Creá tu usuario y empezá a divertirte!',**text_format10)],
-            [sg.Button("Volver", key='-VOLVER-', **text_format10)]]                    
+    layout =[[sg.Submit('Sobre la aplicación', key = '-APP-', **text_format10, size = (40,1))],
+            [sg.Submit('Sobre perfiles', key = '-PERFIL-', **text_format10, size = (40,1))],
+            [sg.Submit('Sobre configuración', key = '-CONF-', **text_format10, size = (40,1))],
+            [sg.Submit('Sobre creación de collage/memes', key = '-CREAR-', **text_format10, size = (40,1))],
+            [sg.Submit('Sobre etiquetado', key = '-TAG-', **text_format10, size = (40,1))],
+            [sg.Text('\n¡Creá tu usuario y empezá a divertirte!\n',**text_format10,expand_x=True, justification='center')],
+            [sg.Push(), sg.Button("Volver", key='-VOLVER-', **text_format10), sg.Push()]]                    
     return layout
 
 ####################################################################

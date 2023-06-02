@@ -1,7 +1,7 @@
 import json
 from src.default.pathing import BASE_PATH, img_default
 from PIL import Image, ImageTk, UnidentifiedImageError
-import os, mimetypes, io
+import os, mimetypes, io, csv
 
 def read_users():
     '''Lee la información de los usuarios registrados presente en el archivo users.json'''
@@ -32,6 +32,61 @@ def read_config():
          
     return ruta_repositorio, ruta_collages, ruta_memes
 
+def dict_lector():
+    '''Es la función encargada de leer el archivo tags.csv y generar el diccionario con sus valores.'''
+    metadata = {}
+    try:
+         with open(os.path.abspath(os.path.join(BASE_PATH,'src','users-data','tags.csv')), 'r') as archivo_csv:
+                lector_csv = csv.reader(archivo_csv)
+                _, actividades_anteriores = next(lector_csv), list(lector_csv)
+                for img_data in actividades_anteriores:
+                    metadata[img_data[0]] = {}
+                    metadata[img_data[0]]['path'] = img_data[0]
+                    metadata[img_data[0]]['descrip'] = img_data[1]
+                    metadata[img_data[0]]['resolution'] = tuple(img_data[2].strip('"'))
+                    metadata[img_data[0]]['size'] = img_data[3]
+                    metadata[img_data[0]]['mimetype'] = img_data[4]
+                    metadata[img_data[0]]['tags'] = [str(tag).strip() for tag in img_data[5].strip("").split(', ')]
+                    metadata[img_data[0]]['last_edit'] = img_data[6]
+                    metadata[img_data[0]]['last_edit_time'] = img_data[7]
+                return metadata
+    except FileNotFoundError: 
+        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'x') as archivo_csv: #for exclusive creation, failing if the file already exists
+            writer = csv.writer(archivo_csv)
+            writer.writerow(['path','description','resolution','size','mimetype','tags','last user','last edit time'])
+        print('No se encontró tags.csv. Creado archivo nuevo.')
+        return metadata
+    except IndexError:
+        print('El csv está vacío. Se devuelve diccionario vacío.')
+        return metadata
+
+def crear_clave_imagen():
+    '''Esta función únicamente se encarga de generar la estructura en el diccionario
+    cuando se elige una imagen que no fue registrada anteriormente. Sus valores por defecto son vacíos.'''
+    data = {}
+    data['path'] = ''
+    data['descrip'] = ''
+    data['tags'] = list()
+    data['last_edit'] = ''
+    data['last_edit_time'] = ''
+    data['Agrega tag'] = False
+    data['Agrega descripción'] = False
+    return data
+
+def tagger(metadata, guardar=False):
+    '''Es la función encargada de escribir el archivo tags.csv.'''
+    header = ['path','descrip','resolution','size','mimetype','tags','last_edit','last_edit_time']
+    nueva_actividad = []
+    for imagen in metadata.keys():
+        data_imagen = [metadata[imagen][clave] for clave in header]
+        nueva_actividad.append(data_imagen)
+
+    print('nueva act:', nueva_actividad)
+    if guardar:
+        # Escribir todas las actividades en el archivo csv
+        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'a', newline='') as archivo_csv:
+            escritor_csv = csv.writer(archivo_csv)
+            escritor_csv.writerows(nueva_actividad)
 
 def get_img_data_tags(f, first=False):
     """Genera los datos de la imagen para poder visualizarlo en la ventana.
@@ -46,21 +101,20 @@ def get_img_data_tags(f, first=False):
             size = str(round(os.path.getsize(f)/1024., 1)) + ' KB'
         else:
             size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
-        metadata = {}
-        metadata[os.path.abspath(f)] = {}
-        metadata[os.path.abspath(f)]['path'] =  os.path.abspath(f)
-        metadata[os.path.abspath(f)]['resolution'] = img.size 
-        metadata[os.path.abspath(f)]['size'] = size
-        metadata[os.path.abspath(f)]['mimetype'] =mimetypes.guess_type(f)[0]
-        # print (metadata)
+        data = {}
+        data['path'] =  os.path.abspath(f)
+        data['resolution'] = img.size 
+        data['size'] = size
+        data['mimetype'] =mimetypes.guess_type(f)[0]
+        
         img = img.resize((400,300), Image.ANTIALIAS) #las deforma
         # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
         if first:                     # tkinter is inactive the first time
             bio = io.BytesIO()
             img.save(bio, format="PNG")
             del img
-            return bio.getvalue(), metadata
-    return ImageTk.PhotoImage(img), metadata
+            return bio.getvalue(), data
+    return ImageTk.PhotoImage(img), data
 
 def get_img_data_profiles(f, first=False):
     """Genera los datos de la imagen usando PIL

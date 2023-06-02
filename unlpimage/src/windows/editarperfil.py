@@ -15,16 +15,16 @@ def layout(perfil):
 
     col_1 =[
             [sg.Text('Editar Perfil', **text_format25)],
-            [sg.Text('Nick o alias', **text_format15)],
-            [sg.Input(perfil, key = '-NICK-', **text_format15, size = (10,10), disabled = True )],
-            [sg.Text('Nombre', **text_format15)],
-            [sg.Input(datos[perfil]['nombre'], key = '-NAME-' ,**text_format15, size = (10,10) )],
-            [sg.Text('Edad', **text_format15)],
-            [sg.Input(datos[perfil]['edad'], key = '-AGE-' ,**text_format15, size = (10,10))],
-            [sg.Text('Género autopercibido', **text_format15)],
+            [sg.Text('Nick o alias:', **text_format15)],
+            [sg.Input(perfil, key = '-NICK-', **text_format15, size = (20,10), disabled = True )],
+            [sg.Text('Nombre:', **text_format15)],
+            [sg.Input(datos[perfil]['nombre'], key = '-NAME-' ,**text_format15, size = (20,10) )],
+            [sg.Text('Edad:', **text_format15)],
+            [sg.Input(datos[perfil]['edad'], key = '-AGE-' ,**text_format15, size = (20,10))],
+            [sg.Text('Género autopercibido:', **text_format15)],
             [sg.OptionMenu(default_value= datos[perfil]['genero'], values = (' ','Masculino', 'Femenino', 'No Binarix', 'Trans', 'Prefiero no decirlo'), key = '-GEN-')],
             [sg.Checkbox('Otro', key = '-OTRO-', enable_events=True, **text_format15, size = (10,10))],
-            [sg.Input('', key = '-NEW-',font = ('latin modern sansquotation', 10), size = (18,15), disabled = True)],
+            [sg.Input('', key = '-NEW-',font = ('latin modern sansquotation', 10), size = (31,15), disabled = True)],
             [sg.Ok(**text_format15, key = '-OK-'), (sg.Cancel('Cancelar', **text_format15, key = '-CANCEL-' )) ]
             ]
     
@@ -32,7 +32,7 @@ def layout(perfil):
 #images column
     col_2 = [
             [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfil+'.png'), first = True), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ],
-            [sg.Text('Seleccione su foto de perfil',**text_format15)],
+            [sg.Text('Seleccione su foto de perfil ⤴',**text_format15, expand_x=True, justification='center')],
             ]
     
     layout = [[sg.Column(col_1), sg.Column(col_2)]]
@@ -47,7 +47,7 @@ def ventana_editarperfil(perfil):
     """
     ruta_foto = os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfil+'.png')
     accion = "El usuario editó su perfil."
-    window = sg.Window("UNLPImage", layout(perfil), margins=(150, 100))
+    window = sg.Window('UNLPimage - Editar Perfil', layout(perfil), margins=(150, 100))
      
     i=0
     while True:
