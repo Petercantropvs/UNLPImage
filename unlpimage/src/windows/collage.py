@@ -4,18 +4,20 @@ import json
 import os
 from src.default.pathing import BASE_PATH
 from src.default.data import read_config
+from src.default.setup import text_format15, text_format10
 
+# [sg.Input(), sg.FilesBrowse("Seleccionar imagen", key='-SELECCIONAR-IMAGEN-',font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio, file_types=(("ALL Files", "*.*"),)), sg.Button('Finalizar',key='-FINSELECCION-',font = ('latin modern sansquotation', 10)) ],
+#              [sg.Text('Selecciona el template para el nuevo collage',font = ('latin modern sansquotation', 10))],
+#              [sg.Input(), sg.FilesBrowse("Seleccionar template",font = ('latin modern sansquotation', 10)) ],
+            #Una vez generados los templates, hacemos la ruta, pues falta crear esta carpeta
+            #[sg.Input(), sg.FilesBrowse(initial_folder=template_ruta, file_types=('*.png', '*.jpg'),)],
 
 def layout_collage():
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
-    layout = [[sg.Text('Selecciona las imágenes que quieres agregar al collage',font = ('latin modern sansquotation', 10))],
-             [sg.Input(), sg.FilesBrowse("Seleccionar imagen", key='-SELECCIONAR-IMAGEN-',font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio, file_types=(("ALL Files", "*.*"),)), sg.Button('Finalizar',key='-FINSELECCION-',font = ('latin modern sansquotation', 10)) ],
-             [sg.Text('Selecciona el template para el nuevo collage',font = ('latin modern sansquotation', 10))],
-             [sg.Input(), sg.FilesBrowse("Seleccionar template",font = ('latin modern sansquotation', 10)) ],
-            #Una vez generados los templates, hacemos la ruta, pues falta crear esta carpeta
-            #[sg.Input(), sg.FilesBrowse(initial_folder=template_ruta, file_types=('*.png', '*.jpg'),)],
-             [sg.Text(key='-OUTPUT-')],
-             [sg.Button('Generar',font = ('latin modern sansquotation', 10)), sg.Button('Cancelar',font = ('latin modern sansquotation', 10))]]
+    layout = [[sg.Text('Seleccioná el diseño de tu collage:', font = text_format15), sg.Push(), sg.Button('⬅ Volver', font = text_format15)],
+              [sg.Image(key='-L1-'),sg.Image(key='-L2-')],
+              [sg.Image(key='-L3-'),sg.Image(key='-L4-')],
+              [sg.Text('Recordá que las imágenes deben estar etiquetadas para añadirlas al collage!', font=text_format10)]]
     return layout
 
 def ventana_collage():

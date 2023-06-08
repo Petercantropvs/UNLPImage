@@ -87,8 +87,8 @@ def ventana_etiquetas(perfil):
             case '-TREE-':
                 ruta_relativa = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 ruta_completa = os.path.abspath(os.path.join(photo_path, ruta_relativa))
-
-                if not ruta_completa in metadata.keys():
+                
+                if ruta_completa not in metadata.keys():
                     # Completo el diccionario de la imagen con valores por defecto:
                     metadata[ruta_completa] = crear_clave_imagen()
                     print('La imagen no estaba')
@@ -108,7 +108,7 @@ def ventana_etiquetas(perfil):
                     window['-META2-'].update(metadata[ruta_completa]['size'])
                     window['-META3-'].update(str(metadata[ruta_completa]['resolution'][0])+'X'+str(metadata[ruta_completa]['resolution'][1]))
                     window['-OUTPUT-'].update(('#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags'])) if metadata[ruta_completa]['tags'] != [] else '')
-                    window['-DESCRIPOUT-'].update(metadata[ruta_completa]['descrip'])
+                    window['-DESCRIPOUT-'].update(metadata[ruta_completa]['description'])
 
                     window['-NEWTAG-'].update(disabled=False)
                     window['-DESCRIP-'].update(disabled=False)                                              
@@ -124,29 +124,28 @@ def ventana_etiquetas(perfil):
                 window['-B2-'].update(disabled=False)
             case '-B1-':
                 metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
-                metadata[ruta_completa]['last_edit_time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
+                metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 window['-OUTPUT-'].update('#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags']))
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
                 accion, metadata[ruta_completa]['Agrega tag'] = 'Agregó un tag', True
             case '-B2-':
-                metadata[ruta_completa]['descrip'] = values['-DESCRIP-']
-                metadata[ruta_completa]['last_edit_time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
+                metadata[ruta_completa]['description'] = values['-DESCRIP-']
+                metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
                 window['-DESCRIP-'].update('')
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
                 accion, metadata[ruta_completa]['Agrega descripción'] = 'Agregó una descripción', True
             case 'Guardar':
-                sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
-                if 'Yes':
+                respuesta = sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
+                if respuesta =='Yes':
                     print('meta1:\n', metadata,'\n')
                     imagenes_editadas = list(filter(lambda x :(metadata[x]['Agrega tag'] or metadata[x]['Agrega descripción']), metadata.keys()))
                     for ruta in imagenes_editadas:
-                        print(ruta)
-                        metadata[ruta]['last_edit'] = str(perfil)
-                    metadata = {ruta: metadata[ruta] for ruta in imagenes_editadas}
+                        metadata[ruta]['last user'] = str(perfil)
+                    metadata = {ruta: metadata[ruta] for ruta in metadata.keys()}
                     print('meta2:\n', metadata, '\n')
                     tagger(metadata, guardar=True)
                     accion = 'Guardó información en las imágenes del directorio'

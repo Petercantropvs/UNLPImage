@@ -2,8 +2,7 @@ import os
 import sys
 import csv
 from datetime import datetime
-
-BASE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
+from src.default.pathing import BASE_PATH
 
 #################################################################################
 def function_registo(usuario, accion):

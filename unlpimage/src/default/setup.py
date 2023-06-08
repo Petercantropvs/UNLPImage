@@ -13,3 +13,6 @@ text_format20 = {'font' : ('latin modern sansquotation', 20)}
 window_size_big = (600, 500)
 window_margins150 = (150, 100)
 window_margins90 = (90, 75)
+
+# Más constantes:
+tags_header = ['path','description','resolution','size','mimetype','tags','last user','last edit time']

@@ -1,5 +1,6 @@
 import json
-from src.default.pathing import BASE_PATH, img_default
+from src.default.pathing import BASE_PATH, img_default, tags_path
+from src.default.setup import tags_header
 from PIL import Image, ImageTk, UnidentifiedImageError
 import os, mimetypes, io, csv
 
@@ -36,57 +37,71 @@ def dict_lector():
     '''Es la función encargada de leer el archivo tags.csv y generar el diccionario con sus valores.'''
     metadata = {}
     try:
-         with open(os.path.abspath(os.path.join(BASE_PATH,'src','users-data','tags.csv')), 'r') as archivo_csv:
-                lector_csv = csv.reader(archivo_csv)
-                _, actividades_anteriores = next(lector_csv), list(lector_csv)
-                for img_data in actividades_anteriores:
-                    metadata[img_data[0]] = {}
-                    metadata[img_data[0]]['path'] = img_data[0]
-                    metadata[img_data[0]]['descrip'] = img_data[1]
-                    metadata[img_data[0]]['resolution'] = tuple(img_data[2].strip('"'))
-                    metadata[img_data[0]]['size'] = img_data[3]
-                    metadata[img_data[0]]['mimetype'] = img_data[4]
-                    metadata[img_data[0]]['tags'] = [str(tag).strip() for tag in img_data[5].strip("").split(', ')]
-                    metadata[img_data[0]]['last_edit'] = img_data[6]
-                    metadata[img_data[0]]['last_edit_time'] = img_data[7]
-                return metadata
+        #  with open(os.path.abspath(os.path.join(BASE_PATH,'src','users-data','tags.csv')), 'r') as archivo_csv:
+        #         lector_csv = csv.reader(archivo_csv)
+        #         _, actividades_anteriores = next(lector_csv), list(lector_csv)
+         _, actividades_anteriores = manejador_csv(tags_path, modo='r')
     except FileNotFoundError: 
-        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'x') as archivo_csv: #for exclusive creation, failing if the file already exists
+        with open(os.path.join(tags_path), 'x', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
             writer = csv.writer(archivo_csv)
-            writer.writerow(['path','description','resolution','size','mimetype','tags','last user','last edit time'])
+            writer.writerow(tags_header)
         print('No se encontró tags.csv. Creado archivo nuevo.')
         return metadata
     except IndexError:
         print('El csv está vacío. Se devuelve diccionario vacío.')
         return metadata
+    
+    for img_data in actividades_anteriores:
+        if img_data:
+            path_img = img_data[0]
+            metadata[path_img] = dict(zip(tags_header, img_data))
+            # metadata[path_img] = {}
+            # metadata[path_img]['path'] = img_data[0]
+            # metadata[path_img]['descrip'] = img_data[1]
+            metadata[path_img]['resolution'] = tuple(img_data[2].strip('\"()').split(', '))
+            # metadata[path_img]['size'] = img_data[3]
+            # metadata[path_img]['mimetype'] = img_data[4]
+            metadata[path_img]['tags'] = [str(tag).strip('\'') for tag in img_data[5].strip('\"[]').split(', ')]
+            metadata[path_img]['Agrega tag'], metadata[path_img]['Agrega descripción'] = True, True
+            # metadata[path_img]['last_edit'] = img_data[6]
+            # metadata[path_img]['last_edit_time'] = img_data[7]
+    return metadata
 
 def crear_clave_imagen():
     '''Esta función únicamente se encarga de generar la estructura en el diccionario
     cuando se elige una imagen que no fue registrada anteriormente. Sus valores por defecto son vacíos.'''
     data = {}
     data['path'] = ''
-    data['descrip'] = ''
+    data['description'] = ''
     data['tags'] = list()
-    data['last_edit'] = ''
-    data['last_edit_time'] = ''
+    data['last user'] = ''
+    data['last edit time'] = ''
     data['Agrega tag'] = False
     data['Agrega descripción'] = False
     return data
 
 def tagger(metadata, guardar=False):
     '''Es la función encargada de escribir el archivo tags.csv.'''
-    header = ['path','descrip','resolution','size','mimetype','tags','last_edit','last_edit_time']
-    nueva_actividad = []
-    for imagen in metadata.keys():
-        data_imagen = [metadata[imagen][clave] for clave in header]
-        nueva_actividad.append(data_imagen)
-
-    print('nueva act:', nueva_actividad)
+    sobreescritura = [] #{}
+    # data_ya_en_csv = dict_lector()
+    # for imagen in metadata.keys():
+    #     if (metadata[imagen]['Agrega tag'] or metadata[imagen]['Agrega descripción']):
+    #         # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
+    #         data_imagen = [metadata[imagen][clave] for clave in tags_header]
+    #         sobreescritura.append(data_imagen)
+        
+    for imagen in metadata.values():
+        if (imagen['Agrega tag'] or imagen['Agrega descripción']):
+            # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
+            data_imagen = [imagen[clave] for clave in tags_header]
+            sobreescritura.append(data_imagen)
+        
     if guardar:
         # Escribir todas las actividades en el archivo csv
-        with open(os.path.join(BASE_PATH,'src','users-data','tags.csv'), 'a', newline='') as archivo_csv:
+        with open(tags_path, 'w', newline='') as archivo_csv:
             escritor_csv = csv.writer(archivo_csv)
-            escritor_csv.writerows(nueva_actividad)
+            escritor_csv.writerow(tags_header)
+            escritor_csv.writerows(sobreescritura)
 
 def get_img_data_tags(f, first=False):
     """Genera los datos de la imagen para poder visualizarlo en la ventana.
@@ -127,3 +142,21 @@ def get_img_data_profiles(f, first=False):
         del img
         return bio.getvalue()
     return ImageTk.PhotoImage(img)
+
+def manejador_csv(ruta_archivo, modo = None, data = None):    
+    '''#### lector_csv:
+    - Descripción:\n
+    Se encarga de procesar todos los csv utilizados en el programa.\n
+    ruta_archivo: str(), ruta absoluta\n
+    modo: str(). Valores= 'w', 'r', 'x'.\n
+    data : any. Información a guardar cuando modo = 'w','a','x'.'''
+    with open(ruta_archivo, modo) as archivo_csv:
+        match modo:
+            case 'r':
+                reader_csv = csv.reader(archivo_csv)
+                header, data = next(reader_csv), list(reader_csv)
+                return header, data
+            case 'w','a', 'x':
+                writer_csv = csv.writer(archivo_csv, newline='')
+                writer_csv.writerow([linea for linea in data])
+        # lector_csv = csv.reader(archivo_csv)
