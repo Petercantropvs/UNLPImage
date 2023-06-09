@@ -10,7 +10,7 @@ from src.default.data import read_config, dict_lector, crear_clave_imagen, tagge
 from src import function_registo
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
-def arbol(parent, directorio, treedata):
+def arbol(parent, directorio, treedata, metadata):
     '''Esta función construye el objeto treedata que contiene la estructura del tree del directorio seleccionado en configuración
     como repositorio de imágenes para que el Tree Element de PySimpleGUI pueda leerlo e interpretarlo.'''
 
@@ -19,18 +19,22 @@ def arbol(parent, directorio, treedata):
         
         if os.path.isdir(ruta):    # Si es carpeta
             treedata.Insert(parent, ruta, archivo, values=[], icon=folder_icon)
-            arbol(ruta, ruta, treedata)
+            arbol(ruta, ruta, treedata, metadata)
         else:
-            treedata.Insert(parent, ruta, archivo, values=[os.stat(ruta).st_size], icon=file_icon)
+            if ruta in metadata.keys(): #metadata[ruta]['tags']:
+                tags = '#'+ ', #'.join(tag for tag in metadata[ruta]['tags'])
+            else:
+                tags = ''
+            treedata.Insert(parent, ruta, archivo, values=[tags], icon=file_icon)
 
-def layout(photo_path):
+def layout(photo_path, metadata):
     '''Función que corresponde al layout de ventana_etiquetas(). photo_path es la ruta del repositorio que deseamos visualizar
     en el tree.
     frame layout corresponde a la configuración de botones y pestañas dentro del marco que corresponde a la columna derecha.
     layout_l y _r corresponden a las columnas izquierda y derecha respectivamente.'''
     treedata = sg.TreeData()
 
-    arbol('',photo_path, treedata)
+    arbol('',photo_path, treedata, metadata)
     frame_layout = [[sg.Image(size = (400,300), key = '-VISUALIZADOR-')],
                     [sg.Column([[sg.VerticalSeparator(), sg.Text(k='-META1-'),
                                 sg.VerticalSeparator(), sg.Text(k='-META2-'),
@@ -71,6 +75,7 @@ def ventana_etiquetas(perfil):
     y otra a la derecha visualizando la imagen que se haya seleccionado en la pantalla de la izquierda. En esta ventana se crean las etiquetas que facilitarán la búsqueda de imagenes
     posteriormente.'''
     accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
+    realiza_cambios = False
     photo_path = read_config()[0]
     metadata = dict_lector() # Cargo lo que ya estaba registrado en el csv
     print(perfil)
@@ -79,7 +84,7 @@ def ventana_etiquetas(perfil):
         if not os.path.exists(os.path.abspath(photo_path)):
             os.makedirs(os.path.abspath(photo_path))
     
-    window = sg.Window('Etiquetar imágenes', layout(photo_path), resizable=True, finalize=True)
+    window = sg.Window('Etiquetar imágenes', layout(photo_path, metadata), resizable=True, finalize=True, enable_close_attempted_event=True)
     window.set_min_size((400,600))
     while True:
         event, values = window.read()
@@ -129,7 +134,8 @@ def ventana_etiquetas(perfil):
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['Agrega tag'] = 'Agregó un tag', True
+                accion, metadata[ruta_completa]['Tiene tag'] = 'Agregó un tag', True
+                realiza_cambios = True
             case '-B2-':
                 metadata[ruta_completa]['description'] = values['-DESCRIP-']
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
@@ -137,12 +143,13 @@ def ventana_etiquetas(perfil):
                 window['-DESCRIP-'].update('')
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['Agrega descripción'] = 'Agregó una descripción', True
+                accion, metadata[ruta_completa]['Tiene descripción'] = 'Agregó una descripción', True
+                realiza_cambios = True
             case 'Guardar':
                 respuesta = sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
                 if respuesta =='Yes':
                     print('meta1:\n', metadata,'\n')
-                    imagenes_editadas = list(filter(lambda x :(metadata[x]['Agrega tag'] or metadata[x]['Agrega descripción']), metadata.keys()))
+                    imagenes_editadas = list(filter(lambda x :(metadata[x]['Tiene tag'] or metadata[x]['Tiene descripción']), metadata.keys()))
                     for ruta in imagenes_editadas:
                         metadata[ruta]['last user'] = str(perfil)
                     metadata = {ruta: metadata[ruta] for ruta in metadata.keys()}
@@ -155,11 +162,19 @@ def ventana_etiquetas(perfil):
                     window['Guardar'].update(disabled=True)
                     
         
-        if event == sg.WIN_CLOSED or event == '-VOLVER-':
-            window.close()
-            function_registo(perfil, accion)
-            return accion
-            break
+        if event in (sg.WIN_CLOSE_ATTEMPTED_EVENT, '-VOLVER-'):
+            if realiza_cambios:
+                if sg.popup_yes_no('Desea salir sin guardar?') == 'Yes':
+                    window.close()
+                    accion = 'Descartó modificaciones en las etiquetas'
+                    function_registo(perfil, accion)
+                    return accion
+                    break
+            else:
+                window.close()
+                return accion
+                break
+
        
     window.close()
     
