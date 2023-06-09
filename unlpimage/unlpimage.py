@@ -60,7 +60,7 @@ while True:
         function_registo(perfil, accion)
     elif event == '-HELP-':
         accion = ayuda.ventana_ayuda() 
-        function_registo(perfil, accion)
+        # function_registo(perfil, accion)
     elif event == '-MEME-':
         accion = memes.ventana_meme()
         function_registo(perfil, accion)
