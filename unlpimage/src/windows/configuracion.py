@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import os  
 import json
-from src.default.pathing import BASE_PATH
+from src.default.pathing import BASE_PATH, tosave, toload
 from src.default.setup import *
 from src.default.data import read_config
 
@@ -9,9 +9,9 @@ from src.default.data import read_config
 def layout_configuracion():
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
     layout = [[sg.Text('Elegí las carpetas donde querés guardar tus imágenes:\n',**text_format15)],
-             [sg.Text('Repositorio de imagenes:',**text_format10), sg.Text(ruta_repositorio,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-repositorio-')],
-             [sg.Text('Directorio de collage:', **text_format10), sg.Text(ruta_collages,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-collage-')],
-             [sg.Text('Directorio de memes:', **text_format10), sg.Text(ruta_memes,**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-meme-')],
+             [sg.Text('Repositorio de imagenes:',**text_format10), sg.Text(tosave(ruta_repositorio),**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-repositorio-')],
+             [sg.Text('Directorio de collage:', **text_format10), sg.Text(tosave(ruta_collages),**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-collage-')],
+             [sg.Text('Directorio de memes:', **text_format10), sg.Text(tosave(ruta_memes),**text_format8), sg.Push(), sg.FolderBrowse("Seleccionar", **text_format10, key='-ruta-meme-')],
              [ sg.Push(), sg.Submit('Cerrar', key='-CERRAR-', **text_format10), sg.Submit("Guardar", key='-GUARDAR-', **text_format10), sg.Push()]]                    
     return layout
 
@@ -24,6 +24,7 @@ def ventana_configuracion():
     Originalmente, no hay ninguna carpeta guardada por default, pùdiendo de estar forma elegir cualquiera en su computadora.
     """
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
+
     accion = "Entró a ventana de configuracion y no realizó cambios"
     window = sg.Window('Configuración',layout_configuracion())
 
@@ -43,6 +44,9 @@ def ventana_configuracion():
             if values['-ruta-meme-'] != ' ':
                 ruta_memes = values['-ruta-meme-']     
             
+            ruta_repositorio =  tosave(ruta_repositorio)
+            ruta_collages = tosave(ruta_collages)
+            ruta_memes = tosave(ruta_collages)
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collages}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
