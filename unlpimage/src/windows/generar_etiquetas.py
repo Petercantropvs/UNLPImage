@@ -180,7 +180,7 @@ def ventana_etiquetas(perfil):
     
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
-    ventana_etiquetas(photo_path=photo_path)
+    ventana_etiquetas('testrun')
 
 # Estamos teniendo problemas para releer las etiquetas ya guardadas. Creemos que es un problema con el manejo
 # de las keys del diccionario, pero no pudimos resolverlo.

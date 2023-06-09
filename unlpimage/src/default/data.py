@@ -1,7 +1,7 @@
 import json
 from src.default.pathing import BASE_PATH, img_default, tags_path
 from src.default.setup import tags_header
-from PIL import Image, ImageTk, UnidentifiedImageError
+from PIL import Image, ImageTk, ImageOps, UnidentifiedImageError
 import os, mimetypes, io, csv
 
 def read_users():
@@ -37,9 +37,6 @@ def dict_lector():
     '''Es la función encargada de leer el archivo tags.csv y generar el diccionario con sus valores.'''
     metadata = {}
     try:
-        #  with open(os.path.abspath(os.path.join(BASE_PATH,'src','users-data','tags.csv')), 'r') as archivo_csv:
-        #         lector_csv = csv.reader(archivo_csv)
-        #         _, actividades_anteriores = next(lector_csv), list(lector_csv)
          _, actividades_anteriores = manejador_csv(tags_path, modo='r')
     except FileNotFoundError: 
         with open(os.path.join(tags_path), 'x', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
@@ -55,16 +52,9 @@ def dict_lector():
         if img_data:
             path_img = img_data[0]
             metadata[path_img] = dict(zip(tags_header, img_data))
-            # metadata[path_img] = {}
-            # metadata[path_img]['path'] = img_data[0]
-            # metadata[path_img]['descrip'] = img_data[1]
             metadata[path_img]['resolution'] = tuple(img_data[2].strip('\"()').split(', '))
-            # metadata[path_img]['size'] = img_data[3]
-            # metadata[path_img]['mimetype'] = img_data[4]
             metadata[path_img]['tags'] = [str(tag).strip('\'') for tag in img_data[5].strip('\"[]').split(', ')]
-            metadata[path_img]['Agrega tag'], metadata[path_img]['Agrega descripción'] = True, True
-            # metadata[path_img]['last_edit'] = img_data[6]
-            # metadata[path_img]['last_edit_time'] = img_data[7]
+            metadata[path_img]['tiene tag'], metadata[path_img]['Tiene descripción'] = True, True
     return metadata
 
 def crear_clave_imagen():
@@ -76,8 +66,8 @@ def crear_clave_imagen():
     data['tags'] = list()
     data['last user'] = ''
     data['last edit time'] = ''
-    data['Agrega tag'] = False
-    data['Agrega descripción'] = False
+    data['Tiene tag'] = False
+    data['Tiene descripción'] = False
     return data
 
 def tagger(metadata, guardar=False):
@@ -85,13 +75,13 @@ def tagger(metadata, guardar=False):
     sobreescritura = [] #{}
     # data_ya_en_csv = dict_lector()
     # for imagen in metadata.keys():
-    #     if (metadata[imagen]['Agrega tag'] or metadata[imagen]['Agrega descripción']):
+    #     if (metadata[imagen]['Tiene tag'] or metadata[imagen]['Tiene descripción']):
     #         # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
     #         data_imagen = [metadata[imagen][clave] for clave in tags_header]
     #         sobreescritura.append(data_imagen)
         
     for imagen in metadata.values():
-        if (imagen['Agrega tag'] or imagen['Agrega descripción']):
+        if (imagen['Tiene tag'] or imagen['Tiene descripción']):
             # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
             data_imagen = [imagen[clave] for clave in tags_header]
             sobreescritura.append(data_imagen)
@@ -122,7 +112,7 @@ def get_img_data_tags(f, first=False):
         data['size'] = size
         data['mimetype'] =mimetypes.guess_type(f)[0]
         
-        img = img.resize((400,300), Image.ANTIALIAS) #las deforma
+        img = ImageOps.fit(img, (400,300), Image.ANTIALIAS) #las deforma
         # img = img.transform((400,300), Image.Transform.AFFINE) #Image.BICUBIC)
         if first:                     # tkinter is inactive the first time
             bio = io.BytesIO()
