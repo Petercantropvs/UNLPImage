@@ -49,28 +49,26 @@ while True:
     event, values = window.read()
 
     if event == '-CONFIG-':
-        accion = configuracion.ventana_configuracion()
-        function_registo(perfil, accion)
+        configuracion.ventana_configuracion(perfil)
+
     if event == '-PIC-' or event == '-EDIT-':
-        accion = editarperfil.ventana_editarperfil(perfil)
+        editarperfil.ventana_editarperfil(perfil)
         window['-PIC-'].update(data=nuevoperfil.get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png', first = True))
-        function_registo(perfil, accion)
+
     elif event == '-COLLAGE-':
         accion = collage.seleccion_collage(perfil)
         function_registo(perfil, accion)
+
     elif event == '-HELP-':
-        accion = ayuda.ventana_ayuda() 
-        # function_registo(perfil, accion)
+        ayuda.ventana_ayuda() 
+        
     elif event == '-MEME-':
         accion = memes.ventana_meme()
         function_registo(perfil, accion)
 
     elif event == '-TAGS-':
-        # try:
         accion = generar_etiquetas.ventana_etiquetas(perfil)
-        # except NameError:
-        #     print('entré al nameerror')
-        #     generar_etiquetas.ventana_etiquetas()
+
     if event == sg.WIN_CLOSED or event == '-EXIT-':
         accion = 'Cerró sesión'
         function_registo(perfil, accion)

@@ -7,6 +7,7 @@ from src.default.pathing import BASE_PATH
 from src.default.data import read_users
 from src.default.data import get_img_data_profiles as get_img_data
 from src.default.setup import *
+from src import function_registo
     
 
 
@@ -100,7 +101,8 @@ def ventana_editarperfil(perfil):
                            # guardo la imagen
                            Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
                            window.close()
-                           return accion
+                           function_registo(perfil, accion)
+                          # return accion
     
     
                         else:
@@ -125,12 +127,13 @@ def ventana_editarperfil(perfil):
                            # guardo la imagen
                            Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
                            window.close()
-                           return accion
+                           function_registo(perfil, accion)
+                           #return accion
                         break
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
-            accion = "El usuario entro a editar perfil pero no lo editó."
+          #  accion = "El usuario entro a editar perfil pero no lo editó."
             window.close()
-            return accion
+            #return accion
             break
             
     window.close()
