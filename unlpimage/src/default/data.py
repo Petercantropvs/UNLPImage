@@ -83,9 +83,9 @@ def tagger(metadata, guardar=False):
     for imagen in metadata.values():
         if (imagen['tiene tag'] or imagen['tiene descripción']):
             # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
-            data_imagen = [imagen[clave] for clave in tags_header]
+            data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','') for clave in tags_header]
             sobreescritura.append(data_imagen)
-        
+    sobreescritura.sort(key= lambda x: x[7])
     if guardar:
         # Escribir todas las actividades en el archivo csv
         with open(tags_path, 'w', newline='') as archivo_csv:

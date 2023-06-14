@@ -21,7 +21,6 @@ def arbol(parent, directorio, treedata, metadata, tagged_only=False):
         metadata (_type_): _description_
         tagged_only (bool, optional): Si es True, completa el tree con únicamente los objetos que fueron taggeados en metadata. Por defecto este valor es False.
     """
-    print('tagged_only = ', tagged_only)
     if tagged_only:
         def tiene_tags(f):
             return (metadata[os.path.join(directorio, f)]['tags']!=[] if os.path.join(directorio, f) in metadata.keys() else False)
@@ -112,8 +111,7 @@ def ventana_etiquetas(perfil):
                 if ruta_completa not in metadata.keys():
                     # Completo el diccionario de la imagen con valores por defecto:
                     metadata[ruta_completa] = crear_clave_imagen()
-                    print('La imagen no estaba')
-                if not os.path.isdir(ruta_completa): #Se actualiza la imagen cuando no se selecciona un directorio
+                if not os.path.isdir(ruta_completa): # Se actualiza la imagen cuando no se selecciona un directorio
                     try:
                         img, data = get_img_data(ruta_completa, first=True)
                         window['-VISUALIZADOR-'].update(data = img, size = (400,300))
@@ -145,6 +143,7 @@ def ventana_etiquetas(perfil):
                 window['-B2-'].update(disabled=False)
             case '-B1-':
                 metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
+                metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 tags = '#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags'])
                 window['-OUTPUT-'].update(tags)
@@ -156,6 +155,7 @@ def ventana_etiquetas(perfil):
                 realiza_cambios = True
             case '-B2-':
                 metadata[ruta_completa]['description'] = values['-DESCRIP-']
+                metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
                 window['-DESCRIP-'].update('')
@@ -166,9 +166,9 @@ def ventana_etiquetas(perfil):
             case 'Guardar':
                 respuesta = sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
                 if respuesta =='Yes':
-                    imagenes_editadas = list(filter(lambda x :(metadata[x]['tiene tag'] or metadata[x]['tiene descripción']), metadata.keys()))
-                    for ruta in imagenes_editadas:
-                        metadata[ruta]['last user'] = str(perfil)
+                    # imagenes_editadas = list(filter(lambda x :(metadata[x]['tiene tag'] or metadata[x]['tiene descripción']), metadata.keys()))
+                    # for ruta in imagenes_editadas:
+                    #     metadata[ruta]['last user'] = str(perfil)
                     metadata = {ruta: metadata[ruta] for ruta in metadata.keys()}
                     tagger(metadata, guardar=True)
                     accion = 'Guardó información en las imágenes del directorio'
