@@ -1,18 +1,19 @@
 import PySimpleGUI as sg
 import os
-from src.default.pathing import BASE_PATH, templates_path
+from src.default.pathing import BASE_PATH
 from src.default.data import read_config, dict_lector
 from src.default.setup import text_format15, text_format10
 from src.windows.generar_etiquetas import arbol
 # directorio_collages = read_config()[1]
 # relpath = os.path.relpath(os.path.join(dir_imagenes, archivo), start = BASE_PATH)
 
-def imagenes_etiquetadas(parent, imagenes, metadata):
+# def imagenes_etiquetadas(parent, imagenes, metadata):
     
-    dir_imagenes = read_config()[0]
-    for archivo in os.listdir(dir_imagenes):
-        imagenes.Insert(parent, key = archivo, text = archivo, values=[])
-    return imagenes
+#     dir_imagenes = read_config()[0]
+#     for archivo in os.listdir(dir_imagenes):
+#         print(archivo)
+#         imagenes.Insert(parent, key = archivo, text = archivo, values=[])
+#     return imagenes
 
 def cant_botones(num):
     botones = []
@@ -32,9 +33,9 @@ def layout(template, photo_path, metadata):
             botones = cant_botones(5)
     
     treedata = sg.TreeData()
-    arbol('', photo_path, treedata, metadata)
-    left_col = [[sg.Tree(data = treedata,headings= [], auto_size_columns=True, enable_events=True, visible=True, key='-TREE-')],
-                botones,
+    arbol('', photo_path, treedata, metadata, tagged_only=True)
+    left_col = [botones,
+                [sg.Tree(data = treedata,headings= ['Tags'], auto_size_columns=True, enable_events=True, visible=True, key='-TREE-')],
                 [sg.Text('Título:', font = text_format15)],
                 [sg.Input('', enable_events= True, key = '-TITULO-')]]
 

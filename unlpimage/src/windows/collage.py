@@ -38,10 +38,10 @@ def seleccion_collage(perfil):
         event, values = window.read()
         match event:
             case '-L1-' | '-L2-' | '-L3-' | '-L4-' | '-L5-' | '-L6-':
-                print('tomo el evento')
                 print('seleccionó el template '+ event)
+                window.Hide()
                 creacion_collage(template = event)
-                pass
+                window.UnHide()
             case '-ETIQUETAS-':
                 window.hide()
                 accion = ventana_etiquetas(perfil)

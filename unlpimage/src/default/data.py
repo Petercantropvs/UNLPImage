@@ -54,7 +54,7 @@ def dict_lector():
             metadata[path_img] = dict(zip(tags_header, img_data))
             metadata[path_img]['resolution'] = tuple(img_data[2].strip('\"()').split(', '))
             metadata[path_img]['tags'] = [str(tag).strip('\'') for tag in img_data[5].strip('\"[]').split(', ')]
-            metadata[path_img]['tiene tag'], metadata[path_img]['Tiene descripción'] = True, True
+            metadata[path_img]['tiene tag'], metadata[path_img]['tiene descripción'] = True, True
     return metadata
 
 def crear_clave_imagen():
@@ -66,8 +66,8 @@ def crear_clave_imagen():
     data['tags'] = list()
     data['last user'] = ''
     data['last edit time'] = ''
-    data['Tiene tag'] = False
-    data['Tiene descripción'] = False
+    data['tiene tag'] = False
+    data['tiene descripción'] = False
     return data
 
 def tagger(metadata, guardar=False):
@@ -81,7 +81,7 @@ def tagger(metadata, guardar=False):
     #         sobreescritura.append(data_imagen)
         
     for imagen in metadata.values():
-        if (imagen['Tiene tag'] or imagen['Tiene descripción']):
+        if (imagen['tiene tag'] or imagen['tiene descripción']):
             # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
             data_imagen = [imagen[clave] for clave in tags_header]
             sobreescritura.append(data_imagen)
