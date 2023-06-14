@@ -26,7 +26,7 @@ def function_registo(usuario, accion,values = None,texts = None):
             actividades_anteriores.append(['User', 'Action', 'Time', 'Values', 'Texts'])
 
 # Agregar la nueva actividad a la lista
-    nueva_actividad = [usuario, accion, hora_actual]#, values, texts]
+    nueva_actividad = [usuario, accion, hora_actual, values, texts]
     actividades_anteriores.append(nueva_actividad)
 
 
