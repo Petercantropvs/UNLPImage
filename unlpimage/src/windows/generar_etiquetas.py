@@ -177,6 +177,7 @@ def ventana_etiquetas(perfil):
                     window['-B1-'].update(disabled=True)
                     window['-B2-'].update(disabled=True)
                     window['Guardar'].update(disabled=True)
+                    sg.SystemTray.notify('Se ha guardado exitosamente!', 'Ya puedes utilizar estas imágenes para crear collages ;)')
                     
         
         if event in (sg.WIN_CLOSE_ATTEMPTED_EVENT, '-VOLVER-'):
