@@ -4,6 +4,7 @@ import json
 from src.default.pathing import BASE_PATH, tosave, toload
 from src.default.setup import *
 from src.default.data import read_config
+from src import function_registo
 
 
 def layout_configuracion():
@@ -16,7 +17,7 @@ def layout_configuracion():
     return layout
 
 
-def ventana_configuracion():
+def ventana_configuracion(perfil):
     """
     Esta función permite el acceso a la configuración del almacenamiento y manejo de carpetas.
     Los botones permiten elegir cuál será la carpeta de inicio de donde buscar las imágenes (Resositorio de Imágenes),
@@ -48,15 +49,15 @@ def ventana_configuracion():
             ruta_collages = tosave(ruta_collages)
             ruta_memes = tosave(ruta_memes)
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collages}, {"nombre": "Memes", "ruta": ruta_memes}]
-            accion = "Entró a ventana de configuracion y generó cambió las rutas"
+            accion = "Entró a ventana de configuracion y cambió las rutas"
 
             archivo = open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), "w")
-
+            function_registo(perfil, accion)
             json.dump(config_datos, archivo)
             archivo.close()   
             window.close()
             break
-    return accion
+    #return accion
 
 
 if __name__ == "__main__":
