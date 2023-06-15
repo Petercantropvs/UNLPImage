@@ -92,7 +92,7 @@ def layout_fuentes():
              sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','tommy.png'), first = True), key='-tommy-', enable_events=True, metadata=0 ) ]
             ]
     
-    layout = [[sg.Text("Seleccione un template para crear un meme.", **text_format15)],[sg.Column(col_1)], [sg.Column(col_2)],[sg.Button('Volver', key='-VOLVER-')]]
+    layout = [[sg.Text("Seleccione una fuente para crear el meme.", **text_format15)],[sg.Column(col_1)], [sg.Column(col_2)],[sg.Button('Volver', key='-VOLVER-')]]
 
     return layout
 
