@@ -46,7 +46,7 @@ def ventana_configuracion():
             
             ruta_repositorio =  tosave(ruta_repositorio)
             ruta_collages = tosave(ruta_collages)
-            ruta_memes = tosave(ruta_collages)
+            ruta_memes = tosave(ruta_memes)
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collages}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y generó cambió las rutas"
 
