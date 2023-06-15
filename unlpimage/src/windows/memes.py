@@ -46,11 +46,12 @@ def layout_crear_2box():
             [sg.InputText(key='-TEXTO1-')],
             [sg.Text("Cuadro de texto 2")],
             [sg.InputText(key='-TEXTO2-')],
-            [sg.Button("Generar", key='-TEXTOSI_2box-'), sg.Button("Cancelar", key='-TEXTONO-'),]
+            [sg.Button("Generar", key='-TEXTOSI_2box-'), sg.Button("Cancelar", key='-TEXTONO-')],
+            [sg.Button('Volver', key='-VOLVER-')]
             ]
         
     col_2 = [ 
-            [sg.Button('Volver', key='-VOLVER-')],            
+            
             [sg.Image((os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','imagen_con_cuadros_de_texto.png')), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ]
             ]
 
