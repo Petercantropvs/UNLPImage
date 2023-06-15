@@ -1,10 +1,9 @@
 #Genedor de collage:
 import PySimpleGUI as sg
-import json
 import os
 from src.windows.generar_etiquetas import ventana_etiquetas
+from src.windows.crear_collage import creacion_collage
 from src.default.pathing import BASE_PATH, templates_path
-from src.default.data import read_config
 from src.default.setup import text_format15, text_format10
 
 # [sg.Input(), sg.FilesBrowse("Seleccionar imagen", key='-SELECCIONAR-IMAGEN-',font = ('latin modern sansquotation', 10), initial_folder=ruta_repositorio, file_types=(("ALL Files", "*.*"),)), sg.Button('Finalizar',key='-FINSELECCION-',font = ('latin modern sansquotation', 10)) ],
@@ -14,18 +13,19 @@ from src.default.setup import text_format15, text_format10
             #[sg.Input(), sg.FilesBrowse(initial_folder=template_ruta, file_types=('*.png', '*.jpg'),)],
 
 def layout_collage():
-    ruta_repositorio, ruta_collages, ruta_memes = read_config()
-    # breakpoint()
+    templates_1, templates_2 = [[sg.Image(source = os.path.join(templates_path,'template-'+str(i)+'.png'), subsample=2,enable_events=True, key='-L'+str(i)+'-') for i in range(j,j+3)] for j in [1,4]]
+    
     layout = [[sg.Text('Seleccioná el diseño de tu collage:', font = text_format15), sg.Push(), sg.Button('⬅ Volver', font = text_format15, key = '-VOLVER-')],
-              [sg.Column([[sg.Image(source = os.path.join(templates_path,'template-1.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L1-'), 
-                           sg.Image(source = os.path.join(templates_path,'template-2.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L2-'), 
-                           sg.Image(source = os.path.join(templates_path,'template-3.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L3-')],
-                          [sg.Image(source = os.path.join(templates_path,'template-4.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L4-'), 
-                           sg.Image(source = os.path.join(templates_path,'template-5.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L4-'), 
-                           sg.Image(source = os.path.join(templates_path,'template-6.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L6-')]], 
-                          justification='center')],
-              [sg.Text('Recordá que las imágenes deben estar etiquetadas para añadirlas al collage!', font=text_format10)],
-              [sg.VPush()],[sg.Button('Ir a etiquetado 🏷', key = '-ETIQUETAS-')]]
+              [sg.Column([templates_1,templates_2], justification='center')],
+                        #[sg.Image(source = os.path.join(templates_path,'template-1.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L1-'), 
+                        #    sg.Image(source = os.path.join(templates_path,'template-2.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L2-'), 
+                        #    sg.Image(source = os.path.join(templates_path,'template-3.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L3-')],
+                        #   [sg.Image(source = os.path.join(templates_path,'template-4.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L4-'), 
+                        #    sg.Image(source = os.path.join(templates_path,'template-5.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L5-'), 
+                        #    sg.Image(source = os.path.join(templates_path,'template-6.png'), subsample=2,enable_events=True, tooltip='Quiero este!', key='-L6-')]], 
+                        #   justification='center')],
+              [sg.VPush()],[sg.Text('⚠ Recordá que las imágenes deben estar etiquetadas para añadirlas al collage!', font=text_format10)],
+              [sg.Button('Ir a etiquetado 🏷', key = '-ETIQUETAS-')]]
     return layout
 
 def seleccion_collage(perfil):
@@ -35,16 +35,16 @@ def seleccion_collage(perfil):
     y los templates en la carpeta de default (proximamente....). 
     Los collages creados por los usuarios se guardarán en Directorio de collages.
     """
-    window = sg.Window('Crea tu collage', layout_collage(), resizable= True, grab_anywhere= True, finalize=True)
-    window.set_min_size((580,550))
+    window = sg.Window('Seleccioná tu template!', layout_collage(), resizable= True, grab_anywhere= True, finalize=True)
+    window.set_min_size((590,550))
     while True:
         event, values = window.read()
         match event:
-            case ['-L1-', '-L2-', '-L3-', '-L4-', '-L5-', '-L6-']:
-                print('tomo el evento')
+            case '-L1-' | '-L2-' | '-L3-' | '-L4-' | '-L5-' | '-L6-':
                 print('seleccionó el template '+ event)
-                # print(accion)
-                pass
+                window.Hide()
+                creacion_collage(template = event)
+                window.UnHide()
             case '-ETIQUETAS-':
                 window.hide()
                 accion = ventana_etiquetas(perfil)

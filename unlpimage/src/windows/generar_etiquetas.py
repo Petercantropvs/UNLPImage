@@ -10,18 +10,33 @@ from src.default.data import read_config, dict_lector, crear_clave_imagen, tagge
 from src import function_registo
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
-def arbol(parent, directorio, treedata, metadata):
-    '''Esta función construye el objeto treedata que contiene la estructura del tree del directorio seleccionado en configuración
-    como repositorio de imágenes para que el Tree Element de PySimpleGUI pueda leerlo e interpretarlo.'''
+def arbol(parent, directorio, treedata, metadata, tagged_only=False):
+    """arbol construye el objeto treedata que contiene la estructura del tree del directorio seleccionado en configuración
+    como repositorio de imágenes para que el Tree Element de PySimpleGUI pueda leerlo e interpretarlo.
 
-    for archivo in os.listdir(directorio):
+    Args:
+        parent (_type_): _description_
+        directorio (_type_): _description_
+        treedata (_type_): _description_
+        metadata (_type_): _description_
+        tagged_only (bool, optional): Si es True, completa el tree con únicamente los objetos que fueron taggeados en metadata. Por defecto este valor es False.
+    """
+    if tagged_only:
+        def tiene_tags(f):
+            return (metadata[os.path.join(directorio, f)]['tags']!=[] if os.path.join(directorio, f) in metadata.keys() else False)
+        
+        archivos = filter(lambda f: (os.path.isdir(os.path.join(directorio, f)) or tiene_tags(f)), os.listdir(directorio))
+    else:
+        archivos = os.listdir(directorio)
+
+    for archivo in archivos:
         ruta = os.path.join(directorio, archivo)
         
         if os.path.isdir(ruta):    # Si es carpeta
             treedata.Insert(parent, ruta, archivo, values=[], icon=folder_icon)
-            arbol(ruta, ruta, treedata, metadata)
+            arbol(ruta, ruta, treedata, metadata, tagged_only = tagged_only)
         else:
-            if ruta in metadata.keys(): #metadata[ruta]['tags']:
+            if ruta in metadata.keys():
                 tags = '#'+ ', #'.join(tag for tag in metadata[ruta]['tags'])
             else:
                 tags = ''
@@ -75,7 +90,7 @@ def ventana_etiquetas(perfil):
     y otra a la derecha visualizando la imagen que se haya seleccionado en la pantalla de la izquierda. En esta ventana se crean las etiquetas que facilitarán la búsqueda de imagenes
     posteriormente.'''
     accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
-    realiza_cambios = False
+    realiza_cambios, guardo = False, False
     photo_path = read_config()[0]
     metadata = dict_lector() # Cargo lo que ya estaba registrado en el csv
     print(perfil)
@@ -96,8 +111,7 @@ def ventana_etiquetas(perfil):
                 if ruta_completa not in metadata.keys():
                     # Completo el diccionario de la imagen con valores por defecto:
                     metadata[ruta_completa] = crear_clave_imagen()
-                    print('La imagen no estaba')
-                if not os.path.isdir(ruta_completa): #Se actualiza la imagen cuando no se selecciona un directorio
+                if not os.path.isdir(ruta_completa): # Se actualiza la imagen cuando no se selecciona un directorio
                     try:
                         img, data = get_img_data(ruta_completa, first=True)
                         window['-VISUALIZADOR-'].update(data = img, size = (400,300))
@@ -129,41 +143,45 @@ def ventana_etiquetas(perfil):
                 window['-B2-'].update(disabled=False)
             case '-B1-':
                 metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
+                metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
-                window['-OUTPUT-'].update('#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags']))
+                tags = '#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags'])
+                window['-OUTPUT-'].update(tags)
+                window['-TREE-'].update(key=ruta_completa, value=tags)
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['Tiene tag'] = 'Agregó un tag', True
+                accion, metadata[ruta_completa]['tiene tag'] = 'Agregó un tag', True
                 realiza_cambios = True
             case '-B2-':
                 metadata[ruta_completa]['description'] = values['-DESCRIP-']
+                metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
                 window['-DESCRIP-'].update('')
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['Tiene descripción'] = 'Agregó una descripción', True
+                accion, metadata[ruta_completa]['tiene descripción'] = 'Agregó una descripción', True
                 realiza_cambios = True
             case 'Guardar':
                 respuesta = sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
                 if respuesta =='Yes':
-                    print('meta1:\n', metadata,'\n')
-                    imagenes_editadas = list(filter(lambda x :(metadata[x]['Tiene tag'] or metadata[x]['Tiene descripción']), metadata.keys()))
-                    for ruta in imagenes_editadas:
-                        metadata[ruta]['last user'] = str(perfil)
+                    # imagenes_editadas = list(filter(lambda x :(metadata[x]['tiene tag'] or metadata[x]['tiene descripción']), metadata.keys()))
+                    # for ruta in imagenes_editadas:
+                    #     metadata[ruta]['last user'] = str(perfil)
                     metadata = {ruta: metadata[ruta] for ruta in metadata.keys()}
-                    print('meta2:\n', metadata, '\n')
                     tagger(metadata, guardar=True)
                     accion = 'Guardó información en las imágenes del directorio'
+                    guardo = True
                     function_registo(perfil, accion)
                     window['-B1-'].update(disabled=True)
                     window['-B2-'].update(disabled=True)
                     window['Guardar'].update(disabled=True)
+                    sg.SystemTray.notify('Se ha guardado exitosamente!', 'Ya puedes utilizar estas imágenes para crear collages ;)')
                     
         
         if event in (sg.WIN_CLOSE_ATTEMPTED_EVENT, '-VOLVER-'):
-            if realiza_cambios:
+            if realiza_cambios and not guardo:
                 if sg.popup_yes_no('Desea salir sin guardar?') == 'Yes':
                     window.close()
                     accion = 'Descartó modificaciones en las etiquetas'
