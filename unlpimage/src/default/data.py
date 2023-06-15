@@ -150,3 +150,16 @@ def manejador_csv(ruta_archivo, modo = None, data = None):
                 writer_csv = csv.writer(archivo_csv, newline='')
                 writer_csv.writerow([linea for linea in data])
         # lector_csv = csv.reader(archivo_csv)
+
+
+def read_memes():
+    '''Lee la información de los template de memes registrados en template-memes.json'''
+    try:
+       archivo_memes = open(os.path.join(BASE_PATH, 'src', 'users-data', 'template_meme.json'), 'r')
+       datos = json.load(archivo_memes)
+       archivo_memes.close()
+    except FileNotFoundError:
+       datos = {}
+    return datos  
+
+

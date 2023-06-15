@@ -63,8 +63,7 @@ while True:
         ayuda.ventana_ayuda() 
         
     elif event == '-MEME-':
-        accion = memes.ventana_meme()
-        function_registo(perfil, accion)
+        memes.ventana_meme(perfil)
 
     elif event == '-TAGS-':
         accion = generar_etiquetas.ventana_etiquetas(perfil)
