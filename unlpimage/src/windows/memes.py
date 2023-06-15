@@ -11,11 +11,6 @@ from src.windows.funciones_memes import tam_box, entra, calcular_tam_fuente, box
 from src import function_registo
 
 
-ruta_repositorio, ruta_collages, ruta_memes = read_config()
-datos = read_memes()
-templates_path = templates_memes_path
-
-
 ##############################################################################################
 
 def layout_memes_templates():
@@ -113,6 +108,10 @@ def ventana_meme(perfil):
     Una vez presionado Generar, se guardará el meme nuevo.
    
     """
+    ruta_repositorio, ruta_collages, ruta_memes = read_config()
+    datos = read_memes()
+    templates_path = templates_memes_path
+
     confirm = ''
     window = sg.Window('Generador de memes',layout_memes_templates())
     while True:

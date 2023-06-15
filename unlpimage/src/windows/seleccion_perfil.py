@@ -11,14 +11,7 @@ from src.default.data import get_img_data_profiles as get_img_data
 from src.default.setup import *
 
 
-
-datos = read_users()
-perfiles = []
-
-perfiles = list(datos.keys())
-
-
-def layout_inicio():
+def layout_inicio(datos,perfiles):
 
 	imagenes = []
 	
@@ -44,7 +37,13 @@ def ventana_seleccionperfil():
     2) El botón ver más muestra otros perfiles ya creados anterioremente.
     3) Permite generar un nuevo perfil, al clickear la imágen con el signo "+". Este botón, llamará a la funcion nuevoperfil, dentro del progra nuevoperfil.py.
     """
-	window = sg.Window('UNLPImage', layout_inicio())
+
+	datos = read_users()
+	perfiles = []
+	
+	perfiles = list(datos.keys())
+
+	window = sg.Window('UNLPImage', layout_inicio(datos,perfiles))
 	accion = 'Inició sesión.'
 
 	cuadro = []
