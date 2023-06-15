@@ -5,11 +5,13 @@ import json
 from src.default.pathing import BASE_PATH, templates_memes_path
 from src.default.data import read_config
 from src.default.data import read_memes 
+from src.default.data import get_img_data_profiles as get_img_data
 #from generar_etiquetas import arbol
 #from src.windows import generar_etiquetas
 from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
-from src.default.setup import text_format15, text_format10
+from src.default.setup import *
 from src.windows.funciones_memes import tam_box, entra, calcular_tam_fuente, boxes_2, boxes_3
+from src import function_registo
 
 #archivo_memes = open('template_meme.json', 'r')
 #datos = json.load(archivo_memes)
@@ -23,12 +25,21 @@ templates_path = templates_memes_path
 
 def layout_memes_prueba():
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
-    layout = [[sg.Text('Seleccioná el tempate de tu meme:', font = text_format15), sg.Button('⬅ Volver', font = text_format15, key = '-VOLVER-')], 
-            [sg.Image(os.path.join('src', 'default','todos_templates_prueba.png'))],
-            [sg.Button('Seleccionar', key='-GENERAR-')]]
+    col_1 =[
+            [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src', 'default','memes-templates', 'Batman_golpea_robin.png'), first = True), key='Batman_golpea_robin.png', enable_events=True, metadata=0 ),
+             sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates','hide_the_pain_harold.png'), first = True), key='hide_the_pain_harold.png', enable_events=True, metadata=0 ) ]
+            ]
+    
+    
+#images column
+    col_2 = [
+            [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates', 'novio_mira_otra_mujer.png'), first = True), key='novio_mira_otra_mujer.png', enable_events=True, metadata=0 ),
+             sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates','seguro_esta_pensando_en_otra.png'), first = True), key='seguro_esta_pensando_en_otra.png', enable_events=True, metadata=0 ) ]
+            ]
+    
+    layout = [[sg.Text("Seleccione un template para crear un meme.", **text_format15)],[sg.Column(col_1)], [sg.Column(col_2)],[sg.Button('Volver', key='-VOLVER-')]]
+
     return layout
-
-
 ############################################################################################### 
 def layout_crear_2box():
     col_1 = [
@@ -77,7 +88,7 @@ def layout_mostrar():
 
 
 ##############################################################################################
-def ventana_meme():
+def ventana_meme(perfil):
     """ 
     Esta función abre una ventana de Generación de memes. A partir de un template seleccionado, 
     se le permitirá escribir textos en los cuadros de texto marcados en la pantalla 2.
@@ -88,15 +99,17 @@ def ventana_meme():
     while True:
         event1, values1 = window.read()
         if event1 == sg.WINDOW_CLOSED or event1 == '-VOLVER-':
+            window.close()
             break
-        if event1 == '-GENERAR-':
-            folder_path = 'BASE_PATH'
-            file_types = [('Imagen', '*.png'), ('Imagen', '*.jpg')]
-            file_path = sg.popup_get_file('Seleccionar imagen', initial_folder=ruta_repositorio, file_types=file_types)
-            if file_path:
-                image_name = os.path.basename(file_path)
-                print("Imagen seleccionada:", image_name)
-    
+        if event1 == 'Batman_golpea_robin.png' or event1 == 'hide_the_pain_harold.png' or event1 == 'novio_mira_otra_mujer.png' or event1 == 'seguro_esta_pensando_en_otra.png':
+            #folder_path = 'BASE_PATH'
+            #file_types = [('Imagen', '*.png'), ('Imagen', '*.jpg')]
+            #file_path = sg.popup_get_file('Seleccionar imagen', initial_folder=ruta_repositorio, file_types=file_types)
+            #if file_path:
+            #    image_name = os.path.basename(file_path)
+            #    print("Imagen seleccionada:", image_name)
+            file_path = os.path.join(BASE_PATH,'src', 'default','memes-templates', event1)
+            image_name = event1
             color_relleno = (0, 0, 0)  # (R, G, B)
             meme_original = Image.open(file_path) 
             meme_cuadrados = meme_original.copy()
@@ -113,7 +126,7 @@ def ventana_meme():
 
             elif image_name == "seguro_esta_pensando_en_otra.png":
                 resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
-                window = sg.Window('Generar memes', layout_crear_2box())
+                window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
             elif image_name == "novio_mira_otra_mujer.png":
                 resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
@@ -123,8 +136,11 @@ def ventana_meme():
             draw = ImageDraw.Draw(meme_final)
             
             while True:
+                window.Hide()
                 event2, values2 = window_boxes.read()
                 if event2 == sg.WINDOW_CLOSED or event2 == '-VOLVER-' or event2 == '-TEXTONO-':
+                    window_boxes.close()
+                    window.UnHide()
                     break    
             
                 elif event2 == '-TEXTOSI_2box-':
@@ -187,14 +203,25 @@ def ventana_meme():
                 #window_boxes.hide()
 
                 while True:
+                    window_boxes.Hide()
                     event3, values3 = window_mostrar.read()
                     if event3 == sg.WINDOW_CLOSED or event3 == '-VOLVER2-':
+                        window_mostrar.close()
+                        window_boxes.UnHide()
                         break
                         #window_boxes.Unhide()
                     elif event3 == '-GUARDARMEME-':
                         confirm = sg.popup_yes_no('¿Desea guardar la imagen?', title='Guardar imagen')
+                        if confirm == 'No':
+                            window_mostrar.close()
+                            window_boxes.UnHide()
+                            texto1=None
+                            texto2=None
+                            texto3=None
+                            break
                         if confirm == 'Yes':
                             filename = sg.popup_get_text('Ingrese el nombre de archivo:', title='Guardar imagen')
+
                             if filename:
                          # Aquí puedes escribir la lógica para guardar la imagen con el nombre de archivo ingresado
                                 print('Imagen guardada con el nombre:', filename)
@@ -202,24 +229,29 @@ def ventana_meme():
 
                                 Action = 'Generó un meme'
                                 Values = image_name
-
+                                
                                 if image_name == "novio_mira_otra_mujer.png":
                                     Texts = texto1, texto2, texto3
                                 else:
                                     Texts = texto1, texto2
-
-                        break
+                                function_registo(perfil, Action, Values, Texts)
+                                window_mostrar.close()
+                                window_boxes.close()
+                                window.UnHide()
+                                os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
+                                os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','imagen_con_cuadros_de_texto.png'))
+                                break
 
 
                    #window_boxes.UnHide()
-                window_mostrar.close()
-                os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
-                os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','imagen_con_cuadros_de_texto.png'))
-            window_boxes.close()
-        window.close()
+                
+            
+            
+            
+        #window.close()
     
     #window.close()
-    return Action, Values, Texts
+    
 
 
 #
