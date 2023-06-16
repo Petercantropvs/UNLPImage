@@ -4,33 +4,36 @@ from src.default.setup import tags_header
 from PIL import Image, ImageTk, ImageOps, UnidentifiedImageError
 import os, mimetypes, io, csv
 
+def abrir_json(path):
+    '''Me permite abrir cualquier archivo.json, a partir de mandarle la ruta correspondiente'''
+    archivo = open(path, 'r')
+    datos = json.load(archivo)
+    archivo.close()
+    return datos
+
 def read_users():
     '''Lee la información de los usuarios registrados presente en el archivo users.json'''
     try:
-       archivo = open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'r')
-       datos = json.load(archivo)
-       archivo.close()
+        datos = abrir_json(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'))
     except FileNotFoundError:
        datos = {}
     return datos
 
+
 def read_config():
     '''Lee las rutas a los repositorios elegidas por los usuarios'''
     try:
-        with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'r') as config:
-
-            datos = json.load(config)    
-            ruta_repositorio = toload(datos[0]["ruta"])    #--> Ruta de lo que el usuario haya guardado como repositorio de imagenes
-            ruta_collages = toload(datos[1]["ruta"])
-            ruta_memes = toload(datos[2]["ruta"])          #--> Ruta de lo que el usuario haya guardado como direcotrio de memes para guardar los memes ya hechos
+        datos = abrir_json(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'))
+        ruta_repositorio = toload(datos[0]["ruta"])    #--> Ruta de lo que el usuario haya guardado como repositorio de imagenes
+        ruta_collages = toload(datos[1]["ruta"])
+        ruta_memes = toload(datos[2]["ruta"])          #--> Ruta de lo que el usuario haya guardado como direcotrio de memes para guardar los memes ya hechos
     except FileNotFoundError:
          ruta_repositorio, ruta_collages, ruta_memes = '', '', ''
          with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'w') as config:
               config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, 
                               {"nombre": "Collage", "ruta": ruta_collages}, 
                               {"nombre": "Memes", "ruta": ruta_memes}]
-              json.dump(config_datos, config)
-         
+              json.dump(config_datos, archivo)    
     return ruta_repositorio, ruta_collages, ruta_memes
 
 def dict_lector():
@@ -155,9 +158,7 @@ def manejador_csv(ruta_archivo, modo = None, data = None):
 def read_memes():
     '''Lee la información de los template de memes registrados en template-memes.json'''
     try:
-       archivo_memes = open(os.path.join(BASE_PATH, 'src', 'users-data', 'template_meme.json'), 'r')
-       datos = json.load(archivo_memes)
-       archivo_memes.close()
+        datos = abrir_json(os.path.join(BASE_PATH,'src', 'users-data','template_meme.json'))
     except FileNotFoundError:
        datos = {}
     return datos  
