@@ -73,59 +73,59 @@ def ventana_seleccionperfil():
 			j=0
 		if i >= len(perfiles):
 			i=0
-
-		if event == '-CREAR-':
-			try:
-				window.Hide()
-				perfil, accion = nuevoperfil.ventana_nuevoperfil() 
-				event_seleccion = event
-				window.UnHide()
-				window.close()
-				break
-			except AttributeError:
-				print('Hola')
+		match event:
+			case '-CREAR-':
+				try:
+					window.Hide()
+					perfil, accion = nuevoperfil.ventana_nuevoperfil() 
+					event_seleccion = event
+					window.UnHide()
+					window.close()
+					break
+				except AttributeError:
+					print('Hola')
+					perfil = None
+					event_seleccion = event
+					accion = None
+					window.UnHide()
+					continue
+				finally:
+					return perfil, event_seleccion, accion
+			case '-MAS-':
+				if len(perfiles)>3:
+					window[j].update(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfiles[i]+'.png'), first = True))
+					cuadro[j] = perfiles[i]
+					i = i+1
+					j = j+1
+				else:
+					sg.popup_ok('No hay más perfiles para mostrar', title='UNLPImage')  
+			case sg.WIN_CLOSED :
 				perfil = None
 				event_seleccion = event
 				accion = None
-				window.UnHide()
-				continue
-			finally:
 				return perfil, event_seleccion, accion
-		if event == '-MAS-':
-			if len(perfiles)>3:
-				window[j].update(data=get_img_data(os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfiles[i]+'.png'), first = True))
-				cuadro[j] = perfiles[i]
-				i = i+1
-				j = j+1
-			else:
-				sg.popup_ok('No hay más perfiles para mostrar', title='UNLPImage')  
-		if event == sg.WIN_CLOSED :
-			perfil = None
-			event_seleccion = event
-			accion = None
-			return perfil, event_seleccion, accion
-			break
-		if event == 0:
-			perfil = cuadro[0]
-			event_seleccion = event
-			window.close()
-			return perfil, event_seleccion, accion
-			
-			break
-		if event == 1:
-			perfil = cuadro[1]
-			event_seleccion = event
-			window.close()
-			return perfil, event_seleccion, accion
-
-			break
-		if event == 2:
-			perfil = cuadro[2]
-			event_seleccion = event
-			window.close()
-			return perfil, event_seleccion, accion
-
-			break
+				break
+			case 0:
+				perfil = cuadro[0]
+				event_seleccion = event
+				window.close()
+				return perfil, event_seleccion, accion
+				
+				break
+			case 1:
+				perfil = cuadro[1]
+				event_seleccion = event
+				window.close()
+				return perfil, event_seleccion, accion
+	
+				break
+			case 2:
+				perfil = cuadro[2]
+				event_seleccion = event
+				window.close()
+				return perfil, event_seleccion, accion
+	
+				break
 	window.close()
 
 if __name__ == '__main__':

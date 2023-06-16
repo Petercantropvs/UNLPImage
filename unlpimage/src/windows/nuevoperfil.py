@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import json
 from src.default.pathing import BASE_PATH
-from src.default.data import read_users
+from src.default.data import read_users, check_campos
 from src.default.data import get_img_data_profiles as get_img_data
 from src.default.setup import *
 
@@ -54,84 +54,75 @@ def ventana_nuevoperfil():
         event, user = window.read()
         
         usuarios = read_users()
-   
-        if event == '-PIC-':
-            ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
-            try:
-                window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
-            except AttributeError:
-                ruta_foto = os.path.join(BASE_PATH,'src','default','perfil_vacio.png')
-                
-        if event == '-OTRO-' :
-            window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
-        if event == '-OK-':
-            if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
-                sg.popup_ok('Todos los campos son obligatorios', title='Error!')
-    
-            if str(user['-NICK-']).lower() in str(usuarios).lower():
-                if user['-NICK-'] != '':
-                    sg.popup_ok('El nick o alias ya está utilizado', title='Error!')   
-            else:
-
+        match event:
+            case '-PIC-':
+                ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
                 try:
-                    age=int(user['-AGE-'])
-                except ValueError:
-                    sg.popup_ok('Ingrese un número para la edad', title='Error!')   
-                else:
+                    window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
+                except AttributeError:
+                    ruta_foto = os.path.join(BASE_PATH,'src','default','perfil_vacio.png')
+                
+            case '-OTRO-' :
+                window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
+            case '-OK-':
+
+                ok = check_campos(user,usuarios)
+           
+                if ok :
                     with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
                         if user['-OTRO-']:
-                           usuarios[user['-NICK-']] = {
-                           "nombre": user['-NAME-'],
-                           "edad": user['-AGE-'],
-                           "genero": user['-NEW-']} 
+                            usuarios[user['-NICK-']] = {
+                            "nombre": user['-NAME-'],
+                            "edad": user['-AGE-'],
+                            "genero": user['-NEW-']} 
     
-                           json.dump(usuarios, u)
-                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
-                           Image1 = Image.open(ruta_foto)
+                            json.dump(usuarios, u)
+                            os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                            Image1 = Image.open(ruta_foto)
 
-                           # hago una copia de la imagen así
-                           # la original no se ve afectada
-                           Image1copy = Image1.copy()
-                           Image2 = Image.open(ruta_foto)
-                           Image2copy = Image2.copy()
+                            # hago una copia de la imagen así
+                            # la original no se ve afectada
+                            Image1copy = Image1.copy()
+                            Image2 = Image.open(ruta_foto)
+                            Image2copy = Image2.copy()
+    
+                            # pego la imagen dando dimensiones
+                            Image1copy.paste(Image2copy, (0, 0))
      
-                           # pego la imagen dando dimensiones
-                           Image1copy.paste(Image2copy, (0, 0))
-     
-                           # guardo la imagen
-                           Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                           perfil = user['-NICK-']
-                           window.close()
-                           u.close()
-                           return perfil, accion
-                           
+                            # guardo la imagen
+                            Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                            perfil = user['-NICK-']
+                            window.close()
+                            u.close()
+                            return perfil, accion
+                       
     
     
                         else:
-                           usuarios[user['-NICK-']] = {
-                           "nombre": user['-NAME-'],
-                           "edad": user['-AGE-'],
-                           "genero": user['-GEN-']} 
+                            usuarios[user['-NICK-']] = {
+                            "nombre": user['-NAME-'],
+                            "edad": user['-AGE-'],
+                            "genero": user['-GEN-']} 
 
-                           json.dump(usuarios, u)
-                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
-                           Image1 = Image.open(ruta_foto)
+                            json.dump(usuarios, u)
+                            os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                            Image1 = Image.open(ruta_foto)
 
-                           #hago una copia de la imagen así
-                           # la original no se ve afectada
-                           Image1copy = Image1.copy()
-                           Image2 = Image.open(ruta_foto)
-                           Image2copy = Image2.copy()
+                            #hago una copia de la imagen así
+                            # la original no se ve afectada
+                            Image1copy = Image1.copy()
+                            Image2 = Image.open(ruta_foto)
+                            Image2copy = Image2.copy()
      
-                           # pego la imagen dando dimensiones
-                           Image1copy.paste(Image2copy, (0, 0))
+                            # pego la imagen dando dimensiones
+                            Image1copy.paste(Image2copy, (0, 0))
      
-                           # guardo la imagen
-                           Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                           perfil = user['-NICK-']
-                           window.close()
-                           u.close()
-                           return perfil, accion
+                            # guardo la imagen
+                            Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                            perfil = user['-NICK-']
+                            window.close()
+                            u.close()
+                            return perfil, accion
                            
                         break
                         
