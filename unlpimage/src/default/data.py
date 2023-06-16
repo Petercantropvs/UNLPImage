@@ -3,6 +3,7 @@ from src.default.pathing import BASE_PATH, img_default, tags_path, tosave, toloa
 from src.default.setup import tags_header
 from PIL import Image, ImageTk, ImageOps, UnidentifiedImageError
 import os, mimetypes, io, csv
+import PySimpleGUI as sg
 
 def abrir_json(path):
     '''Me permite abrir cualquier archivo.json, a partir de mandarle la ruta correspondiente'''
@@ -19,6 +20,23 @@ def read_users():
        datos = {}
     return datos
 
+def check_campos(user,usuarios):
+    ok=True
+    if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
+        sg.popup_ok('Todos los campos son obligatorios', title='Error!')
+        ok= False
+    if str(user['-NICK-']).lower() in str(usuarios).lower():
+        if user['-NICK-'] != '':
+            sg.popup_ok('El nick o alias ya está utilizado', title='Error!')  
+            ok= False 
+    else:
+
+        try:
+            age=int(user['-AGE-'])
+        except ValueError:
+            sg.popup_ok('Ingrese un número para la edad', title='Error!')   
+            ok= False
+    return ok
 
 def read_config():
     '''Lee las rutas a los repositorios elegidas por los usuarios'''
