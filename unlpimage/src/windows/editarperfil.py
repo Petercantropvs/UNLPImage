@@ -69,7 +69,7 @@ def ventana_editarperfil(perfil):
                 window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
             case '-OK-':
 
-                ok = check_campos(user,usuarios)
+                ok = check_campos(user,usuarios, edit=True)
              
                 if ok:
                     with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:

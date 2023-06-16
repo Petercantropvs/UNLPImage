@@ -20,15 +20,17 @@ def read_users():
        datos = {}
     return datos
 
-def check_campos(user,usuarios):
+def check_campos(user,usuarios,edit=False):
     ok=True
+    if edit == False:  
+        if str(user['-NICK-']).lower() in str(usuarios).lower():
+            if user['-NICK-'] != '':
+                sg.popup_ok('El nick o alias ya está utilizado', title='Error!')  
+                ok= False 
     if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
         sg.popup_ok('Todos los campos son obligatorios', title='Error!')
         ok= False
-    if str(user['-NICK-']).lower() in str(usuarios).lower():
-        if user['-NICK-'] != '':
-            sg.popup_ok('El nick o alias ya está utilizado', title='Error!')  
-            ok= False 
+    
     else:
 
         try:
