@@ -50,7 +50,7 @@ def dict_lector():
     
     for img_data in actividades_anteriores:
         if img_data:
-            path_img = img_data[0]
+            path_img = toload(img_data[0])
             metadata[path_img] = dict(zip(tags_header, img_data))
             metadata[path_img]['resolution'] = tuple(img_data[2].strip('\"()').split(', '))
             metadata[path_img]['tags'] = [str(tag).strip('\'') for tag in img_data[5].strip('\"[]').split(', ')]
@@ -84,6 +84,7 @@ def tagger(metadata, guardar=False):
         if (imagen['tiene tag'] or imagen['tiene descripción']):
             # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
             data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','') for clave in tags_header]
+            data_imagen[0] = tosave(data_imagen[0])
             sobreescritura.append(data_imagen)
     sobreescritura.sort(key= lambda x: x[7])
     if guardar:

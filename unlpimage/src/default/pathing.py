@@ -11,11 +11,33 @@ folder_icon = b'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAAL
 file_icon = b'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAABU0lEQVQ4y52TzStEURiHn/ecc6XG54JSdlMkNhYWsiILS0lsJaUsLW2Mv8CfIDtr2VtbY4GUEvmIZnKbZsY977Uwt2HcyW1+dTZvt6fn9557BGB+aaNQKBR2ifkbgWR+cX13ubO1svz++niVTA1ArDHDg91UahHFsMxbKWycYsjze4muTsP64vT43v7hSf/A0FgdjQPQWAmco68nB+T+SFSqNUQgcIbN1bn8Z3RwvL22MAvcu8TACFgrpMVZ4aUYcn77BMDkxGgemAGOHIBXxRjBWZMKoCPA2h6qEUSRR2MF6GxUUMUaIUgBCNTnAcm3H2G5YQfgvccYIXAtDH7FoKq/AaqKlbrBj2trFVXfBPAea4SOIIsBeN9kkCwxsNkAqRWy7+B7Z00G3xVc2wZeMSI4S7sVYkSk5Z/4PyBWROqvox3A28PN2cjUwinQC9QyckKALxj4kv2auK0xAAAAAElFTkSuQmCC'
 
 def tosave(path):
-	path_rel = os.path.relpath(path, start = BASE_PATH)
-	path_gen = path_rel.replace(os.path.sep, "/")
+	"""Traduce paths absolutos en el SO que esté ejecutando el programa a paths relativos con / como separador canónico.
+
+	Args:
+		path (path or str): path de interés a traducir.
+
+	Returns:
+		path_rel or str: path relativo si path tenía un valor inicial. En caso contrario, devuelve el path relativo a la carpeta en la que esté guardado el proyecto (..).
+	"""	
+	if path:
+		path_rel = os.path.relpath(path, start = BASE_PATH)
+		path_gen = path_rel.replace(os.path.sep, "/")
+	else:
+		path_gen = '..'
 	return path_gen
 
 def toload(path):
-	path_sys = path.replace("/", os.path.sep)
-	path_abs = os.path.abspath(os.path.join(BASE_PATH, path_sys))
+	"""Carga paths relativos guardados desde cualquier sistema operativo y los traduce para que python pueda interpretarlos en el SO en que se esté ejecutando.
+
+	Args:
+		path (path or str): path de interés a ejecutar.
+
+	Returns:
+		path or str: path absoluto si path tenía un valor inicial. Caso contrario, devuelve un string vacío.
+	"""	
+	if path:
+		path_sys = path.replace("/", os.path.sep)
+		path_abs = os.path.abspath(os.path.join(BASE_PATH, path_sys))
+	else:
+		path_abs = ''
 	return path_abs

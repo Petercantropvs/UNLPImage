@@ -93,7 +93,7 @@ def ventana_etiquetas(perfil):
     realiza_cambios, guardo = False, False
     photo_path = read_config()[0]
     metadata = dict_lector() # Cargo lo que ya estaba registrado en el csv
-    print(perfil)
+
     if not photo_path:
         photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
         if not os.path.exists(os.path.abspath(photo_path)):
