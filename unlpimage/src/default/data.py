@@ -62,22 +62,24 @@ def dict_lector():
     try:
          _, actividades_anteriores = manejador_csv(tags_path, modo='r')
     except FileNotFoundError: 
-        with open(os.path.join(tags_path), 'x', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
+        with open(tags_path, 'x', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
             writer = csv.writer(archivo_csv)
             writer.writerow(tags_header)
-        print('No se encontró tags.csv. Creado archivo nuevo.')
+        # No se encontró tags.csv. Creado archivo nuevo.
         return metadata
     except IndexError:
-        print('El csv está vacío. Se devuelve diccionario vacío.')
+        # 'El csv está vacío. Se devuelve diccionario vacío.
         return metadata
     
     for img_data in actividades_anteriores:
         if img_data:
-            path_img = img_data[0]
+            path_img = toload(img_data[0])
             metadata[path_img] = dict(zip(tags_header, img_data))
+            metadata[path_img]['path'] = path_img
             metadata[path_img]['resolution'] = tuple(img_data[2].strip('\"()').split(', '))
             metadata[path_img]['tags'] = [str(tag).strip('\'') for tag in img_data[5].strip('\"[]').split(', ')]
             metadata[path_img]['tiene tag'], metadata[path_img]['tiene descripción'] = True, True
+            metadata[path_img]['imagen nueva'] = False
     return metadata
 
 def crear_clave_imagen():
@@ -91,30 +93,25 @@ def crear_clave_imagen():
     data['last edit time'] = ''
     data['tiene tag'] = False
     data['tiene descripción'] = False
+    data['imagen nueva'] = True
     return data
 
-def tagger(metadata, guardar=False):
+def tagger(metadata):
     '''Es la función encargada de escribir el archivo tags.csv.'''
-    sobreescritura = [] #{}
-    # data_ya_en_csv = dict_lector()
-    # for imagen in metadata.keys():
-    #     if (metadata[imagen]['Tiene tag'] or metadata[imagen]['Tiene descripción']):
-    #         # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
-    #         data_imagen = [metadata[imagen][clave] for clave in tags_header]
-    #         sobreescritura.append(data_imagen)
+    sobreescritura = []
         
     for imagen in metadata.values():
         if (imagen['tiene tag'] or imagen['tiene descripción']):
-            # sobreescritura = sobreescritura | metadata[imagen] # Agrego la info de la img
             data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','') for clave in tags_header]
+            data_imagen[0] = tosave(data_imagen[0])
             sobreescritura.append(data_imagen)
     sobreescritura.sort(key= lambda x: x[7])
-    if guardar:
-        # Escribir todas las actividades en el archivo csv
-        with open(tags_path, 'w', newline='') as archivo_csv:
-            escritor_csv = csv.writer(archivo_csv)
-            escritor_csv.writerow(tags_header)
-            escritor_csv.writerows(sobreescritura)
+
+    # Escribe todas las actividades en el archivo csv
+    with open(tags_path, 'w', newline='') as archivo_csv:
+        escritor_csv = csv.writer(archivo_csv)
+        escritor_csv.writerow(tags_header)
+        escritor_csv.writerows(sobreescritura)
 
 def get_img_data_tags(f, first=False):
     """Genera los datos de la imagen para poder visualizarlo en la ventana.
@@ -130,7 +127,7 @@ def get_img_data_tags(f, first=False):
         else:
             size = str(round(os.path.getsize(f)*(9.537e-7), 1)) + ' MB'
         data = {}
-        data['path'] =  os.path.abspath(f)
+        data['path'] =  os.path.abspath(f) #toload(f) #os.path.abspath(f)
         data['resolution'] = img.size 
         data['size'] = size
         data['mimetype'] =mimetypes.guess_type(f)[0]

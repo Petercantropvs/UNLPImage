@@ -1,5 +1,3 @@
-# Etiquetas
-
 import PySimpleGUI as sg
 from PIL import UnidentifiedImageError
 import os
@@ -8,6 +6,7 @@ from src.default.pathing import BASE_PATH, img_default, folder_icon, file_icon
 from src.default.data import get_img_data_tags as get_img_data
 from src.default.data import read_config, dict_lector, crear_clave_imagen, tagger
 from src import function_registo
+from functools import reduce
 
 # Función para construir el treedata (carpetas, subcarpetas y archivos)
 def arbol(parent, directorio, treedata, metadata, tagged_only=False):
@@ -93,7 +92,7 @@ def ventana_etiquetas(perfil):
     realiza_cambios, guardo = False, False
     photo_path = read_config()[0]
     metadata = dict_lector() # Cargo lo que ya estaba registrado en el csv
-    print(perfil)
+
     if not photo_path:
         photo_path = os.path.join(BASE_PATH, 'src', 'default', 'tree-empty')
         if not os.path.exists(os.path.abspath(photo_path)):
@@ -105,12 +104,13 @@ def ventana_etiquetas(perfil):
         event, values = window.read()
         match event:
             case '-TREE-':
+
                 ruta_relativa = os.path.relpath(str(values['-TREE-']).strip('\'[]'), start = photo_path)
                 ruta_completa = os.path.abspath(os.path.join(photo_path, ruta_relativa))
-                
                 if ruta_completa not in metadata.keys():
                     # Completo el diccionario de la imagen con valores por defecto:
                     metadata[ruta_completa] = crear_clave_imagen()
+                
                 if not os.path.isdir(ruta_completa): # Se actualiza la imagen cuando no se selecciona un directorio
                     try:
                         img, data = get_img_data(ruta_completa, first=True)
@@ -142,38 +142,41 @@ def ventana_etiquetas(perfil):
             case '-DESCRIP-':
                 window['-B2-'].update(disabled=False)
             case '-B1-':
-                metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
-                metadata[ruta_completa]['last user'] = str(perfil)
-                metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 tags = '#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags'])
                 window['-OUTPUT-'].update(tags)
                 window['-TREE-'].update(key=ruta_completa, value=tags)
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['tiene tag'] = 'Agregó un tag', True
-                realiza_cambios = True
-            case '-B2-':
-                metadata[ruta_completa]['description'] = values['-DESCRIP-']
+
+                metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
                 metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
+                metadata[ruta_completa]['tiene tag'] = True
+
+                realiza_cambios = True
+
+            case '-B2-':
                 window['-DESCRIPOUT-'].update(values['-DESCRIP-'])
                 window['-DESCRIP-'].update('')
                 window['-B2-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                accion, metadata[ruta_completa]['tiene descripción'] = 'Agregó una descripción', True
+                
+                metadata[ruta_completa]['description'] = values['-DESCRIP-']
+                metadata[ruta_completa]['last user'] = str(perfil)
+                metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
+                metadata[ruta_completa]['tiene descripción'] = True
+
                 realiza_cambios = True
+
             case 'Guardar':
                 respuesta = sg.popup_yes_no('Seguro que desea guardar?', title = '💾')
                 if respuesta =='Yes':
-                    # imagenes_editadas = list(filter(lambda x :(metadata[x]['tiene tag'] or metadata[x]['tiene descripción']), metadata.keys()))
-                    # for ruta in imagenes_editadas:
-                    #     metadata[ruta]['last user'] = str(perfil)
+
+                    manejo_del_evento(perfil, metadata)
                     metadata = {ruta: metadata[ruta] for ruta in metadata.keys()}
-                    tagger(metadata, guardar=True)
-                    accion = 'Guardó información en las imágenes del directorio'
+                    tagger(metadata)
                     guardo = True
-                    function_registo(perfil, accion)
                     window['-B1-'].update(disabled=True)
                     window['-B2-'].update(disabled=True)
                     window['Guardar'].update(disabled=True)
@@ -182,23 +185,40 @@ def ventana_etiquetas(perfil):
         
         if event in (sg.WIN_CLOSE_ATTEMPTED_EVENT, '-VOLVER-'):
             if realiza_cambios and not guardo:
-                if sg.popup_yes_no('Desea salir sin guardar?') == 'Yes':
+                if sg.popup_yes_no('Desea salir sin guardar?', title=None) == 'Yes':
                     window.close()
-                    accion = 'Descartó modificaciones en las etiquetas'
+                    accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
                     function_registo(perfil, accion)
-                    return accion
                     break
             else:
                 window.close()
-                return accion
                 break
 
        
     window.close()
+
+def manejo_del_evento(perfil:str, metadata:dict) -> None:
+    """Determina a partir de los booleanos img['tiene tag'], img['tiene descripción'] y img['imagen nueva'] si de todas las imágenes que han sido etiquetadas en esta sesión hay alguna que no haya sido clasificada previamente.
+
+    Args:
+        perfil (str): Nickname del usuario que ejecuta el programa
+        metadata (dict): Diccionario que contiene los booleanos a utilizar.
+    """
     
+    imagenes_etiquetadas = filter(lambda img: (img['tiene tag'] or img['tiene descripción']), metadata.values())
+    try:
+        hay_imgs_nuevas = reduce(lambda x,y : x or y, (img['imagen nueva'] for img in imagenes_etiquetadas))
+    except TypeError:
+        # El csv estaba vacío, por ende metadata también y el objeto reduce no puede iterar sobre un objeto vacío
+        hay_imgs_nuevas = True
+
+    if hay_imgs_nuevas:
+        accion = 'Guardó información nueva en las imágenes del directorio'
+    else:
+        accion = 'Modificó información en las imágenes del directorio'
+    function_registo(perfil, accion)
+
+
 if __name__ == '__main__':
     photo_path = sg.PopupGetFolder('Por favor, seleccione la carpeta de imágenes')
     ventana_etiquetas('testrun')
-
-# Estamos teniendo problemas para releer las etiquetas ya guardadas. Creemos que es un problema con el manejo
-# de las keys del diccionario, pero no pudimos resolverlo.
