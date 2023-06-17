@@ -53,7 +53,7 @@ def read_config():
               config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, 
                               {"nombre": "Collage", "ruta": ruta_collages}, 
                               {"nombre": "Memes", "ruta": ruta_memes}]
-              json.dump(config_datos, archivo)    
+              json.dump(config_datos, config)    
     return ruta_repositorio, ruta_collages, ruta_memes
 
 def dict_lector():
@@ -102,7 +102,8 @@ def tagger(metadata):
         
     for imagen in metadata.values():
         if (imagen['tiene tag'] or imagen['tiene descripción']):
-            data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','') for clave in tags_header]
+            #data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','') for clave in tags_header]
+            data_imagen = [str(imagen[clave]).replace('\'', '').replace('\"','').replace('[', '').replace(']', '') for clave in tags_header]
             data_imagen[0] = tosave(data_imagen[0])
             sobreescritura.append(data_imagen)
     sobreescritura.sort(key= lambda x: x[7])

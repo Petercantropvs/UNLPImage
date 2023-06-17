@@ -148,12 +148,10 @@ def ventana_etiquetas(perfil):
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-
                 metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
                 metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 metadata[ruta_completa]['tiene tag'] = True
-
                 realiza_cambios = True
 
             case '-B2-':
@@ -187,8 +185,8 @@ def ventana_etiquetas(perfil):
             if realiza_cambios and not guardo:
                 if sg.popup_yes_no('Desea salir sin guardar?', title=None) == 'Yes':
                     window.close()
-                    accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
-                    function_registo(perfil, accion)
+                    #accion = 'Abrió la ventana de etiquetas pero no generó etiquetas'
+                    #function_registo(perfil, accion)
                     break
             else:
                 window.close()

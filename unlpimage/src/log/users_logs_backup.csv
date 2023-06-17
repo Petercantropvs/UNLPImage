@@ -1,0 +1,86 @@
+User,Action,Time,Values,Texts
+Aragorn,Creo nuevo perfil.,05-06-23 13:52:55,,
+Aragorn,Abrió la ventana de etiquetas pero no generó etiquetas,05-06-23 13:53:11,,
+Aragorn,Cambió la configuración,05-06-23 13:53:31,,
+Aragorn,Modificó información en las imágenes del directorio,05-06-23 13:54:12,,
+Aragorn,Guardó información nueva en las imágenes del directorio,12-06-23 13:54:44,,
+Aragorn,Guardó información nueva en las imágenes del directorio,13-06-23 13:54:44,,
+Aragorn,Guardó información nueva en las imágenes del directorio,14-06-23 13:54:44,,
+Aragorn,Guardó información nueva en las imágenes del directorio,05-06-23 13:57:06,,
+Aragorn,Guardó información nueva en las imágenes del directorio,05-06-23 13:57:34,,
+Aragorn,Modificó información en las imágenes del directorio,05-06-23 13:58:12,,
+Aragorn,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:41,,
+Aragorn,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:42,,
+Aragorn,Cerró sesión,05-06-23 13:58:43,,
+Aragorn,El usuario editó su perfil.,05-06-23 14:01:12,,
+Aragorn,El usuario editó su perfil.,05-06-23 14:02:00,,
+Aragorn,Creó un meme,15-06-23 14:02:02,['messi-copa.jpg'],El mejor de todos
+Aragorn,Creó un meme,08-06-23 14:02:05,['comida.jpg'],Los recuerdos de Pippin
+Aragorn,Creó un collage,09-06-23 14:03:36,"['diego.png',  'messi-copa.jpg']",Siempre los mejores
+Merry,Creo nuevo perfil.,05-06-23 13:52:55,,
+Merry,Abrió la ventana de etiquetas pero no generó etiquetas,05-06-23 13:53:11,,
+Merry,Cambió la configuración,05-06-23 13:53:31,,
+Merry,Modificó información en las imágenes del directorio,05-06-23 13:54:12,,
+Merry,Creó un collage,12-06-23 13:54:44,"['diego.png',  'messi-copa.jpg']",
+Merry,Creó un collage,13-06-23 13:54:44,"['anillo.jpeg', 'comarca.gif']",
+Merry,Modificó información en las imágenes del directorio,14-06-23 13:54:44,,
+Merry,Guardó información nueva en las imágenes del directorio,05-06-23 13:57:06,,
+Merry,Cambió la configuración,05-06-23 13:57:34,,
+Merry,Cambió la configuración,05-06-23 13:58:12,,
+Merry,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:41,,
+Merry,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:42,,
+Merry,Cerró sesión,05-06-23 13:58:43,,
+Merry,El usuario editó su perfil.,05-06-23 14:01:12,,
+Merry,El usuario editó su perfil.,05-06-23 14:02:00,,
+Merry,Creó un meme,15-06-23 14:02:02,['anillo.jpeg'],Se me cayeron los anillos
+Merry,Creó un meme,08-06-23 14:02:05,['sombrero2.jpg'],El amigo de Gandalf
+Merry,Creó un collage,09-06-23 14:03:36,"['anillo.jpeg', 'comarca.gif']",Recuerdos de las vacaciones
+Frodo,Creo nuevo perfil.,05-06-23 13:52:55,,
+Frodo,Abrió la ventana de etiquetas pero no generó etiquetas,05-06-23 13:53:11,,
+Frodo,Cambió la configuración,05-06-23 13:53:31,,
+Frodo,Modificó información en las imágenes del directorio,05-06-23 13:54:12,,
+Frodo,Creó un collage,12-06-23 13:54:44,"['anillo.jpeg', 'comarca.gif', 'magia.jpeg']",Viajecito
+Frodo,Creó un collage,13-06-23 13:54:44,"['messi-copa.jpg', 'diego.png', 'maradona-imagen-tyc.jpg']",Fulbito
+Frodo,Modificó información en las imágenes del directorio,14-06-23 13:54:44,,
+Frodo,Guardó información nueva en las imágenes del directorio,05-06-23 13:57:06,,
+Frodo,Cambió la configuración,05-06-23 13:57:34,,
+Frodo,Cambió la configuración,05-06-23 13:58:12,,
+Frodo,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:41,,
+Frodo,Guardó información nueva en las imágenes del directorio,05-06-23 13:58:42,,
+Galadriel,Abrió la ventana de etiquetas pero no generó etiquetas,12-06-23 13:54:44,,
+Galadriel,Cambió la configuración,13-06-23 13:54:44,,
+Galadriel,Modificó información en las imágenes del directorio,14-06-23 13:54:44,,
+Galadriel,Creó un collage,12-06-23 13:54:44,"['iguazu.jpg' , 'aconcagua.jpg', 'comarca.jpg']",Paisajes
+Galadriel,Creó un collage,13-06-23 13:54:44,"['messi-copa.jpg', 'diego.png']",Argentina
+Galadriel,Modificó información en las imágenes del directorio,09-06-23 13:54:44,,
+Galadriel,Guardó información nueva en las imágenes del directorio,10-06-23 13:54:44,,
+Galadriel,Cambió la configuración,13-06-23 13:54:44,,
+Galadriel,Creó un meme,14-06-23 13:54:44,"['maradona-imagen-tyc.jpg', 'messi-copa.jpg', 'diego.png']",Estiloso
+Galadriel,Guardó información nueva en las imágenes del directorio,14-06-23 13:54:44,,
+Aragorn,Inició sesión.,07-06-23 16:38:20
+Aragorn,Cerró sesión,07-06-23 16:38:29
+Merry,Inició sesión.,07-06-23 16:38:34
+Merry,Entró a ventana de Ayuda,07-06-23 16:38:40
+Merry,Entró a ventana de configuracion y no realizó cambios,07-06-23 16:38:43
+Merry,Entró a generar un meme y no lo generó.,07-06-23 16:38:45
+Merry,Abrió la ventana de etiquetas pero no generó etiquetas,07-06-23 16:38:48
+Merry,Cerró sesión,07-06-23 16:38:48
+Frodo,Inició sesión.,07-06-23 16:44:37
+Frodo,El usuario entro a editar perfil pero no lo editó.,07-06-23 16:44:48
+Frodo,El usuario entro a editar perfil pero no lo editó.,07-06-23 16:44:50
+Frodo,Cerró sesión,07-06-23 16:44:52
+Aragorn,Inició sesión.,13-06-23 21:58:08
+Aragorn,Entró a ventana de configuracion y generó cambió las rutas,13-06-23 21:58:39
+Aragorn,Entró a ventana de configuracion y generó cambió las rutas,13-06-23 21:58:57
+Aragorn,Entró a ventana de configuracion y no realizó cambios,13-06-23 21:59:14
+Aragorn,Entró a generar un meme y no lo generó.,13-06-23 21:59:19
+Aragorn,Inició sesión.,13-06-23 21:59:40
+Aragorn,Entró a ventana de configuracion y generó cambió las rutas,13-06-23 22:00:01
+Aragorn,Entró a ventana de configuracion y no realizó cambios,13-06-23 22:00:13
+Aragorn,Entró a ventana de configuracion y generó cambió las rutas,13-06-23 22:00:26
+Aragorn,Inició sesión.,13-06-23 22:01:33
+Aragorn,Cerró sesión,13-06-23 22:01:59
+Aragorn,Inició sesión.,13-06-23 22:07:42
+Aragorn,Cerró sesión,13-06-23 22:07:45
+Aragorn,Inició sesión.,13-06-23 22:07:57
+Aragorn,Cerró sesión,13-06-23 22:08:01

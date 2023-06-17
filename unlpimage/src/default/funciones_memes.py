@@ -5,8 +5,12 @@ import json
 from src.default.pathing import BASE_PATH, templates_memes_path
 from src.default.data import read_config
 from src.default.data import read_memes 
-from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
 
+from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
+from src.default.setup import text_format15, text_format10
+
+#archivo_memes = open('template_meme.json', 'r')
+#datos = json.load(archivo_memes)
              
 ruta_repositorio, ruta_collages, ruta_memes = read_config()
 datos = read_memes()
@@ -14,31 +18,17 @@ templates_path = templates_memes_path
 
 ##########################################################################################################
 #Funciones auxliliares: 
-
+#1)Calculo el tamaño del box: ancho=x2-x1, alto=y2-y1
 def tam_box(x1,y1,x2,y2):
-    """Esta función calcula el tamaño del box de texto, siendo sus argumentos:
-        x1, y1= valores de arriba a la izquiera del rectángulo
-        x2 y2= valores de abajo a la derecha del rectángulo
-        Devuelve: ancho=x2-x1, alto=y2-y1
-     """
     return(x2-x1,y2-y1)
 
-##########################################################################################################
+#3) Veo si entra o no, el texto contenido en el contenedor
 def entra(contenedor, contenido):
-    """
-    Defino lo que es el contenedor = cuadro de texto, y el contenido = texto.
-    Y chequea si el tamaño de uno entra dentr del otro.
-    """
     return contenido[0] <= contenedor[0] and contenido[1] <= contenedor[1]
 
-##########################################################################################################
+
+#4) Calculo la tipografía a ver si entra:
 def calcular_tam_fuente(draw, texto, path_fuente, box):
-    """
-    Calcula que el tamaño de la tipografía entre en el cuadro de texto, usando la funcion anterior.
-    Para la fuente elegida, la va moviendo de 5 en 5, hasta que encaje en el tamaño de la caja de texto.
-    Iterará hasta encontrar el tamaño máximo que pueda entrar.
-    Una vez encontrado el valor, me devuelve la fuente de ese tamaño. 
-    """
     tam_contenedor = tam_box(*box)
 
     for tam in range (200, 20, -5):
@@ -49,22 +39,10 @@ def calcular_tam_fuente(draw, texto, path_fuente, box):
             return fuente
     return fuente
 
-##########################################################################################################
+
+#5) cant_boxes = 2
 def boxes_2(draw, meme_texto, datos_list):
-    """
-    Esta funcion asigna los valores de las coordenadas del cuadrado de texto leídos a travez del archivo json,
-    en el caso de tener solo dos cuadros de textos.
-    datos tiene guardada la lista de diccionarios
-    [datos_list] => asigna el valor de la lsita de disccionarios según el template elegido: 0, 1,2,3.
-
-    x1, y1= valores de arriba a la izquiera del rectángulo, primer tupla de coordenadas (índice 0)
-    x2 y2= valores de abajo a la derecha del rectángulo, primer tupla de coordenadas (índice 0)
-    x3, y3= valores de arriba a la izquiera del rectángulo,  segunda tupla de coordenadas(índice 1)
-    x4 y4= valores de abajo a la derecha del rectángulo, segunda tupla de coordenadas (índice 1)
-
-    Luego, crea y guarda una imagen con los cuadros de textos.
-    Devuelve, las tuplas de coordenadas nombradas antes.
-    """
+    
     x1 = datos[datos_list]["text_boxes"][0]["top_left_x"]
     y1 = datos[datos_list]["text_boxes"][0]["top_left_y"]
     x2 = datos[datos_list]["text_boxes"][0]["bottom_right_x"]
@@ -83,22 +61,6 @@ def boxes_2(draw, meme_texto, datos_list):
     return (x1, y1, x2, y2), (x3, y3, x4, y4)
 
 def boxes_3(draw,meme_texto, datos_list):
-    """
-    sta funcion asigna los valores de las coordenadas del cuadrado de texto leídos a travez del archivo json,
-    en el caso de tener tres cuadros de textos.
-    datos tiene guardada la lista de diccionarios
-    [datos_list] => asigna el valor de la lsita de disccionarios según el template elegido: 0, 1,2,3.
-
-    x1,y1 = valores de arriba a la izquiera del rectángulo, primer tupla de coordenadas (índice 0)
-    x2 y2 = valores de abajo a la derecha del rectángulo, primer tupla de coordenadas (índice 0)
-    x3,y3 = valores de arriba a la izquiera del rectángulo,  segunda tupla de coordenadas(índice 1)
-    x4 y4 = valores de abajo a la derecha del rectángulo, segunda tupla de coordenadas (índice 1)
-    x5,y5 = valores de arriba a la izquiera del rectángulo,  segunda tupla de coordenadas(índice 2)
-    x6,y6= valores de abajo a la derecha del rectángulo, segunda tupla de coordenadas (índice 2)
-
-    Luego, crea y guarda una imagen con los cuadros de textos.
-    Devuelve, las tuplas de coordenadas nombradas antes.
-    """
     x1 = datos[datos_list]["text_boxes"][0]["top_left_x"]
     y1 = datos[datos_list]["text_boxes"][0]["top_left_y"]
     x2 = datos[datos_list]["text_boxes"][0]["bottom_right_x"]

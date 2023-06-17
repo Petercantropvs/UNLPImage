@@ -5,7 +5,6 @@ from src.default.pathing import BASE_PATH, templates_memes_path
 from src.default.data import read_config
 from src.default.data import read_memes 
 from src.default.data import get_img_data_profiles as get_img_data
-from src.windows.configuracion import ventana_configuracion
 from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
 from src.default.setup import *
 from src.default.funciones_memes import tam_box, entra, calcular_tam_fuente, boxes_2, boxes_3
@@ -95,8 +94,7 @@ def layout_fuentes():
 ###############################################################################################
 
 def layout_mostrar():
-    ruta_repositorio, ruta_collages, ruta_memes = read_config()
-    layout = [[sg.Image((os.path.join(ruta_memes,'meme_final.png')), key='-MEME-')],
+    layout = [[sg.Image((os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png')), key='-MEME-')],
              [sg.Button('Guardar y salir', key='-GUARDARMEME-'), sg.Button('Volver', key='-VOLVER2-')] ]          
     return layout
 
@@ -112,14 +110,6 @@ def ventana_meme(perfil):
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
     datos = read_memes()
     templates_path = templates_memes_path
-
-    if not os.path.isdir(ruta_memes):
-        seleccion = None
-        while seleccion != '⚙ Ir a configuración':
-            seleccion = sg.popup('No tenés configurada una carpeta donde guardar tus memes!', title = None, custom_text='⚙ Ir a configuración')
-            if seleccion == '⚙ Ir a configuración':
-                ventana_configuracion(perfil)
-                ruta_repositorio, ruta_collages, ruta_memes = read_config()
 
     confirm = ''
     window = sg.Window('Generador de memes',layout_memes_templates())
@@ -253,8 +243,8 @@ def ventana_meme(perfil):
                     draw.text((x3,y3), texto2, font=fuente_ajustada_2,fill=color_relleno)
                     draw.text((x5,y5), texto3, font=fuente_ajustada_3,fill=color_relleno)
             
-                meme_final.save(os.path.join(ruta_memes,'meme_final.png'))
-                Image.open(os.path.join(ruta_memes,'meme_final.png'))
+                meme_final.save(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
+                Image.open(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
             
                 window_mostrar = sg.Window('Meme final', layout_mostrar())
                 if event2 == '-TEXTOSI_2box-' or event2 == '-TEXTOSI_3box-':
@@ -264,7 +254,7 @@ def ventana_meme(perfil):
                         if event3 == sg.WINDOW_CLOSED or event3 == '-VOLVER2-':
                             window_mostrar.close()
                             window_boxes.UnHide()
-                            os.remove(os.path.join(ruta_memes,'meme_final.png'))
+                            os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
                             texto1=None
                             texto2=None
                             texto3=None
@@ -288,7 +278,7 @@ def ventana_meme(perfil):
                                 if filename:
                              # Aquí puedes escribir la lógica para guardar la imagen con el nombre de archivo ingresado
                                     print('Imagen guardada con el nombre:', filename)
-                                    meme_final.save(os.path.join(ruta_memes, filename + '.png'))
+                                    meme_final.save(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba', filename + '.png'))
     
                                     Action = 'Generó un meme'
                                     Values = [image_name]
@@ -303,14 +293,14 @@ def ventana_meme(perfil):
                                         window_mostrar.close()
                                         window_boxes.close()
                                         window.UnHide()
-                                        os.remove(os.path.join(ruta_memes,'meme_final.png'))
+                                        os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
                                         os.remove(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
                                         
                                     if confirm == 'No':
                                         window_mostrar.close()
                                         window_boxes.close()
                                         #window.close()
-                                        os.remove(os.path.join(ruta_memes,'meme_final.png'))
+                                        os.remove(os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','meme_final.png'))
                                         os.remove(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
                                         
 

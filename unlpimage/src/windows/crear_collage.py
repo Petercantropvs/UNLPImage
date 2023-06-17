@@ -156,9 +156,12 @@ def creacion_collage(template:str, perfil:str):
                         tiene_img[posicion] = True
                         imgs_en_collage[posicion-1] = tosave(ruta_img).split('/')[-1]
                     else:
-                        img = collage(template, posicion, ruta_img)
-                        tiene_img[posicion] = True
-                        imgs_en_collage[posicion-1] = tosave(ruta_img).split('/')[-1]
+                        try:
+                            img = collage(template, posicion, ruta_img)
+                            tiene_img[posicion] = True
+                            imgs_en_collage[posicion-1] = tosave(ruta_img).split('/')[-1]
+                        except IsADirectoryError:
+                            pass
                 except (PermissionError, UnidentifiedImageError):
                     pass
 
