@@ -69,62 +69,66 @@ def ventana_nuevoperfil():
                 ok = check_campos(user,usuarios)
            
                 if ok :
-                    with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
-                        if user['-OTRO-']:
-                            usuarios[user['-NICK-']] = {
-                            "nombre": user['-NAME-'],
-                            "edad": user['-AGE-'],
-                            "genero": user['-NEW-']} 
+                    confirm = sg.popup_yes_no('¿Desea crear el nuevo perfil? Recuerde que el Nick o alias NO podrá ser modificado posteriormente.', title='Guardar imagen')
+                    if confirm == 'Yes':
+                        with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
+                            if user['-OTRO-']:
+                                usuarios[user['-NICK-']] = {
+                                "nombre": user['-NAME-'],
+                                "edad": user['-AGE-'],
+                                "genero": user['-NEW-']} 
+        
+                                json.dump(usuarios, u)
+                                os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                                Image1 = Image.open(ruta_foto)
     
-                            json.dump(usuarios, u)
-                            os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
-                            Image1 = Image.open(ruta_foto)
-
-                            # hago una copia de la imagen así
-                            # la original no se ve afectada
-                            Image1copy = Image1.copy()
-                            Image2 = Image.open(ruta_foto)
-                            Image2copy = Image2.copy()
-    
-                            # pego la imagen dando dimensiones
-                            Image1copy.paste(Image2copy, (0, 0))
-     
-                            # guardo la imagen
-                            Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                            perfil = user['-NICK-']
-                            window.close()
-                            u.close()
-                            return perfil, accion
-                       
-    
-    
-                        else:
-                            usuarios[user['-NICK-']] = {
-                            "nombre": user['-NAME-'],
-                            "edad": user['-AGE-'],
-                            "genero": user['-GEN-']} 
-
-                            json.dump(usuarios, u)
-                            os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
-                            Image1 = Image.open(ruta_foto)
-
-                            #hago una copia de la imagen así
-                            # la original no se ve afectada
-                            Image1copy = Image1.copy()
-                            Image2 = Image.open(ruta_foto)
-                            Image2copy = Image2.copy()
-     
-                            # pego la imagen dando dimensiones
-                            Image1copy.paste(Image2copy, (0, 0))
-     
-                            # guardo la imagen
-                            Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                            perfil = user['-NICK-']
-                            window.close()
-                            u.close()
-                            return perfil, accion
+                                # hago una copia de la imagen así
+                                # la original no se ve afectada
+                                Image1copy = Image1.copy()
+                                Image2 = Image.open(ruta_foto)
+                                Image2copy = Image2.copy()
+        
+                                # pego la imagen dando dimensiones
+                                Image1copy.paste(Image2copy, (0, 0))
+        
+                                # guardo la imagen
+                                Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                                perfil = user['-NICK-']
+                                window.close()
+                                u.close()
+                                return perfil, accion
                            
-                        break
+        
+        
+                            else:
+                                usuarios[user['-NICK-']] = {
+                                "nombre": user['-NAME-'],
+                                "edad": user['-AGE-'],
+                                "genero": user['-GEN-']} 
+    
+                                json.dump(usuarios, u)
+                                os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                                Image1 = Image.open(ruta_foto)
+    
+                                #hago una copia de la imagen así
+                                # la original no se ve afectada
+                                Image1copy = Image1.copy()
+                                Image2 = Image.open(ruta_foto)
+                                Image2copy = Image2.copy()
+        
+                                # pego la imagen dando dimensiones
+                                Image1copy.paste(Image2copy, (0, 0))
+        
+                                # guardo la imagen
+                                Image1copy.save(os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                                perfil = user['-NICK-']
+                                window.close()
+                                u.close()
+                                return perfil, accion
+                               
+                            break
+                    if confirm == 'No':
+                        continue
                         
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
             accion = None
