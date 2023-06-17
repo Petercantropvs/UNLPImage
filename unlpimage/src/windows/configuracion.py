@@ -42,8 +42,8 @@ def ventana_configuracion(perfil):
                 ruta_repositorio = values['-ruta-repositorio-']
             if values['-ruta-collage-'] != '':
                 ruta_collages = values['-ruta-collage-']
-            if values['-ruta-meme-'] != ' ':
-                ruta_memes = values['-ruta-meme-']     
+            if values['-ruta-meme-'] != '':
+                ruta_memes = values['-ruta-meme-']
             
             ruta_repositorio =  tosave(ruta_repositorio)
             ruta_collages = tosave(ruta_collages)
