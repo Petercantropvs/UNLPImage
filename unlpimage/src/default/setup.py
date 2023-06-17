@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 sg.theme('light green 3')
-sg.set_options(use_custom_titlebar=True)
+
 # Defino las fuentes de las ventanas
 text_format8 = {'font': ('latin modern sansquotation', 8)}
 text_format10 = {'font': ('latin modern sansquotation', 10)}

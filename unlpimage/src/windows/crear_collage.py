@@ -131,10 +131,11 @@ def creacion_collage(template:str, perfil:str):
                        finalize=True, enable_close_attempted_event=True)
     
     if not os.path.isdir(carpeta_collages):
-        seleccion = sg.popup('No tenés configurada una carpeta donde guardar tus collages!',
-                        custom_text='⚙ Ir a configuración', no_titlebar= True)
-        if seleccion == '⚙ Ir a configuración':
-            ventana_configuracion(perfil)
+        seleccion = None
+        while seleccion != '⚙ Ir a configuración':
+            seleccion = sg.popup('No tenés configurada una carpeta donde guardar tus collages!', title = None, custom_text='⚙ Ir a configuración')
+            if seleccion == '⚙ Ir a configuración':
+                ventana_configuracion(perfil)
     
     while True:
         event, values = window.read()
@@ -153,11 +154,11 @@ def creacion_collage(template:str, perfil:str):
                     if img:
                         collage(template, posicion, ruta_img, collage=img)
                         tiene_img[posicion] = True
-                        imgs_en_collage[posicion-1] = tosave(ruta_img)
+                        imgs_en_collage[posicion-1] = tosave(ruta_img).split('/')[-1]
                     else:
                         img = collage(template, posicion, ruta_img)
                         tiene_img[posicion] = True
-                        imgs_en_collage[posicion-1] = tosave(ruta_img)
+                        imgs_en_collage[posicion-1] = tosave(ruta_img).split('/')[-1]
                 except (PermissionError, UnidentifiedImageError):
                     pass
 
@@ -171,23 +172,20 @@ def creacion_collage(template:str, perfil:str):
                                        collage=img, titulo=values['-TITULO-'])
                     except (PermissionError, UnidentifiedImageError):
                         pass
-                    window['-PREVIEW-'].update(
-                        data=ImageTk.PhotoImage(img2), size=IMG_SIZE)
+                    window['-PREVIEW-'].update(data=ImageTk.PhotoImage(img2), size=IMG_SIZE)
                 else:
                     window['-TITULO-'].update('')
-                    sg.SystemTray.notify(
-                        'Collage Incompleto!', 'Debes terminar de elegir imágenes para tu collage antes de añadir un título.', icon=sg.SYSTEM_TRAY_MESSAGE_ICON_CRITICAL)
+                    sg.SystemTray.notify('Collage Incompleto!', 'Debes terminar de elegir imágenes para tu collage antes de añadir un título.', icon=sg.SYSTEM_TRAY_MESSAGE_ICON_CRITICAL)
             case '-GUARDAR-':
                 if collage_completo:
-                    accion = 'Creó un collage con el template '+ template
+                    accion = 'Creó un collage'
                     if img2:
                         guardar_collage(img2, carpeta_collages)
                         function_registo(perfil, accion, values = imgs_en_collage, texts = values['-TITULO-'])
                         guardo = True
                         
                     elif img:
-                        sin_titulo = sg.popup_ok_cancel(
-                            'No has ingresado un título a tu collage.\nDeseas continuar?', title='⚠')
+                        sin_titulo = sg.popup_ok_cancel('No has ingresado un título a tu collage.\nDeseas continuar?', title='⚠')
                         if sin_titulo == 'OK':
                             guardar_collage(img, carpeta_collages)
                             function_registo(perfil, accion, values = imgs_en_collage, texts = '')
@@ -197,7 +195,9 @@ def creacion_collage(template:str, perfil:str):
 
         if event in (sg.WIN_CLOSE_ATTEMPTED_EVENT, '-VOLVER-'):
             if True in tiene_img.values() and not guardo:
-                if sg.popup_yes_no('Seguro que desea salir? Perderá los cambios') == 'Yes':
+                if sg.popup_yes_no('Seguro que desea salir? Perderá los cambios', title = None) == 'Yes':
+                    accion = "Entró a generar un collage pero no lo guardó."
+                    function_registo(perfil, accion)
                     window.close()
                     break
             else:
