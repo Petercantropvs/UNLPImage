@@ -20,15 +20,12 @@ def layout_memes_templates():
              sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates','hide_the_pain_harold.png'), first = True), key='hide_the_pain_harold.png', enable_events=True, metadata=0 ) ]
             ]
     
-    
-#images column
     col_2 = [
             [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates', 'novio_mira_otra_mujer.png'), first = True), key='novio_mira_otra_mujer.png', enable_events=True, metadata=0 ),
              sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','memes-templates','seguro_esta_pensando_en_otra.png'), first = True), key='seguro_esta_pensando_en_otra.png', enable_events=True, metadata=0 ) ]
             ]
     
     layout = [[sg.Text("Seleccione un template para crear un meme.", **text_format15)],[sg.Column(col_1)], [sg.Column(col_2)],[sg.Button('Volver', key='-VOLVER-')]]
-
     return layout
 
 ############################################################################################### 
@@ -41,12 +38,10 @@ def layout_crear_2box():
             [sg.InputText(key='-TEXTO1-')],
             [sg.Text("Cuadro de texto 2")],
             [sg.InputText(key='-TEXTO2-')],
-            [sg.Button("Generar", key='-TEXTOSI_2box-'), sg.Button("Cancelar", key='-TEXTONO-')],
-            [sg.Button('Volver', key='-VOLVER-')]
+            [sg.Button("Generar", key='-TEXTOSI_2box-'), sg.Button('Volver', key='-VOLVER-')]
             ]
         
     col_2 = [ 
-            
             [sg.Image((os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','imagen_con_cuadros_de_texto.png')), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ]
             ]
 
@@ -64,11 +59,10 @@ def layout_crear_3box():
             [sg.InputText(key='-TEXTO2-')],
             [sg.Text("Cuadro de texto 3")],
             [sg.InputText(key='-TEXTO3-')],
-            [sg.Button("Generar", key='-TEXTOSI_3box-'), sg.Button("Cancelar", key='-TEXTONO-'),]
+            [sg.Button("Generar", key='-TEXTOSI_3box-'), sg.Button('Volver', key='-VOLVER-')]
             ]
         
     col_2 = [ 
-            [sg.Button('Volver', key='-VOLVER-')],            
             [sg.Image((os.path.join(BASE_PATH, 'src', 'Repositorio_prueba','imagen_con_cuadros_de_texto.png')), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ]
             ]
 
@@ -81,8 +75,6 @@ def layout_fuentes():
              sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','hawaianas.png'), first = True), key='-hawaianas-', enable_events=True, metadata=0 ) ]
             ]
     
-    
-#images column
     col_2 = [
             [sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','invisible.png'), first = True), key='-invisible-', enable_events=True, metadata=0 ),
              sg.Image(data=get_img_data(os.path.join(BASE_PATH,'src','default','tommy.png'), first = True), key='-tommy-', enable_events=True, metadata=0 ) ]
@@ -103,9 +95,14 @@ def layout_mostrar():
 ##############################################################################################
 def ventana_meme(perfil):
     """ 
-    Esta función abre una ventana de Generación de memes. A partir de un template seleccionado, 
-    se le permitirá escribir textos en los cuadros de texto marcados en la pantalla 2.
-    Una vez presionado Generar, se guardará el meme nuevo.
+    Esta función abre una ventana de Generación de memes. 
+    El primer layout_memes_template, permite seleccionar un template para realizar el meme haciedno click en él. 
+    Estos templates se encuentran en una carpeta ya configurada. Su información, como nombre y cudros de texto, está guardada en el archivo Json.
+    El segundo, layout_boxes2 o layout_boxes 3, abre una segunda interfaz, según el template seleccionado tenga dos o tres casillas de texto.
+    A partir del layout_fuenes, seleccionamos la tipografía entre cuatro tipos. Esta tipografía se ajustará al tamaño del cuadro de texto 
+    del templates, a partir de funciones auxiliares en el programa funciones_memes.py
+    Finalmente, una vez apretado el botón de "Generar", se mostrará en pantalla el meme resultante, con la opción de guardarlo o no.
+    De querer guardarlo, se guardara en el Directorio de memes, elegido en la pantalla de Configuración.
    
     """
     ruta_repositorio, ruta_collages, ruta_memes = read_config()
@@ -128,22 +125,22 @@ def ventana_meme(perfil):
             meme_cuadrados = meme_original.copy()
             draw = ImageDraw.Draw(meme_cuadrados)
 
+            match image_name:
+                case  "Batman_golpea_robin.png":
+                    resultado_funcion1 = boxes_2(draw, meme_cuadrados, 0)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            if image_name == "Batman_golpea_robin.png":
-                resultado_funcion1 = boxes_2(draw, meme_cuadrados, 0)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
+                case "hide_the_pain_harold.png":
+                    resultado_funcion1 = boxes_2(draw, meme_cuadrados, 1)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            elif image_name == "hide_the_pain_harold.png":
-                resultado_funcion1 = boxes_2(draw, meme_cuadrados, 1)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
+                case "seguro_esta_pensando_en_otra.png":
+                    resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            elif image_name == "seguro_esta_pensando_en_otra.png":
-                resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
-
-            elif image_name == "novio_mira_otra_mujer.png":
-                resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
-                window_boxes = sg.Window('Generar memes', layout_crear_3box())    
+                case "novio_mira_otra_mujer.png":
+                    resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
+                    window_boxes = sg.Window('Generar memes', layout_crear_3box())    
 
             meme_final = meme_original.copy()
             draw = ImageDraw.Draw(meme_final)
@@ -155,7 +152,7 @@ def ventana_meme(perfil):
                     break
                 window.Hide()
                 event2, values2 = window_boxes.read()
-                if event2 == sg.WINDOW_CLOSED or event2 == '-VOLVER-' or event2 == '-TEXTONO-':
+                if event2 == sg.WINDOW_CLOSED or event2 == '-VOLVER-':
                     window_boxes.close()
                     window.UnHide()
                     break  

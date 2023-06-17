@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk
 import json
 from src.default.pathing import BASE_PATH
-from src.default.data import read_users
+from src.default.data import read_users, check_campos
 from src.default.data import get_img_data_profiles as get_img_data
 from src.default.setup import *
 from src import function_registo
@@ -57,79 +57,78 @@ def ventana_editarperfil(perfil):
         usuarios = read_users()
         i= i+1
 
-        if event == '-PIC-':
-            ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
-            try:
-                window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
-            except AttributeError:
-                ruta_foto = os.path.join(BASE_PATH,'src','users-data','prof_pictures',perfil+'.png')
-                
-        if event == '-OTRO-' :
-            window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
-        if event == '-OK-':
-            if (user['-NICK-'] == '') or (user['-NAME-'] == '') or (user['-AGE-'] == '' ) or (user['-OTRO-'] == False and user['-GEN-'] == '') or (user['-OTRO-'] == True and user['-NEW-'] == ''):      
-                sg.popup_ok('Todos los campos son obligatorios', title='Error!')
-     
-            else:
-
+        match event:
+            case '-PIC-':
+                ruta_foto = sg.PopupGetFile('Seleccione la imagen de perfil')
                 try:
-                    age=int(user['-AGE-'])
-                except ValueError:
-                    sg.popup_ok('Ingrese un número para la edad', title='Error!')   
-                else:
-                    with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
-                        if user['-OTRO-']:
+                    window['-PIC-'].update(data=get_img_data(ruta_foto, first = True))
+                except AttributeError:
+                    ruta_foto = os.path.join(BASE_PATH,'src','default','perfil_vacio.png')
+                
+            case '-OTRO-' :
+                window['-NEW-'].update(value = 'Complete el género', disabled = False, select = True, move_cursor_to = "end")
+            case '-OK-':
 
-                           usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
-                           usuarios[user['-NICK-']]['edad'] = user['-AGE-']
-                           usuarios[user['-NICK-']]['genero'] = user['-NEW-']
+                ok = check_campos(user,usuarios, edit=True)
+             
+                if ok:
+                    confirm = sg.popup_yes_no('¿Desea guardar los cambios?', title='Guardar imagen')
+                    if confirm == 'Yes':
+                        with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
+                            if user['-OTRO-']:
+
+                                usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
+                                usuarios[user['-NICK-']]['edad'] = user['-AGE-']
+                                usuarios[user['-NICK-']]['genero'] = user['-NEW-']
 
                            
-                           json.dump(usuarios, u)
-                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                                json.dump(usuarios, u)
+                                os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
 
-                           Image1 = Image.open(ruta_foto)
-                           # hago una copia de la imagen así
-                           # la original no se ve afectada
-                           Image1copy = Image1.copy()
-                           Image2 = Image.open(ruta_foto)
-                           Image2copy = Image2.copy()
+                                Image1 = Image.open(ruta_foto)
+                                # hago una copia de la imagen así
+                                # la original no se ve afectada
+                                Image1copy = Image1.copy()
+                                Image2 = Image.open(ruta_foto)
+                                Image2copy = Image2.copy()
      
-                           # pego la imagen dando dimensiones
-                           Image1copy.paste(Image2copy, (0, 0))
+                                # pego la imagen dando dimensiones
+                                Image1copy.paste(Image2copy, (0, 0))
      
-                           # guardo la imagen
-                           Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                           window.close()
-                           function_registo(perfil, accion)
-                          # return accion
+                                # guardo la imagen
+                                Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                                window.close()
+                                function_registo(perfil, accion)
+                                # return accion
     
     
-                        else:
-                           usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
-                           usuarios[user['-NICK-']]['edad'] = user['-AGE-']
-                           usuarios[user['-NICK-']]['genero'] = user['-GEN-']
-
-                           #datos.append(usuarios)
-                           #json.dump(datos, u)
-                           json.dump(usuarios, u)
-                           os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
-                           Image1 = Image.open(ruta_foto)
-                           # hago una copia de la imagen así
-                           # la original no se ve afectada
-                           Image1copy = Image1.copy()
-                           Image2 = Image.open(ruta_foto)
-                           Image2copy = Image2.copy()
-     
-                           # pego la imagen dando dimensiones
-                           Image1copy.paste(Image2copy, (0, 0))
-     
-                           # guardo la imagen
-                           Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
-                           window.close()
-                           function_registo(perfil, accion)
-                           #return accion
-                        break
+                            else:
+                                usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
+                                usuarios[user['-NICK-']]['edad'] = user['-AGE-']
+                                usuarios[user['-NICK-']]['genero'] = user['-GEN-']
+    
+                                #datos.append(usuarios)
+                                #json.dump(datos, u)
+                                json.dump(usuarios, u)
+                                os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
+                                Image1 = Image.open(ruta_foto)
+                                # hago una copia de la imagen así
+                                # la original no se ve afectada
+                                Image1copy = Image1.copy()
+                                Image2 = Image.open(ruta_foto)
+                                Image2copy = Image2.copy()
+        
+                                # pego la imagen dando dimensiones
+                                Image1copy.paste(Image2copy, (0, 0))
+        
+                                # guardo la imagen
+                                Image1copy.save( os.path.join(BASE_PATH,'src','users-data','prof_pictures', user['-NICK-']+ '.png'))
+                                window.close()
+                                function_registo(perfil, accion)
+                                #return accion
+                            break
+                    if confirm == 'No':
+                        continue
         if event == '-CANCEL-' or  event == sg.WIN_CLOSED :
           #  accion = "El usuario entro a editar perfil pero no lo editó."
             window.close()

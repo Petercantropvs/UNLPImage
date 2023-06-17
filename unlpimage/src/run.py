@@ -56,8 +56,7 @@ def main():
             window['-PIC-'].update(data=nuevoperfil.get_img_data(BASE_PATH+'/src/users-data/prof_pictures/'+perfil+'.png', first = True))
 
         elif event == '-COLLAGE-':
-            accion = collage.seleccion_collage(perfil)
-            function_registo(perfil, accion)
+            collage.seleccion_collage(perfil)
 
         elif event == '-HELP-':
             ayuda.ventana_ayuda() 
