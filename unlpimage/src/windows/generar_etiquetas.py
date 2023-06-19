@@ -142,13 +142,14 @@ def ventana_etiquetas(perfil):
             case '-DESCRIP-':
                 window['-B2-'].update(disabled=False)
             case '-B1-':
+                metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
                 tags = '#'+ ', #'.join(tag for tag in metadata[ruta_completa]['tags'])
                 window['-OUTPUT-'].update(tags)
                 window['-TREE-'].update(key=ruta_completa, value=tags)
                 window['-NEWTAG-'].update('')
                 window['-B1-'].update(disabled=True)
                 window['Guardar'].update(disabled=False)
-                metadata[ruta_completa]['tags'].append(values['-NEWTAG-'])
+                
                 metadata[ruta_completa]['last user'] = str(perfil)
                 metadata[ruta_completa]['last edit time'] = datetime.now().strftime('%d-%m-%y %H:%M:%S')
                 metadata[ruta_completa]['tiene tag'] = True

@@ -67,8 +67,7 @@ def layout_crear_3box():
             [sg.Button("Generar", key='-TEXTOSI_3box-'), sg.Button("Cancelar", key='-TEXTONO-'),]
             ]
         
-    col_2 = [ 
-            [sg.Button('Volver', key='-VOLVER-')],            
+    col_2 = [           
             [sg.Image((os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png')), key='-PIC-', enable_events=True, metadata=0, pad = (50,0,0,0) ) ]
             ]
 
