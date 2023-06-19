@@ -14,22 +14,36 @@ def layout_ayuda():
 
 ####################################################################
 def layout_app():
-    layout =[[sg.Text('''UNLPImage 5-2023
+    layout =[[sg.Text('''UNLPImage Jun-2023
 
 Este software es un manipulador de imágenes.
 Permite la creación de perfiles para distintos usuarios.
 El usuario podrá generar collages de imágenes o crear memes a partir de imágenes que guarden en un repositorio determinado por él.
 Además brinda la opción de etiquetar éstas imagenes para que su búsqueda al momento de utilizar las funcionalidades del software sea más sencilla.
 
-Versión de muestra. Actualmente sólo permite el etiquetado de imagenes, elección de los directorios sobre los que se trabajará y creación, selección y edición de perfiles. 
+Requerimientos: 
 
-Liberías utilizadas: 
+Python v 3.11.x
+
+Jupyter core packages
 
 PySimpleGUI v 4.60.4
 https://github.com/PySimpleGUI/PySimpleGUI
 
 Pillow v 9.5.0
-https://python-pillow.org''',**text_format10)],
+https://python-pillow.org
+
+numpy v 1.24.3
+https://www.numpy.org
+
+matplotlib v 3.7.1
+https://matplotlib.org
+
+pandas v 2.0.2
+https://pandas.pydata.org
+
+wordcloud v 1.9.2
+https://github.com/amueller/word_cloud''',**text_format10)],
             
             [sg.Button("Volver", key='-VOLVER-', **text_format10)]]                    
     return layout
@@ -74,20 +88,20 @@ def layout_crear():
     layout =[[sg.Text('Dentro de la ventana de Inicio, podrás elegir entre crear memes y crear collages',**text_format10)],
             [sg.Text('',**text_format10)],
             [sg.Text('Crear memes',**text_format15)],
-            [sg.Text('En el botón de seleccionar imagen, te mandará al directorio que elegiste como Repositorio de imagenes (para más información, ver la ventanada de ayuda-configuración).',**text_format10)],
-            [sg.Text('Elegís la imagen requerida, y presionás seleccionar.',**text_format10)],
-            [sg.Text('Luego, debés escribir la frase que querés agregarle a tu meme.',**text_format10)],
-            [sg.Text('Al presionar el botón Generar, el meme será generado y almacenado en la carpeta Directorio de memes.',**text_format10)],
+            [sg.Text('En el menú de creación de memes, lo primero que deberás hacer es seleccionar la plantilla para el meme que deseas utilizar.',**text_format10)],
+            [sg.Text('Tras seleccionar una plantilla, tendrás la opción de elegir una tipografía para tu texto, y deberás completar los cuadros de texto con lo que desees.',**text_format10)],
+            [sg.Text('Luego, presiona el botón \'generar\' y tendrás una pestaña de previsualización de tu meme.',**text_format10)],
+            [sg.Text('Presiona \'Guardar y salir\' si deseas conservarlo!',**text_format10)],
             [sg.Text('',**text_format10)],
             [sg.Text('Crear collage',**text_format15)],
-            [sg.Text('En el botón de seleccionar imagen, te mandará al directorio que elegiste como Repositorio de imagenes (para más información, ver la ventanada de ayuda-configuración).',**text_format10)],
-            [sg.Text('Elegís la imagen requerida, y presionás Seleccionar. Puedes hacerlo tantas veces como imágenes quieras elegir.',**text_format10)],
-            [sg.Text('Al finalizar la selección, presiona Finalizar. Las imagenes elegidas aparecerán escritas en pantalla.',**text_format10)],
-            [sg.Text('Finalmente, elige el template entre los disponibles dados por la propia aplicación.',**text_format10)],
-            [sg.Text('Debes tener en cuenta que no podrás generar templates nuevos.',**text_format10)],
-            [sg.Text('Al presionar el botón Generar, el collage será generado y almacenado en la carpeta Directorio de memes.',**text_format10)],
+            [sg.Text('En el menú de creación de collage, podrás elegir uno de entre los seis templates predefinidos para crear tu collage.',**text_format10)],
+            [sg.Text('Tras elegir un template, deberás seleccionar en el menú \'seleccionar imágenes\' la posición de la imagen que deseas insertar en tu collage.',**text_format10)],
+            [sg.Text('Para esto, deberás recordar que para poder hacer un collage con tus fotos primero deberás etiquetarlas a todas en \'generar etiquetas\'.',**text_format10)],
+            [sg.Text('Con las imágenes ya etiquetadas, vé añadiendo tantas imágenes como te permita tu template a tu nuevo collage y añádele un título.',**text_format10)],
+            [sg.Text('Precaución! No podrás añadir un título ni guardar tu collage si el template no está completo! Cargá todas las imágenes primero ;)',**text_format10)],
+            [sg.Text('Para finalizar, presiona el botón \'Guardar\'. Listo! Ya podés ir a ver tu collage a la carpeta elegida :D',**text_format10)],
             [sg.Text('',**text_format15)],
-            [sg.Text('Nota: Si tenés duda respecto a las carpetas de guardado, ver la ventanada de ayuda-configuración).',**text_format10)],
+            [sg.Text('Nota: Si tenés duda respecto a las carpetas de guardado, ver la ventanada de ayuda-configuración ;)',**text_format10)],
             [sg.Button("Volver", key='-VOLVER-', **text_format10)]]                    
     return layout
 

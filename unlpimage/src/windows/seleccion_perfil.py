@@ -83,7 +83,6 @@ def ventana_seleccionperfil():
 					window.close()
 					break
 				except AttributeError:
-					print('Hola')
 					perfil = None
 					event_seleccion = event
 					accion = None

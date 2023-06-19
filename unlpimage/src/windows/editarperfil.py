@@ -40,7 +40,6 @@ def layout(perfil):
     return layout
 
 def ventana_editarperfil(perfil):
-    print(perfil)
     """ 
     Esta función permite editar un perfil ya creado anteriormente, pudiendo cambiar nombre, edad, género y la foto de perfil.
     Recordar que el nickname no podrá ser modificado.

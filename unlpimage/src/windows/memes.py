@@ -197,7 +197,6 @@ def ventana_meme(perfil):
                    # fuente_elegida = values2['-FUENTE-']
                     texto1 = values2['-TEXTO1-']
                     texto2 = values2['-TEXTO2-']
-                    print(texto1, texto2)
                     
                     try:
                         fuente = ImageFont.truetype(fuente_elegida, 200) #el tamaño
@@ -225,7 +224,6 @@ def ventana_meme(perfil):
                     texto1 = values2['-TEXTO1-']
                     texto2 = values2['-TEXTO2-']
                     texto3 = values2['-TEXTO3-']
-                    print(texto1, texto2, texto3)
 
                     try:
                         fuente = ImageFont.truetype(fuente_elegida, 200) #el tamaño
