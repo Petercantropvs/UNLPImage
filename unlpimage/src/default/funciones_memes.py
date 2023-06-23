@@ -83,3 +83,17 @@ def boxes_3(draw,meme_texto, datos_list):
     meme_texto.save(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
     Image.open(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
     return (x1, y1, x2, y2), (x3, y3, x4, y4), (x5, y5, x6, y6)
+
+#########################################################################################################
+def divide_text(text, width, font):
+    words = text.split()
+    lines = []
+    current_line = words[0]
+    for word in words[1:]:
+        if font.getsize(current_line + ' ' + word)[0] <= width:
+            current_line += ' ' + word
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)
+    return lines

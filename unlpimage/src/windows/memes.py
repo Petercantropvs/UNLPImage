@@ -8,7 +8,7 @@ from src.default.data import get_img_data_profiles as get_img_data
 from src.windows.configuracion import ventana_configuracion
 from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
 from src.default.setup import *
-from src.default.funciones_memes import tam_box, entra, calcular_tam_fuente, boxes_2, boxes_3
+from src.default.funciones_memes import tam_box, entra, calcular_tam_fuente, boxes_2, boxes_3, divide_text
 from src import function_registo
 
 
@@ -214,9 +214,47 @@ def ventana_meme(perfil):
         
                     fuente_ajustada_1 = calcular_tam_fuente(draw, texto1, fuente_elegida, (x1,y1,x2,y2),)
                     fuente_ajustada_2 = calcular_tam_fuente(draw, texto2, fuente_elegida, (x3,y3,x4,y4),)
-        
-                    draw.text((x1,y1), texto1, font=fuente_ajustada_1,fill=color_relleno)
-                    draw.text((x3,y3), texto2, font=fuente_ajustada_2,fill=color_relleno)
+
+                    text_lines_1 = divide_text(texto1, x2-x1, fuente_ajustada_1)
+                    longitud_1 = len(text_lines_1)
+
+                    text_lines_2 = divide_text(texto2, x4-x3, fuente_ajustada_2)
+                    longitud_2 = len(text_lines_2)
+
+                    if longitud_1 == 1:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                    elif longitud_1 == 2:
+                        draw.text((x1, y1), text_lines_1 [0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)            
+                    elif longitud_1 == 3:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)                   
+                        draw.text((x1, y1+60), text_lines_1[2], font=fuente_ajustada_1, fill=color_relleno)
+                    elif longitud_1 == 4:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)                   
+                        draw.text((x1, y1+60), text_lines_1[2], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+90), text_lines_1[3], font=fuente_ajustada_1, fill=color_relleno)
+
+
+                    if longitud_2 == 1:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                    elif longitud_2 == 2:
+                        draw.text((x3, y3), text_lines_2 [0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)            
+                    elif longitud_2 == 3:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)                   
+                        draw.text((x3, y3+60), text_lines_2[2], font=fuente_ajustada_2, fill=color_relleno)
+                    elif longitud_2 == 4:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)                   
+                        draw.text((x3, y3+60), text_lines_2[2], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+90), text_lines_2[3], font=fuente_ajustada_2, fill=color_relleno)
+
+
+                    #draw.text((x1,y1), texto1, font=fuente_ajustada_1,fill=color_relleno)
+                    #draw.text((x3,y3), texto2, font=fuente_ajustada_2,fill=color_relleno)
                 
                 if event2 == '-TEXTOSI_3box-':
                     #fuente_elegida = values2['-FUENTE-']
@@ -245,10 +283,68 @@ def ventana_meme(perfil):
                     fuente_ajustada_1 = calcular_tam_fuente(draw, texto1, fuente_elegida, (x1,y1,x2,y2),)
                     fuente_ajustada_2 = calcular_tam_fuente(draw, texto2, fuente_elegida, (x3,y3,x4,y4),)
                     fuente_ajustada_3 = calcular_tam_fuente(draw, texto3, fuente_elegida, (x5,y5,x6,y6),)
+
+                    text_lines_1 = divide_text(texto1, x2-x1, fuente_ajustada_1)
+                    longitud_1 = len(text_lines_1)
+
+                    text_lines_2 = divide_text(texto2, x4-x3, fuente_ajustada_2)
+                    longitud_2 = len(text_lines_2)
+
+                    text_lines_3 = divide_text(texto3, x6-x5, fuente_ajustada_3)
+                    longitud_3 = len(text_lines_3)
+
+                    print(x3,y3,longitud_3)
+                    print(text_lines_3)
+                    
+                    if longitud_1 == 1:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                    elif longitud_1 == 2:
+                        draw.text((x1, y1), text_lines_1 [0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)            
+                    elif longitud_1 == 3:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)                   
+                        draw.text((x1, y1+60), text_lines_1[2], font=fuente_ajustada_1, fill=color_relleno)
+                    elif longitud_1 == 4:
+                        draw.text((x1, y1), text_lines_1[0], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+30), text_lines_1[1], font=fuente_ajustada_1, fill=color_relleno)                   
+                        draw.text((x1, y1+60), text_lines_1[2], font=fuente_ajustada_1, fill=color_relleno)
+                        draw.text((x1, y1+90), text_lines_1[3], font=fuente_ajustada_1, fill=color_relleno)
+
+
+                    if longitud_2 == 1:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                    elif longitud_2 == 2:
+                        draw.text((x3, y3), text_lines_2 [0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)            
+                    elif longitud_2 == 3:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)                   
+                        draw.text((x3, y3+60), text_lines_2[2], font=fuente_ajustada_2, fill=color_relleno)
+                    elif longitud_2 == 4:
+                        draw.text((x3, y3), text_lines_2[0], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+30), text_lines_2[1], font=fuente_ajustada_2, fill=color_relleno)                   
+                        draw.text((x3, y3+60), text_lines_2[2], font=fuente_ajustada_2, fill=color_relleno)
+                        draw.text((x3, y3+90), text_lines_2[3], font=fuente_ajustada_2, fill=color_relleno)
+
+                    if longitud_3 == 1:
+                        draw.text((x5, y5), text_lines_3[0], font=fuente_ajustada_3, fill=color_relleno)
+                    elif longitud_3 == 2:
+                        draw.text((x5, y5), text_lines_3 [0], font=fuente_ajustada_3, fill=color_relleno)
+                        draw.text((x5, y5+30), text_lines_3[1], font=fuente_ajustada_3, fill=color_relleno)            
+                    elif longitud_3 == 3:
+                        draw.text((x5, y5), text_lines_3[0], font=fuente_ajustada_3, fill=color_relleno)
+                        draw.text((x5, y5+30), text_lines_3[1], font=fuente_ajustada_3, fill=color_relleno)                   
+                        draw.text((x5, y5+60), text_lines_3[2], font=fuente_ajustada_3, fill=color_relleno)
+                    elif longitud_3 == 4:
+                        draw.text((x5, y5), text_lines_3[0], font=fuente_ajustada_3, fill=color_relleno)
+                        draw.text((x5, y5+30), text_lines_3[1], font=fuente_ajustada_3, fill=color_relleno)                   
+                        draw.text((x5, y5+60), text_lines_3[2], font=fuente_ajustada_3, fill=color_relleno)
+                        draw.text((x5, y5+90), text_lines_3[3], font=fuente_ajustada_3, fill=color_relleno)   
             
-                    draw.text((x1,y1), texto1, font=fuente_ajustada_1,fill=color_relleno)
-                    draw.text((x3,y3), texto2, font=fuente_ajustada_2,fill=color_relleno)
-                    draw.text((x5,y5), texto3, font=fuente_ajustada_3,fill=color_relleno)
+                    #draw.text((x1,y1), texto1, font=fuente_ajustada_1,fill=color_relleno)
+                    #draw.text((x3,y3), texto2, font=fuente_ajustada_2,fill=color_relleno)
+                    #draw.text((x5,y5), texto3, font=fuente_ajustada_3,fill=color_relleno)
             
                 meme_final.save(os.path.join(ruta_memes,'meme_final.png'))
                 Image.open(os.path.join(ruta_memes,'meme_final.png'))
