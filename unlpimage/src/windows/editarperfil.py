@@ -73,7 +73,7 @@ def ventana_editarperfil(perfil):
                 if ok:
                     confirm = sg.popup_yes_no('¿Desea guardar los cambios?', title='Guardar imagen')
                     if confirm == 'Yes':
-                        with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w') as u:
+                        with open(os.path.join(BASE_PATH, 'src', 'users-data', 'users.json'), 'w', encoding='utf-8') as u:
                             if user['-OTRO-']:
 
                                 usuarios[user['-NICK-']]['nombre'] = user['-NAME-']
@@ -81,7 +81,7 @@ def ventana_editarperfil(perfil):
                                 usuarios[user['-NICK-']]['genero'] = user['-NEW-']
 
                            
-                                json.dump(usuarios, u)
+                                json.dump(usuarios, u, ensure_ascii= False)
                                 os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
 
                                 Image1 = Image.open(ruta_foto)
@@ -108,7 +108,7 @@ def ventana_editarperfil(perfil):
     
                                 #datos.append(usuarios)
                                 #json.dump(datos, u)
-                                json.dump(usuarios, u)
+                                json.dump(usuarios, u, ensure_ascii=False)
                                 os.makedirs(os.path.join(BASE_PATH,'src','users-data','prof_pictures'), exist_ok = True)
                                 Image1 = Image.open(ruta_foto)
                                 # hago una copia de la imagen así

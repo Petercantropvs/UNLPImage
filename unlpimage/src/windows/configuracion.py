@@ -51,9 +51,9 @@ def ventana_configuracion(perfil):
             config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, {"nombre": "Collage", "ruta": ruta_collages}, {"nombre": "Memes", "ruta": ruta_memes}]
             accion = "Entró a ventana de configuracion y cambió las rutas"
 
-            archivo = open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), "w")
+            archivo = open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), "w", encoding='utf-8')
             function_registo(perfil, accion)
-            json.dump(config_datos, archivo)
+            json.dump(config_datos, archivo, ensure_ascii = False)
             archivo.close()   
             window.close()
             break

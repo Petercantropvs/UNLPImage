@@ -49,11 +49,11 @@ def read_config():
         ruta_memes = toload(datos[2]["ruta"])          #--> Ruta de lo que el usuario haya guardado como direcotrio de memes para guardar los memes ya hechos
     except FileNotFoundError:
          ruta_repositorio, ruta_collages, ruta_memes = '', '', ''
-         with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'w') as config:
+         with open(os.path.join(BASE_PATH,'src', 'users-data','archivo_config.json'), 'w', encoding='utf-8') as config:
               config_datos = [{"nombre": "Repositorio", "ruta": ruta_repositorio}, 
                               {"nombre": "Collage", "ruta": ruta_collages}, 
                               {"nombre": "Memes", "ruta": ruta_memes}]
-              json.dump(config_datos, config)    
+              json.dump(config_datos, config, ensure_ascii = False)    
     return ruta_repositorio, ruta_collages, ruta_memes
 
 def dict_lector():
@@ -62,7 +62,7 @@ def dict_lector():
     try:
          _, actividades_anteriores = manejador_csv(tags_path, modo='r')
     except FileNotFoundError: 
-        with open(tags_path, 'x', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
+        with open(tags_path, 'x', encoding='utf-8', newline='') as archivo_csv: #for exclusive creation, failing if the file already exists
             writer = csv.writer(archivo_csv)
             writer.writerow(tags_header)
         # No se encontró tags.csv. Creado archivo nuevo.
@@ -109,7 +109,7 @@ def tagger(metadata):
     sobreescritura.sort(key= lambda x: x[7])
 
     # Escribe todas las actividades en el archivo csv
-    with open(tags_path, 'w', newline='') as archivo_csv:
+    with open(tags_path, 'w', encoding='utf-8', newline='') as archivo_csv:
         escritor_csv = csv.writer(archivo_csv)
         escritor_csv.writerow(tags_header)
         escritor_csv.writerows(sobreescritura)
@@ -161,7 +161,7 @@ def manejador_csv(ruta_archivo, modo = None, data = None):
     ruta_archivo: str(), ruta absoluta\n
     modo: str(). Valores= 'w', 'r', 'x'.\n
     data : any. Información a guardar cuando modo = 'w','a','x'.'''
-    with open(ruta_archivo, modo) as archivo_csv:
+    with open(ruta_archivo, modo, encoding='utf-8', newline='') as archivo_csv:
         match modo:
             case 'r':
                 reader_csv = csv.reader(archivo_csv)
