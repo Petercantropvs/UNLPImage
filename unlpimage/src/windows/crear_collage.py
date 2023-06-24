@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 from PIL import Image, ImageTk, ImageOps, ImageDraw, UnidentifiedImageError
 import os
 from functools import reduce
-from src.default.pathing import BASE_PATH, toload, tosave
+from src.default.pathing import BASE_PATH, templates_path, toload, tosave
 from src.default.data import read_config, dict_lector
 from src.default.setup import text_format15, text_format10, IMG_SIZE, DESIGNS
 from src.windows.generar_etiquetas import arbol
@@ -13,13 +13,16 @@ def collage(template: str, pos: int, img_path, titulo='', collage=None):
     """Crea la imagen collage utilizando los templates predefinidos.
     - Args:
         - template (str): Las opciones válidas son '-L1-', '-L2-', '-L3-', '-L4-', '-L5-' y '-L6-'.
-        - foto (str): path or filename de la imagen.
         - pos (int): posición de la imagen en el collage. Dependiendo del template, puede tomar valores entre 1 y 5
+        - img_path (str): path or filename de la imagen.
         - titulo (str): Texto a colocar sobre el collage.
         - collage (img): Versión previa del collage si ya se le había cargado información
     """
     if not collage:
-        collage = Image.new('RGB', IMG_SIZE)
+        collage = Image.new('RGBA', IMG_SIZE)
+        tmp = Image.open(os.path.join(templates_path,'T'+template[2]+'.png'))
+        tmp = ImageOps.fit(tmp,IMG_SIZE)
+        collage.paste(tmp,(0,0))
 
     foto = Image.open(img_path)
     img = ImageOps.fit(foto, DESIGNS[template][pos]['size'])
@@ -100,13 +103,13 @@ def layout(template:str, photo_path:str, metadata: dict) -> list | dict:
                 [sg.Tree(data=treedata, headings=['Tags'], auto_size_columns=True, enable_events=True,
                          visible=False, expand_x=True, expand_y=True, key='-TREE-')],
                 [sg.Text('Título:', font=text_format15)],
-                [sg.Input('', enable_events=True, key='-TITULO-')]]
+                [sg.Input('', enable_events=True, expand_x=True, key='-TITULO-')]]
 
-    right_col = [[sg.Image(size=IMG_SIZE, background_color=sg.theme_button_color()[1], 
-                           key='-PREVIEW-')]]
+    right_col = [[sg.Image(source = os.path.join(templates_path,'T'+template[2]+'.png'), size=IMG_SIZE, background_color=sg.theme_button_color()[1], 
+                           subsample=2, key='-PREVIEW-')]]
 
     layout = [[sg.Text('Generar collage', font=text_format15), sg.Push(), sg.Button('⬅ Volver', font=text_format15, key='-VOLVER-')],
-              [sg.Column(left_col, vertical_alignment='top'),
+              [sg.Column(left_col, vertical_alignment='top', expand_x=True),
                sg.Column(right_col)],
               [sg.Push(), sg.Button('💾 Guardar', font=text_format15, key='-GUARDAR-')]]
 
@@ -129,7 +132,7 @@ def creacion_collage(template:str, perfil:str):
 
     window = sg.Window('Creá tu collage!', layout_win, resizable=True,
                        finalize=True, enable_close_attempted_event=True)
-    
+    window.set_min_size((700,500))
     if not os.path.isdir(carpeta_collages):
         seleccion = None
         while seleccion != '⚙ Ir a configuración':
