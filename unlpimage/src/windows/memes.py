@@ -1,14 +1,14 @@
 import PySimpleGUI as sg
 import os
-import json
+# import json
 from src.default.pathing import BASE_PATH, templates_memes_path
 from src.default.data import read_config
 from src.default.data import read_memes 
 from src.default.data import get_img_data_profiles as get_img_data
 from src.windows.configuracion import ventana_configuracion
-from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
+from PIL import Image, ImageFont, ImageDraw, ImageFont
 from src.default.setup import *
-from src.default.funciones_memes import tam_box, entra, calcular_tam_fuente, boxes_2, boxes_3, divide_text
+from src.default.funciones_memes import tam_box, calcular_tam_fuente, boxes_2, boxes_3, divide_text
 from src import function_registo
 
 
@@ -137,21 +137,36 @@ def ventana_meme(perfil):
             draw = ImageDraw.Draw(meme_cuadrados)
 
 
-            if image_name == "Batman_golpea_robin.png":
-                resultado_funcion1 = boxes_2(draw, meme_cuadrados, 0)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
+            # if image_name == "Batman_golpea_robin.png":
+            #     resultado_funcion1 = boxes_2(draw, meme_cuadrados, 0)
+            #     window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            elif image_name == "hide_the_pain_harold.png":
-                resultado_funcion1 = boxes_2(draw, meme_cuadrados, 1)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
+            # elif image_name == "hide_the_pain_harold.png":
+            #     resultado_funcion1 = boxes_2(draw, meme_cuadrados, 1)
+            #     window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            elif image_name == "seguro_esta_pensando_en_otra.png":
-                resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
-                window_boxes = sg.Window('Generar memes', layout_crear_2box())
+            # elif image_name == "seguro_esta_pensando_en_otra.png":
+            #     resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
+            #     window_boxes = sg.Window('Generar memes', layout_crear_2box())
 
-            elif image_name == "novio_mira_otra_mujer.png":
-                resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
-                window_boxes = sg.Window('Generar memes', layout_crear_3box())    
+            # elif image_name == "novio_mira_otra_mujer.png":
+            #     resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
+            #     window_boxes = sg.Window('Generar memes', layout_crear_3box())
+
+            match image_name:
+                case "novio_mira_otra_mujer.png":
+                    resultado_funcion1 = boxes_3(draw, meme_cuadrados,2)
+                    window_boxes = sg.Window('Generar memes', layout_crear_3box())
+                case "Batman_golpea_robin.png":
+                    resultado_funcion1 = boxes_2(draw, meme_cuadrados, 0)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
+                case "hide_the_pain_harold.png":
+                    resultado_funcion1 = boxes_2(draw, meme_cuadrados, 1)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
+                case "seguro_esta_pensando_en_otra.png":
+                    resultado_funcion1 = boxes_2(draw,meme_cuadrados, 3)
+                    window_boxes = sg.Window('Generar memes', layout_crear_2box())
+
 
             meme_final = meme_original.copy()
             draw = ImageDraw.Draw(meme_final)
