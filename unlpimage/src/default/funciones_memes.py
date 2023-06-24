@@ -1,20 +1,20 @@
 #Segunda natalla de memes
-import PySimpleGUI as sg
+# import PySimpleGUI as sg
 import os
-import json
-from src.default.pathing import BASE_PATH, templates_memes_path
-from src.default.data import read_config
+# import json
+from src.default.pathing import BASE_PATH #, templates_memes_path as templates_path
+# from src.default.data import read_config
 from src.default.data import read_memes 
 
-from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageFont
-from src.default.setup import text_format15, text_format10
+from PIL import Image, ImageFont, ImageFont
+# from src.default.setup import text_format15, text_format10
 
 #archivo_memes = open('template_meme.json', 'r')
 #datos = json.load(archivo_memes)
              
-ruta_repositorio, ruta_collages, ruta_memes = read_config()
-datos = read_memes()
-templates_path = templates_memes_path
+# ruta_repositorio, ruta_collages, ruta_memes = read_config()
+
+# templates_path = templates_memes_path
 
 ##########################################################################################################
 #Funciones auxliliares: 
@@ -42,7 +42,7 @@ def calcular_tam_fuente(draw, texto, path_fuente, box):
 
 #5) cant_boxes = 2
 def boxes_2(draw, meme_texto, datos_list):
-    
+    datos = read_memes()
     x1 = datos[datos_list]["text_boxes"][0]["top_left_x"]
     y1 = datos[datos_list]["text_boxes"][0]["top_left_y"]
     x2 = datos[datos_list]["text_boxes"][0]["bottom_right_x"]
@@ -61,6 +61,7 @@ def boxes_2(draw, meme_texto, datos_list):
     return (x1, y1, x2, y2), (x3, y3, x4, y4)
 
 def boxes_3(draw,meme_texto, datos_list):
+    datos = read_memes()
     x1 = datos[datos_list]["text_boxes"][0]["top_left_x"]
     y1 = datos[datos_list]["text_boxes"][0]["top_left_y"]
     x2 = datos[datos_list]["text_boxes"][0]["bottom_right_x"]
@@ -83,3 +84,24 @@ def boxes_3(draw,meme_texto, datos_list):
     meme_texto.save(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
     Image.open(os.path.join(BASE_PATH,'src','default','memes-templates', 'imagen_con_cuadros_de_texto.png'))
     return (x1, y1, x2, y2), (x3, y3, x4, y4), (x5, y5, x6, y6)
+
+#########################################################################################################
+def divide_text(text, width, font):
+
+    if text:
+        words = text.split()
+    else:
+        words = None
+
+    lines = []
+
+    if words:
+        current_line = words[0]
+        for word in words[1:]:
+            if font.getsize(current_line + ' ' + word)[0] <= width:
+                current_line += ' ' + word
+            else:
+                lines.append(current_line)
+                current_line = word
+        lines.append(current_line)
+    return lines
